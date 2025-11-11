@@ -11,7 +11,7 @@ interface imagebackgroundprops {
 function ImageBackground({ imageurl, className }: imagebackgroundprops) {
   return (
     <div
-      className={cn("max-w-full h-screen absolute inset-0 z-10 ", className)}
+      className={cn("max-w-[100%] h-screen absolute inset-0 z-10 ", className)}
     >
       <Image
         width={1000}

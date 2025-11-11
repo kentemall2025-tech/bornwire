@@ -9,7 +9,10 @@ interface navbarprops {
 function NavBar({ className }: navbarprops) {
   return (
     <div
-      className={cn("flex items-center justify-between gap-4 p-4", className)}
+      className={cn(
+        "flex items-center max-w-[95%] justify-between gap-4 p-4",
+        className
+      )}
     >
       <div>bornwire</div>
       <div className="flex items-center gap-4 capitalize font-sm ">

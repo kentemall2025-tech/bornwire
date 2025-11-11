@@ -48,3 +48,27 @@ export const servicesContent = [
       "Feel free to task us with your product process. Some customers prefer outfit made out of kente. We can find you the best of designers to get it done for you.We deliver on our promise of quality.Products off of quality.",
   },
 ];
+
+export const testimonialContent = [
+  {
+    email: "opokuamos@outlook.com",
+    id: "1",
+    name: "Mr & Mrs Opoku",
+    message:
+      "Bornwire.shop offers vibrant, high-quality Kente clothing that brings African heritage to life. My outfit arrived quickly and exceeded expectations. Highly recommend for anyone wanting authentic Kente pieces!",
+  },
+  {
+    id: "2",
+    name: "Delphina Osei",
+    message:
+      "The Kente fabrics at Bornwire.shop are stunning—soft, durable, and beautifully crafted. Their customer service is top-notch, and I’ll definitely be back for more!",
+    email: "delposei@gmail.com",
+  },
+  {
+    email: "sarahoben@gmail.com",
+    id: "3",
+    name: "Sarah Obeng",
+    message:
+      "I love my Kente dress from Bornwire.shop! Comfortable, stylish, and a perfect blend of tradition and modern fashion. A must-have for any occasion!",
+  },
+];

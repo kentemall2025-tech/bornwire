@@ -5,8 +5,16 @@ import TitleTag from "@/components/ui/title";
 import SubTitleTag from "@/components/ui/subtitle";
 import Btn from "@/components/ui/btn";
 import ShowcaseCarousel from "@/components/ui/showcase";
-import { servicesContent, showcaseContent } from "@/lib/constants";
+import {
+  servicesContent,
+  showcaseContent,
+  testimonialContent,
+} from "@/lib/constants";
 import Services from "@/components/ui/service";
+import Videocomp from "@/components/ui/videocomp";
+import Testimonials from "@/components/ui/testies";
+import SearchBar from "@/components/ui/searchbar";
+import About from "@/components/ui/about";
 
 export default function Home() {
   return (
@@ -31,6 +39,20 @@ export default function Home() {
       <div>
         <Services services={servicesContent} />
       </div>
+      <div className="p-4">
+        <Videocomp
+          className=""
+          src="https://csmvkgdme8w3hyot.public.blob.vercel-storage.com/WhatsApp%20Video%202025-11-11%20at%201.19.37%20PM.mp4"
+        />
+      </div>
+      <div className="mt-5">
+        <Testimonials
+          className="flex flex-col gap-4 p-4"
+          testies={testimonialContent}
+        />
+      </div>
+      <SearchBar />
+      <About />
     </section>
   );
 }
