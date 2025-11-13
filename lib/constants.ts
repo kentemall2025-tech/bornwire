@@ -16,11 +16,11 @@ export const showcaseContent = [
     imageurl:
       "https://csmvkgdme8w3hyot.public.blob.vercel-storage.com/WhatsApp%20Image%202025-11-11%20at%2012.39.57%20PM.jpeg",
   },
-  {
-    id: "4",
-    imageurl:
-      "https://csmvkgdme8w3hyot.public.blob.vercel-storage.com/WhatsApp%20Image%202025-11-11%20at%2011.05.56%20AM.jpeg",
-  },
+  // {
+  //   id: "4",
+  //   imageurl:
+  //     "https://csmvkgdme8w3hyot.public.blob.vercel-storage.com/WhatsApp%20Image%202025-11-11%20at%2011.05.56%20AM.jpeg",
+  // },
   {
     id: "5",
     imageurl:
@@ -70,5 +70,57 @@ export const testimonialContent = [
     name: "Sarah Obeng",
     message:
       "I love my Kente dress from Bornwire.shop! Comfortable, stylish, and a perfect blend of tradition and modern fashion. A must-have for any occasion!",
+  },
+];
+
+export const footerlinkContent = [
+  {
+    id: 1,
+    label: "home",
+    href: "/home",
+  },
+  {
+    id: 2,
+    label: "products",
+    href: "/products",
+  },
+  {
+    id: 3,
+    label: "services",
+    href: "#services",
+  },
+  {
+    id: 4,
+    label: "testimonials",
+    href: "/testimonials",
+  },
+  {
+    id: 5,
+    label: "diaspora",
+    href: "#",
+  },
+];
+
+export const horizonproductsContent = [
+  {
+    id: "1",
+    label: "Edwene si Edwene so",
+    price: 5000,
+    imageurl:
+      "https://csmvkgdme8w3hyot.public.blob.vercel-storage.com/WhatsApp%20Image%202025-11-10%20at%2010.38.02%20PM%20%283%29.jpeg",
+  },
+  {
+    id: "2",
+    label: "Diamondnics",
+    price: 8000,
+    imageurl:
+      "https://csmvkgdme8w3hyot.public.blob.vercel-storage.com/WhatsApp%20Image%202025-11-10%20at%2010.38.02%20PM%20%282%29.jpeg",
+  },
+  {
+    id: "3",
+    label: "Blue Ivory",
+    price: 20000,
+    imageurl:
+      "https://csmvkgdme8w3hyot.public.blob.vercel-storage.com/WhatsApp%20Image%202025-11-10%20at%2010.38.01%20PM.jpeg",
   },
 ];

@@ -15,6 +15,7 @@ import Videocomp from "@/components/ui/videocomp";
 import Testimonials from "@/components/ui/testies";
 import SearchBar from "@/components/ui/searchbar";
 import About from "@/components/ui/about";
+import FooterLinks from "@/components/ui/footerlinks";
 
 export default function Home() {
   return (
@@ -40,10 +41,7 @@ export default function Home() {
         <Services services={servicesContent} />
       </div>
       <div className="p-4">
-        <Videocomp
-          className=""
-          src="https://csmvkgdme8w3hyot.public.blob.vercel-storage.com/WhatsApp%20Video%202025-11-11%20at%201.19.37%20PM.mp4"
-        />
+        <Videocomp src="https://csmvkgdme8w3hyot.public.blob.vercel-storage.com/WhatsApp%20Video%202025-11-11%20at%201.19.37%20PM.mp4" />
       </div>
       <div className="mt-5">
         <Testimonials
@@ -53,6 +51,7 @@ export default function Home() {
       </div>
       <SearchBar />
       <About />
+      <FooterLinks />
     </section>
   );
 }

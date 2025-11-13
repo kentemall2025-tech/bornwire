@@ -1,6 +1,5 @@
 "use client";
 
-import React from "react";
 import Video from "next-video";
 import { cn } from "@/lib/utils";
 

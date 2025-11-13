@@ -16,9 +16,9 @@ function NavBar({ className }: navbarprops) {
     >
       <div>bornwire</div>
       <div className="flex items-center gap-4 capitalize font-sm ">
-        <Link href="">home</Link>
-        <Link href="">products</Link>
-        <Link href="">history</Link>
+        <Link href="/">home</Link>
+        <Link href="/products">products</Link>
+        <Link href="/settings">settings</Link>
       </div>
       <div>
         <Menu />
