@@ -1,6 +1,6 @@
 interface productprops {
   imageurl: string;
-  id: string;
+  id: number;
   label: string;
   description?: string;
   price: number;
