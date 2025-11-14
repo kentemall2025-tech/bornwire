@@ -1,4 +1,6 @@
 "use client";
+import { ChatIcon } from "@/components/ui/chaticon";
+import { ChatModal } from "@/components/ui/chatmodal";
 import InfiniteScrollDemo from "@/components/ui/infinity";
 import { HorizontalList } from "@/components/ui/scrollproducts";
 import SearchBar from "@/components/ui/searchbar";
@@ -34,14 +36,14 @@ export default function page() {
         )}
       />
       <div>
-
-      <TitleTag
-        message="More Kente Fabrics"
-        className="text-2xl font-bold uppercase p-2"
+        <TitleTag
+          message="More Kente Fabrics"
+          className="text-2xl font-bold uppercase p-2"
         />
-        
+
         <InfiniteScrollDemo />
-        </div>
+      </div>
+      <ChatIcon />
     </section>
   );
 }
