@@ -5,7 +5,7 @@ import { Search } from "lucide-react";
 
 function SearchBar() {
   return (
-    <div className=" h-20  max-w-full">
+    <div className=" h-20  max-w-full object-contain">
       <div className="relative bg-black p-4 flex">
         <Input
           className="w-full  bg-white  p-4 "

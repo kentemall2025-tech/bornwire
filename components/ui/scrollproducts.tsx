@@ -1,18 +1,28 @@
+"use client";
+
 import * as React from "react";
-import Image from "next/image";
-
 import { ScrollArea, ScrollBar } from "@/components/ui/scroll-area";
-import HorizontalProductsCard from "./horizontalProducts";
-import { horizonproductsContent } from "@/lib/constants";
 
-export function ScrollAreaHorizontal() {
+interface HorizontalListProps<T> {
+  data: T[];
+  renderItem: (item: T, index: number) => React.ReactNode;
+  itemSpacing?: string; // e.g. "space-x-4"
+  className?: string;
+}
+
+export function HorizontalList<T>({
+  data,
+  renderItem,
+  itemSpacing = "space-x-4",
+  className = "",
+}: HorizontalListProps<T>) {
   return (
-    <ScrollArea className="w-96 rounded-md border whitespace-nowrap">
-      <div className="flex w-max space-x-4 p-4 ">
-        {horizonproductsContent.map((item, index) => (
-          <HorizontalProductsCard key={index} {...item} />
-        ))}
+    <ScrollArea className={`w-full overflow-hidden ${className}`}>
+      <div className={`flex w-max p-4 ${itemSpacing}`}>
+        {data.map((item, index) => renderItem(item, index))}
       </div>
+
+      {/* Optional Scrollbar */}
       <ScrollBar orientation="horizontal" />
     </ScrollArea>
   );
