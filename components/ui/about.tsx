@@ -11,7 +11,7 @@ interface aboutprops {
 
 function About() {
   return (
-    <div className="p-4">
+    <div className="p-o">
       <div className="max-w-full h-auto">
         <Image
           alt="imager"
@@ -20,7 +20,7 @@ function About() {
           height={500}
         />
       </div>
-      <div className="space-y-4 mt-6">
+      <div className="space-y-4 mt-6 p-4">
         <TitleTag
           className="text-2xl font-extrabold text-yellow-500 uppercase  underline underline-offset-6"
           message="our story"
