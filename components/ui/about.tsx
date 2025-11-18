@@ -20,12 +20,15 @@ function About() {
           height={500}
         />
       </div>
-      <div className="space-y-4 mt-2">
+      <div className="space-y-4 mt-6">
         <TitleTag
-          className="text-2xl font-bold capitalize"
+          className="text-2xl font-extrabold text-yellow-500 uppercase  underline underline-offset-6"
           message="our story"
         />
-        <SubTitleTag message="At Bornwire.Shop, each piece of Kente tells a story of dedication, culture, and tradition. Made by skilled artisans on manual looms, every thread is woven with care, reflecting the spirit of their ancestors. The weavers, through sweat and labor, preserve this ancient craft, infusing each design with meaning and history. Though slow and meticulous, the process ensures that every Kente cloth is a living testament to resilience and heritage. When you wear Kente from Bornwire.Shop, you carry not just a garment, but a piece of cultural legacy." />
+        <SubTitleTag
+          className="font-poppins text-lg text-pretty leading-7 tracking-wide"
+          message="At Bornwire.Shop, each piece of Kente tells a story of dedication, culture, and tradition. Made by skilled artisans on manual looms, every thread is woven with care, reflecting the spirit of their ancestors. The weavers, through sweat and labor, preserve this ancient craft, infusing each design with meaning and history. Though slow and meticulous, the process ensures that every Kente cloth is a living testament to resilience and heritage. When you wear Kente from Bornwire.Shop, you carry not just a garment, but a piece of cultural legacy."
+        />
       </div>
     </div>
   );

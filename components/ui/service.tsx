@@ -16,7 +16,12 @@ interface serviceprops {
 
 function Services(props: serviceprops) {
   return (
-    <div className={cn("max-w-full flex flex-col gap-6 ", props.className)}>
+    <div
+      className={cn(
+        "max-w-full flex bg-yellow-500 p-2 flex-col gap-6 ",
+        props.className
+      )}
+    >
       {props.services.map((item, index) => {
         return <ServiceCard key={index} {...item} />;
       })}

@@ -19,31 +19,42 @@ import FooterLinks from "@/components/ui/footerlinks";
 
 export default function Home() {
   return (
-    <section className="p-4 w-full max-w-full relative space-y-20">
+    <section className=" w-full max-w-full relative space-y-20">
       <div className=" w-full h-[70vh] ">
         <ImageBackground imageurl="https://csmvkgdme8w3hyot.public.blob.vercel-storage.com/WhatsApp%20Image%202025-11-11%20at%2011.05.56%20AM.jpeg" />
-        <div className="z-50 w-full h-full space-y-5  inset-y-50  relative">
+        <div className="h-[80vh] w-full bg-black/60 absolute  inset-0 z-2" />
+        <div className=" z-50 w-full h-full space-y-6  inset-y-30  max-w-xl p-4 relative">
           <TitleTag
             message="kente mall"
-            className="text-white text-4xl font-bold capitalize "
+            className="text-white text-4xl uppercase font-poppins tracking-wide font-bold  "
           />
           <SubTitleTag
-            message="Your home of quality products, giving you the Ghana culture vibes and luxury of kente products"
-            className="text-white  text-lg font-medium "
+            message="Your home of quality products, giving you the Ghana culture vibes and luxury of kente products."
+            className="text-white  text-lg font-medium text-left font-poppins "
           />
-          <Btn label="order now" className="" href="" />
+          <Btn
+            label="order now"
+            className="text-lg tracking-wide font-bold"
+            href=""
+          />
         </div>
       </div>
-      <div className="mt-20 relative">
+      <div className="mt-30 relative  ">
         <ShowcaseCarousel arr={showcaseContent} />
       </div>
       <div>
+        <h2 className="text-4xl uppercase underline-offset-6  underline  font-bold font-poppins text-center  p-4">
+          Services
+        </h2>
         <Services services={servicesContent} />
       </div>
       <div className="p-4">
         <Videocomp src="https://csmvkgdme8w3hyot.public.blob.vercel-storage.com/WhatsApp%20Video%202025-11-11%20at%201.19.37%20PM.mp4" />
       </div>
       <div className="mt-5">
+        <h2 className="text-4xl uppercase underline-offset-6  underline  font-bold font-poppins text-center  p-4">
+          Testimonials
+        </h2>
         <Testimonials
           className="flex flex-col gap-4 p-4"
           testies={testimonialContent}

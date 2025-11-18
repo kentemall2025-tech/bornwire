@@ -10,7 +10,7 @@ interface videocompprops {
 
 function Videocomp(props: videocompprops) {
   return (
-    <div>
+    <div className="w-full  h-[70vh] md:h-screen overflow-hidden">
       <Video
         className={cn("", props.className)}
         muted

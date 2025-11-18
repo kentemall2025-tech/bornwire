@@ -11,11 +11,13 @@ function NavBar({ className }: navbarprops) {
   return (
     <div
       className={cn(
-        "flex items-center max-w-[95%] object-contain justify-between gap-4 p-4",
+        "flex items-center font-poppins max-w-[95%] object-contain justify-between gap-4 p-2",
         className
       )}
     >
-      <div>bornwire</div>
+      <div className="font-poppins text-lg text-yellow-500 md:text-2xl uppercase font-bold">
+        bornwire
+      </div>
 
       <SiteNav />
     </div>

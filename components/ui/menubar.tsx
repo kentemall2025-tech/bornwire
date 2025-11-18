@@ -17,15 +17,17 @@ export function SiteNav() {
 
   return (
     <header className="border-b max-w-[20vw] object-contain">
-      <div className="container flex h-16 items-center justify-between">
+      <div className="container flex h-10 items-center justify-between">
         {/* Desktop Menu */}
         <nav className="hidden md:flex gap-6">
           {navItems.map(({ href, label, icon: Icon }) => (
             <Link
               key={href}
               href={href}
-              className={`flex items-center gap-2 text-sm transition ${
-                pathname === href ? "text-primary" : "text-muted-foreground"
+              className={`flex items-center ease-out gap-2 text-sm transition ${
+                pathname === href
+                  ? "text-primary font-bold"
+                  : "text-muted-foreground"
               }`}
             >
               <Icon size={18} />
@@ -41,13 +43,13 @@ export function SiteNav() {
               <Menu size={20} />
             </Button>
           </SheetTrigger>
-          <SheetContent side="left" className="w-72">
-            <div className="flex flex-col gap-4 mt-6">
+          <SheetContent side="left" className="w-72 pt-20">
+            <div className="flex flex-col gap-6 mt-6">
               {navItems.map(({ href, label, icon: Icon }) => (
                 <Link
                   key={href}
                   href={href}
-                  className={`flex items-center gap-3 text-lg py-2 ${
+                  className={`flex items-center gap-3 text-xl mx-auto uppercase py-2 ${
                     pathname === href ? "text-primary" : "text-muted-foreground"
                   }`}
                 >

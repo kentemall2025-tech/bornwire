@@ -5,7 +5,7 @@ import React from "react";
 function FooterLinks() {
   return (
     <div className="max-w-full h-40">
-      <div className="flex flex-wrap gap-4">
+      <div className="flex flex-wrap gap-4 p-4">
         {footerlinkContent.map((item, index) => {
           return (
             <div className="" key={item.id}>

@@ -11,13 +11,15 @@ interface servicecardprops {
 function ServiceCard(props: servicecardprops) {
   return (
     <div>
-      <Card className="m-4">
-        <CardContent className="">
+      <Card className="m-4 p-0">
+        <CardContent className="shadow-lg p-6">
           <div className="flex space-y-5 items-start gap-4">
-            <props.icon className="bg-yellow-500  p-1 text-2xl rounded-sm" />
-            <CardTitle className="text-2xl font-bold ">{props.title}</CardTitle>
+            <props.icon className="text-yellow-500   text-[2xl] rounded-sm" />
+            <CardTitle className="text-xl font-bold uppercase font-poppins text-center ">
+              {props.title}
+            </CardTitle>
           </div>
-          <CardDescription className="font-medium text-lg">
+          <CardDescription className="font-medium text-lg text-pretty  font-poppins">
             {props.message}
           </CardDescription>
         </CardContent>

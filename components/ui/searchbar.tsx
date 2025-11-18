@@ -5,11 +5,11 @@ import { Search } from "lucide-react";
 
 function SearchBar() {
   return (
-    <div className=" h-20  max-w-full object-contain">
-      <div className="relative bg-black p-4 flex">
+    <div className="bg-black p-10   max-w-full object-contain">
+      <div className="relative  p-4 flex">
         <Input
-          className="w-full  bg-white  p-4 "
-          placeholder="        search for products"
+          className="w-full   bg-white  p-4 "
+          placeholder="       search for products"
         />
         <Search className="z-20 absolute p-2" size={40} />
       </div>

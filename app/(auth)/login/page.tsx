@@ -7,10 +7,6 @@ export default function page() {
     const error = await await supabase.auth.signInWithOAuth({
       provider: "google",
     });
-
-    if (error) {
-      console.log(error);
-    }
   };
   return (
     <div className="h-screen flex flex-col items-center justify-center ">

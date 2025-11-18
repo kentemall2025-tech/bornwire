@@ -23,18 +23,18 @@ interface showcaseprops {
 function ShowcaseCarousel(props: showcaseprops) {
   return (
     <Carousel
-      className="w-full max-w-full  z-50"
+      className="w-full max-w-full  z-50 p-0"
       plugins={[
         Autoplay({
           delay: 2000,
         }),
       ]}
     >
-      <CarouselContent className="max-w-full">
+      <CarouselContent className="max-w-full  p-0">
         {props.arr.map((item, index) => (
-          <CarouselItem key={index}>
+          <CarouselItem key={index} className="p-4">
             <div className="p-0 max-w-full">
-              <Card>
+              <Card className="mx-4 w-full">
                 <CardContent className="flex aspect-square items-center justify-center p-0">
                   <div className="max-w-full h-auto p-0">
                     <Image
@@ -42,7 +42,7 @@ function ShowcaseCarousel(props: showcaseprops) {
                       alt={item.imageurl}
                       width={500}
                       height={500}
-                      className="w-full h-auto"
+                      className="w-full h-auto p-0"
                     />
                   </div>
                 </CardContent>
