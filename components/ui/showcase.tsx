@@ -40,8 +40,8 @@ function ShowcaseCarousel(props: showcaseprops) {
                     <Image
                       src={item.imageurl}
                       alt={item.imageurl}
-                      width={900}
-                      height={750}
+                      width={1000}
+                      height={800}
                       className="w-full h-auto md:h-[80vh] rounded-2xl p-0 object-cover"
                     />
                   </div>
