@@ -20,28 +20,28 @@ import FooterLinks from "@/components/ui/footerlinks";
 export default function Home() {
   return (
     <section className=" w-full max-w-full relative space-y-20">
-      <div className=" w-full h-[70vh] ">
+      <div className=" w-full h-[70vh]  ">
         <ImageBackground imageurl="https://csmvkgdme8w3hyot.public.blob.vercel-storage.com/WhatsApp%20Image%202025-11-11%20at%2011.05.56%20AM.jpeg" />
-        <div className="h-[80vh] w-full bg-black/60 absolute  inset-0 z-2" />
-        <div className=" z-50 w-full h-full space-y-6  inset-y-30  max-w-xl p-4 relative">
+        <div className=" h-[80vh] md:h-[90vh] w-full bg-black/70 absolute  inset-0 z-2" />
+        <div className=" z-50 w-full h-full space-y-10 md:space-y-6  inset-y-30  max-w-xl p-4 md:pl-10 md:pt-10 relative">
           <TitleTag
             message="kente mall"
-            className="text-white text-4xl uppercase font-poppins tracking-wide font-bold  "
+            className="text-white text-4xl md:text-5xl uppercase font-poppins tracking-wide font-bold  "
           />
           <SubTitleTag
             message="Your home of quality products, giving you the Ghana culture vibes and luxury of kente products."
-            className="text-white  text-lg font-medium text-left font-poppins "
+            className="text-white  text-lg md:text-xl font-medium leading-7 tracking-wide text-left font-poppins "
           />
           <Btn
             label="order now"
-            className="text-lg tracking-wide font-bold"
+            className="text-lg tracking-wide font-bold w-full md:w-60"
             href=""
           />
         </div>
       </div>
-      <div className="mt-30 relative  ">
-        <ShowcaseCarousel arr={showcaseContent} />
-      </div>
+
+      <ShowcaseCarousel arr={showcaseContent} />
+
       <div>
         <h2 className="text-4xl uppercase underline-offset-6  underline  font-bold font-poppins text-center  p-4">
           Services

@@ -15,8 +15,8 @@ function NavBar({ className }: navbarprops) {
         className
       )}
     >
-      <div className="font-poppins text-lg text-yellow-500 md:text-2xl uppercase font-bold">
-        bornwire
+      <div className="font-poppins text-lg text-yellow-500 md:text-2xl lowercase font-bold">
+        born<span className="text-orange-500 uppercase font-bold">wire </span>
       </div>
 
       <SiteNav />

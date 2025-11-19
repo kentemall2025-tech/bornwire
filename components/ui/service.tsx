@@ -18,7 +18,7 @@ function Services(props: serviceprops) {
   return (
     <div
       className={cn(
-        "max-w-full flex bg-yellow-500 p-2 flex-col gap-6 ",
+        "max-w-full grid   md:grid-cols-2 lg:grid-cols-3  bg-yellow-500 md:h-[70vh] md:items-center  p-2  gap-6 ",
         props.className
       )}
     >

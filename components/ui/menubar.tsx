@@ -5,9 +5,12 @@ import { usePathname } from "next/navigation";
 import { Home, Package, Settings, Menu } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetTrigger, SheetContent } from "@/components/ui/sheet";
+import { useState } from "react";
+import LoginBtn from "./login";
 
 export function SiteNav() {
   const pathname = usePathname();
+  const [user, setUser] = useState(false);
 
   const navItems = [
     { href: "/", label: "Home", icon: Home },
@@ -35,31 +38,35 @@ export function SiteNav() {
             </Link>
           ))}
         </nav>
-
-        {/* Mobile Menu */}
-        <Sheet>
-          <SheetTrigger asChild>
-            <Button variant="outline" size="icon" className="md:hidden">
-              <Menu size={20} />
-            </Button>
-          </SheetTrigger>
-          <SheetContent side="left" className="w-72 pt-20">
-            <div className="flex flex-col gap-6 mt-6">
-              {navItems.map(({ href, label, icon: Icon }) => (
-                <Link
-                  key={href}
-                  href={href}
-                  className={`flex items-center gap-3 text-xl mx-auto uppercase py-2 ${
-                    pathname === href ? "text-primary" : "text-muted-foreground"
-                  }`}
-                >
-                  <Icon size={20} />
-                  {label}
-                </Link>
-              ))}
-            </div>
-          </SheetContent>
-        </Sheet>
+        {!user ? (
+          <LoginBtn />
+        ) : (
+          <Sheet>
+            <SheetTrigger asChild>
+              <Button variant="outline" size="icon" className="md:hidden">
+                <Menu size={20} />
+              </Button>
+            </SheetTrigger>
+            <SheetContent side="left" className="w-72 pt-20">
+              <div className="flex flex-col gap-6 mt-6">
+                {navItems.map(({ href, label, icon: Icon }) => (
+                  <Link
+                    key={href}
+                    href={href}
+                    className={`flex items-center gap-3 text-xl mx-auto uppercase py-2 ${
+                      pathname === href
+                        ? "text-primary"
+                        : "text-muted-foreground"
+                    }`}
+                  >
+                    <Icon size={20} />
+                    {label}
+                  </Link>
+                ))}
+              </div>
+            </SheetContent>
+          </Sheet>
+        )}
       </div>
     </header>
   );

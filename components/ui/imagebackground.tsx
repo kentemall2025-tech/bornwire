@@ -10,13 +10,18 @@ interface imagebackgroundprops {
 
 function ImageBackground({ imageurl, className }: imagebackgroundprops) {
   return (
-    <div className={cn("max-w-[100%] h-screen absolute inset-0  ", className)}>
+    <div
+      className={cn(
+        "max-w-full h-screen md:h-auto absolute inset-0  ",
+        className
+      )}
+    >
       <Image
-        width={1000}
+        width={1200}
         height={1000}
         src={imageurl}
         alt={imageurl}
-        className=" w-full h-auto z-10 "
+        className=" w-full h-auto md:h-screen  z-10 object-cover"
       />
     </div>
   );

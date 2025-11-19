@@ -10,7 +10,7 @@ interface servicecardprops {
 
 function ServiceCard(props: servicecardprops) {
   return (
-    <div>
+    <div className="">
       <Card className="m-4 p-0">
         <CardContent className="shadow-lg p-6">
           <div className="flex space-y-5 items-start gap-4">
