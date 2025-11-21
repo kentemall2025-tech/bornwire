@@ -7,7 +7,9 @@ export default function page() {
     const { data, error } = await await supabase.auth.signInWithOAuth({
       provider: "google",
     });
+    console.log(data);
     const user = await supabase.from("user").insert({ data });
+    console.log(user);
   };
   return (
     <div className="h-screen flex flex-col items-center justify-center ">
