@@ -14,9 +14,9 @@ export const ChatIcon = () => {
     <>
       <Button
         onClick={handleOpenChat}
-        className="fixed bottom-6 right-6 p-4 bg-blue-500 text-white rounded-full shadow-lg hover:bg-blue-400"
+        className="fixed bottom-4 right-6 bg-blue-500  text-white rounded-full shadow-lg hover:bg-blue-400 text-4xl"
       >
-        <MessageCircle size={24} />
+        <MessageCircle size={72} />
       </Button>
 
       <ChatModal isOpen={isOpen} onClose={handleCloseChat} />
