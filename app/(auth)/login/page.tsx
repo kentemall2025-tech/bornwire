@@ -4,9 +4,10 @@ import { supabase } from "@/lib/supabase";
 
 export default function page() {
   const handleSignInWithGoogle = async () => {
-    const error = await await supabase.auth.signInWithOAuth({
+    const { data, error } = await await supabase.auth.signInWithOAuth({
       provider: "google",
     });
+    const user = await supabase.from("user").insert({ data });
   };
   return (
     <div className="h-screen flex flex-col items-center justify-center ">
