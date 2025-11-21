@@ -5,12 +5,16 @@ import { usePathname } from "next/navigation";
 import { Home, Package, Settings, Menu } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetTrigger, SheetContent } from "@/components/ui/sheet";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import LoginBtn from "./login";
+import { supabase } from "@/lib/supabase";
 
 export function SiteNav() {
   const pathname = usePathname();
   const [user, setUser] = useState(false);
+  useEffect(() => {
+    const data = async () => await supabase.auth.getUser();
+  }, []);
 
   const navItems = [
     { href: "/", label: "Home", icon: Home },
@@ -38,7 +42,7 @@ export function SiteNav() {
             </Link>
           ))}
         </nav>
-        {!user ? (
+        {user ? (
           <LoginBtn />
         ) : (
           <Sheet>
