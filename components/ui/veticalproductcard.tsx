@@ -17,16 +17,16 @@ interface ProductCardProps {
   imageurl: string;
 }
 
-export default function HorizontalProductCard({
+export default function VerticalProductCard({
   label,
   description,
   price,
   imageurl,
 }: ProductCardProps) {
   return (
-    <Card className="flex w-full max-w-md rounded-lg border w-[280px] h-[250px]  hover:shadow-xl transition-shadow duration-300 rounded-lg bg-gray p-0 ">
+    <Card className="flex w-full  rounded-lg border w-full hover:shadow-xl transition-shadow duration-300 rounded-lg bg-gray p-0 ">
       <CardContent className=" flex flex-col h-full w-full p-0 m-0 ">
-        <div className="relative w-full h-40 p-0 m-0 overflow-hidden rounded-md bg-muted object-contain">
+        <div className="relative w-full h-80 p-0 m-0 overflow-hidden rounded-md bg-muted object-contain">
           <Image
             className={"rounded-lg w-full h-auto"}
             src={imageurl}

@@ -3,13 +3,13 @@ import React from "react";
 
 export default async function Page() {
   try {
-    const { data, error } = await supabase.from("user").insert([
-      {
-        id: "9471201c-0840-4c80-a85d-a3ed14818a38",
+    const { data, error } = await supabase
+      .from("users")
+      .insert({
         full_name: "Marcus Oware",
         avatar: "",
-      },
-    ]);
+      })
+      .single();
 
     if (error) {
       console.error("Error inserting user:", error.message);

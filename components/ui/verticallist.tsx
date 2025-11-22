@@ -10,7 +10,7 @@ interface HorizontalListProps<T> {
   className?: string;
 }
 
-export function HorizontalList<T>({
+export function VerticalList<T>({
   data,
   renderItem,
   itemSpacing = "space-x-4",
@@ -29,7 +29,7 @@ export function HorizontalList<T>({
       </div>
 
       {/* Optional Scrollbar */}
-      <ScrollBar orientation="horizontal" />
+      <ScrollBar orientation="vertical" />
     </ScrollArea>
   );
 }
