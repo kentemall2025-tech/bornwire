@@ -10,15 +10,15 @@ interface videocompprops {
 
 function Videocomp(props: videocompprops) {
   return (
-    <div className="w-full md:max-w-5xl max-w-full h-auto rounded-xl  md:mx-auto   md:h-screen overflow-hidden shadow-xl shadow-yellow-500">
+    <div className="w-full md:max-w-5xl lg:max-w-[80%] max-w-full h-auto rounded-lg  md:mx-auto  md:h-screen overflow-hidden shadow-lg shadow-yellow-500 p-0">
       <Video
-        className={cn("rounded-xl ", props.className)}
+        className={cn("object-cover p-0 w-full ", props.className)}
         muted
         loop
         autoPlay
         src={props.src}
-        width={800}
-        height={540}
+        width={1000}
+        height={850}
       />
     </div>
   );

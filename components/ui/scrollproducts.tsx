@@ -18,9 +18,7 @@ export function HorizontalList<T>({
 }: HorizontalListProps<T>) {
   return (
     <ScrollArea className={`w-full overflow-hidden ${className} `}>
-      <div
-        className={`flex w-max  ${itemSpacing} bg-yellow-500  shadow-lg gap-4`}
-      >
+      <div className={`flex w-max  ${itemSpacing}   shadow-lg gap-4`}>
         {data.map((item, index) => (
           <div className="bg-white shadow-xl m-4  rounded-lg flex ">
             {renderItem(item, index)}

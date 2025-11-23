@@ -9,6 +9,7 @@ import {
   CardDescription,
 } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import Link from "next/link";
 
 interface ProductCardProps {
   label: string;
@@ -26,7 +27,7 @@ export default function VerticalProductCard({
   return (
     <Card className="flex w-full  rounded-lg border w-full hover:shadow-xl transition-shadow duration-300 rounded-lg bg-gray p-0 ">
       <CardContent className=" flex flex-col h-full w-full p-0 m-0 ">
-        <div className="relative w-full h-80 p-0 m-0 overflow-hidden rounded-md bg-muted object-contain">
+        <div className="relative w-full h-50 p-0 m-0 overflow-hidden rounded-md bg-muted object-contain">
           <Image
             className={"rounded-lg w-full h-auto"}
             src={imageurl}
@@ -43,7 +44,7 @@ export default function VerticalProductCard({
           </CardHeader>
 
           {/* Description */}
-          <CardDescription className="text-sm text-muted-foreground">
+          <CardDescription className="text-sm text-black  ">
             {description}
           </CardDescription>
 
@@ -54,6 +55,12 @@ export default function VerticalProductCard({
             </Badge>
           </div>
         </div>
+        <Link
+          className="text-lg bg-yellow-500 text-white p-4 rounded-lg text-center"
+          href={`\product\${item.id}`}
+        >
+          view
+        </Link>
       </CardContent>
     </Card>
   );

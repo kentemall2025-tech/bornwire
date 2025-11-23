@@ -1,6 +1,6 @@
 import { horizonproductsContent } from "@/lib/constants";
-import { HorizontalList } from "@/components/ui/scrollproducts";
 import VerticalProductCard from "./veticalproductcard";
+import Link from "next/link";
 
 export function VerticalProductList() {
   return (

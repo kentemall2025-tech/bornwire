@@ -1,23 +1,40 @@
-import Logoutbtn from "@/components/ui/logoutbtn";
-import TitleTag from "@/components/ui/title";
-import React from "react";
+"use client";
+
+import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
 
 export default function page() {
   return (
-    <div className="p-4  flex flex-col justify-between  gap-8  h-screen ">
-      <div>
-        <TitleTag
-          message="Public Profile Settings "
-          className="font-bold text-2xl  "
-        />
-      </div>
-      <div>
-        <TitleTag message="Account Details" className="font-bold text-2xl  " />
-      </div>
-      <TitleTag message="Legal " className="font-bold text-2xl  " />
-      <div className="bottom-10">
-        <Logoutbtn className="w-full  uppercase bg-yellow-500 text-white font-bold tracking-wider hover:-translate-y-0.5 duration-400 ease-out" />
-      </div>
+    <div className="p-4 flex w-full mt-10 ">
+      <Card className="w-full shadow-lg">
+        <CardContent className="w-full flex flex-col gap-8 items-center ">
+          <div className="w-full flex items-center gap-4 ">
+            <div className="text-2xl tracking-wider capitalize tracking-wide">
+              name
+            </div>
+            <div></div>
+          </div>
+          <div className="w-full flex items-center gap-4 ">
+            <div className="text-2xl tracking-wider capitalize tracking-wide">
+              email
+            </div>
+
+            <div></div>
+          </div>
+          <div className="w-full flex items-center gap-4 ">
+            <div className="text-2xl tracking-wider capitalize tracking-wide">
+              joined
+            </div>
+            <div></div>
+          </div>
+
+          <div className="w-full">
+            <Button className="w-full bg-yellow-500  uppercase -translate-y-0.5  transition cursor-pointer ">
+              log out
+            </Button>
+          </div>
+        </CardContent>
+      </Card>
     </div>
   );
 }

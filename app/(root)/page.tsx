@@ -16,7 +16,6 @@ import Testimonials from "@/components/ui/testies";
 import SearchBar from "@/components/ui/searchbar";
 import About from "@/components/ui/about";
 import FooterLinks from "@/components/ui/footerlinks";
-import { ChatModal } from "@/components/ui/chatmodal";
 import { ChatIcon } from "@/components/ui/chaticon";
 
 export default function Home() {

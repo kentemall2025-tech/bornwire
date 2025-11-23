@@ -34,7 +34,7 @@ function ShowcaseCarousel(props: showcaseprops) {
         {props.arr.map((item, index) => (
           <CarouselItem key={index} className="p-4">
             <div className="p-0 max-w-full ">
-              <Card className="mx-4 md:mx-auto md:w-[80%] p-0 shadow-2xl shadow-yellow-500 rounded-lg">
+              <Card className="mx-4 md:mx-auto md:w-[80%] p-0 shadow-lg shadow-yellow-500 rounded-lg">
                 <CardContent className="flex rounded-2xl w-full items-center justify-center md:block p-0">
                   <div className="max-w-full h-auto object-contain p-0">
                     <Image

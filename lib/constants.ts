@@ -5,26 +5,36 @@ export const showcaseContent = [
     id: "1",
     imageurl:
       "https://csmvkgdme8w3hyot.public.blob.vercel-storage.com/WhatsApp%20Image%202025-11-11%20at%2012.41.37%20PM%20%283%29.jpeg",
+    description:
+      "Lorem ipsum, dolor sit amet consectetur adipisicing elit. Tempore, magnam ipsam? Illum, iste et. Aliquid, animi aspernatur? Quisquam, dolorem eveniet.",
   },
   {
     id: "2",
     imageurl:
       "https://csmvkgdme8w3hyot.public.blob.vercel-storage.com/WhatsApp%20Image%202025-11-11%20at%2012.41.37%20PM%20%282%29.jpeg",
+    description:
+      "Lorem ipsum, dolor sit amet consectetur adipisicing elit. Tempore, magnam ipsam? Illum, iste et. Aliquid, animi aspernatur? Quisquam, dolorem eveniet.",
   },
   {
     id: "3",
     imageurl:
       "https://csmvkgdme8w3hyot.public.blob.vercel-storage.com/WhatsApp%20Image%202025-11-11%20at%2012.39.57%20PM.jpeg",
+    description:
+      "Lorem ipsum, dolor sit amet consectetur adipisicing elit. Tempore, magnam ipsam? Illum, iste et. Aliquid, animi aspernatur? Quisquam, dolorem eveniet.",
   },
-  // {
-  //   id: "4",
-  //   imageurl:
-  //     "https://csmvkgdme8w3hyot.public.blob.vercel-storage.com/WhatsApp%20Image%202025-11-11%20at%2011.05.56%20AM.jpeg",
-  // },
+  {
+    id: "4",
+    imageurl:
+      "https://csmvkgdme8w3hyot.public.blob.vercel-storage.com/WhatsApp%20Image%202025-11-11%20at%2011.05.56%20AM.jpeg",
+    description:
+      "Lorem ipsum, dolor sit amet consectetur adipisicing elit. Tempore, magnam ipsam? Illum, iste et. Aliquid, animi aspernatur? Quisquam, dolorem eveniet.",
+  },
   {
     id: "5",
     imageurl:
       "https://csmvkgdme8w3hyot.public.blob.vercel-storage.com/WhatsApp%20Image%202025-11-11%20at%2012.42.46%20PM.jpeg",
+    description:
+      "Lorem ipsum, dolor sit amet consectetur adipisicing elit. Tempore, magnam ipsam? Illum, iste et. Aliquid, animi aspernatur? Quisquam, dolorem eveniet.",
   },
 ];
 

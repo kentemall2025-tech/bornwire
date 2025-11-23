@@ -11,13 +11,14 @@ interface aboutprops {
 
 function About() {
   return (
-    <div className="p-o">
-      <div className="max-w-full h-auto">
+    <div className="p-o ">
+      <div className="max-w-full h-auto p-4">
         <Image
           alt="imager"
           src="https://csmvkgdme8w3hyot.public.blob.vercel-storage.com/WhatsApp%20Image%202025-11-11%20at%2011.05.56%20AM.jpeg"
-          width={500}
-          height={500}
+          width={1000}
+          height={800}
+          className="w-full h-auto"
         />
       </div>
       <div className="space-y-4 mt-6 p-4">
