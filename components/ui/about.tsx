@@ -15,7 +15,7 @@ function About() {
       <div className="max-w-full h-auto p-4">
         <Image
           alt="imager"
-          src="https://csmvkgdme8w3hyot.public.blob.vercel-storage.com/WhatsApp%20Image%202025-11-11%20at%2011.05.56%20AM.jpeg"
+          src="https://csmVKgDmE8w3HyOt.public.blob.vercel-storage.com/WhatsApp Image 2025-11-22 at 9.36.51 PM.jpeg"
           width={1000}
           height={800}
           className="w-full h-auto"
