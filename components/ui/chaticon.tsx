@@ -11,15 +11,12 @@ export const ChatIcon = () => {
   const handleCloseChat = () => setIsOpen(false);
 
   return (
-    <>
-      <Button
-        onClick={handleOpenChat}
-        className="fixed bottom-4 right-6 bg-blue-500  text-white rounded-full shadow-lg hover:bg-blue-400 text-4xl"
-      >
-        <MessageCircle size={72} />
+    <div className="fixed -bottom-10 right-6  text-white shadow-lg hover:bg-blue-400 text-3xl z-50 rounded-lg bg-blue-500 ">
+      <Button onClick={handleOpenChat} className="bg-transparent">
+        <MessageCircle size={540} />
       </Button>
 
       <ChatModal isOpen={isOpen} onClose={handleCloseChat} />
-    </>
+    </div>
   );
 };
