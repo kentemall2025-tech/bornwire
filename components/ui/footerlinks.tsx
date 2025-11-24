@@ -4,14 +4,14 @@ import React from "react";
 
 function FooterLinks() {
   return (
-    <div className="max-w-full h-40">
-      <div className="flex flex-wrap gap-4 p-4">
+    <div className="max-w-full  h-40">
+      <div className="flex flex-wrap justify-center gap-4 p-4">
         {footerlinkContent.map((item, index) => {
           return (
-            <div className="" key={item.id}>
+            <div className="cursor-pointer " key={item.id}>
               <Link
                 href={item.href}
-                className="text-black z-20 text-lg capitalize "
+                className="text-black  text-sm   text-purple-500  cursor-pointer  capitalize "
               >
                 {item.label}
               </Link>

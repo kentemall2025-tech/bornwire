@@ -19,7 +19,7 @@ export function VerticalList<T>({
   return (
     <ScrollArea className={`w-full overflow-hidden ${className} `}>
       <div
-        className={`flex w-max  ${itemSpacing} bg-yellow-500  shadow-lg gap-4`}
+        className={`flex w-full  ${itemSpacing} bg-yellow-500  shadow-lg gap-4`}
       >
         {data.map((item, index) => (
           <div className="bg-white shadow-xl m-4  rounded-lg flex ">

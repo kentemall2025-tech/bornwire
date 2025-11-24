@@ -36,6 +36,20 @@ export const showcaseContent = [
     description:
       "Lorem ipsum, dolor sit amet consectetur adipisicing elit. Tempore, magnam ipsam? Illum, iste et. Aliquid, animi aspernatur? Quisquam, dolorem eveniet.",
   },
+  {
+    id: "4",
+    imageurl:
+      "https://csmvkgdme8w3hyot.public.blob.vercel-storage.com/WhatsApp%20Image%202025-11-11%20at%2011.05.56%20AM.jpeg",
+    description:
+      "Lorem ipsum, dolor sit amet consectetur adipisicing elit. Tempore, magnam ipsam? Illum, iste et. Aliquid, animi aspernatur? Quisquam, dolorem eveniet.",
+  },
+  {
+    id: "5",
+    imageurl:
+      "https://csmvkgdme8w3hyot.public.blob.vercel-storage.com/WhatsApp%20Image%202025-11-11%20at%2012.42.46%20PM.jpeg",
+    description:
+      "Lorem ipsum, dolor sit amet consectetur adipisicing elit. Tempore, magnam ipsam? Illum, iste et. Aliquid, animi aspernatur? Quisquam, dolorem eveniet.",
+  },
 ];
 
 export const servicesContent = [
@@ -128,6 +142,48 @@ export const horizonproductsContent = [
   },
   {
     id: "3",
+    label: "Blue Ivory",
+    price: 20000,
+    imageurl:
+      "https://csmvkgdme8w3hyot.public.blob.vercel-storage.com/WhatsApp%20Image%202025-11-10%20at%2010.38.01%20PM.jpeg",
+  },
+  {
+    id: "4",
+    label: "Edwene si Edwene so",
+    price: 5000,
+    imageurl:
+      "https://csmvkgdme8w3hyot.public.blob.vercel-storage.com/WhatsApp%20Image%202025-11-10%20at%2010.38.02%20PM%20%283%29.jpeg",
+  },
+  {
+    id: "5",
+    label: "Diamondnics",
+    price: 8000,
+    imageurl:
+      "https://csmvkgdme8w3hyot.public.blob.vercel-storage.com/WhatsApp%20Image%202025-11-10%20at%2010.38.02%20PM%20%282%29.jpeg",
+  },
+  {
+    id: "6",
+    label: "Blue Ivory",
+    price: 20000,
+    imageurl:
+      "https://csmvkgdme8w3hyot.public.blob.vercel-storage.com/WhatsApp%20Image%202025-11-10%20at%2010.38.01%20PM.jpeg",
+  },
+  {
+    id: "7",
+    label: "Edwene si Edwene so",
+    price: 5000,
+    imageurl:
+      "https://csmvkgdme8w3hyot.public.blob.vercel-storage.com/WhatsApp%20Image%202025-11-10%20at%2010.38.02%20PM%20%283%29.jpeg",
+  },
+  {
+    id: "8",
+    label: "Diamondnics",
+    price: 8000,
+    imageurl:
+      "https://csmvkgdme8w3hyot.public.blob.vercel-storage.com/WhatsApp%20Image%202025-11-10%20at%2010.38.02%20PM%20%282%29.jpeg",
+  },
+  {
+    id: "9",
     label: "Blue Ivory",
     price: 20000,
     imageurl:

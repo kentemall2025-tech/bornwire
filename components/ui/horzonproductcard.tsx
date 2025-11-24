@@ -25,42 +25,32 @@ export default function HorizontalProductCard({
   imageurl,
 }: ProductCardProps) {
   return (
-    <Card className="flex w-full max-w-md rounded-lg border w-[280px] h-[280px]  hover:shadow-xl transition-shadow duration-300 rounded-lg bg-gray p-0 ">
+    <Card className="flex w-full max-w-md rounded-lg border w-[280px] h-[280px]  hover:shadow-xl transition-shadow duration-300 rounded-lg bg-gray p-0 bg-white hover:translate-y-0.5 duration-300 ease-out cursor-pointer ">
       <CardContent className=" flex flex-col  w-full h-full p-0 m-0 bg-white ">
-        <div className="relative w-full h-40 p-0 m-0 overflow-hidden rounded-md bg-muted object-contain">
+        <div className="relative w-full h-80 p-4 m-0 overflow-hidden rounded-md bg-muted object-contain">
           <Image
-            className={"rounded-lg w-full h-auto"}
+            className={"rounded-lg w-full h-auto "}
             src={imageurl}
             alt={label}
             layout="fill"
             objectFit="cover"
           />
         </div>
-        <div className="flex flex-col justify-center  shadow-xl p-4">
+        <div className="flex flex-col h-20 justify-center pt-4 shadow-xl p-2">
           <CardHeader className=" p-0 ">
-            <CardTitle className="text-lg font-semibold uppercase">
+            <CardTitle className="text-lg text-center font-semibold uppercase ">
               {label}
             </CardTitle>
           </CardHeader>
-
-          {/* Description */}
-          <CardDescription className="text-sm text-muted-foreground">
-            {description}
-          </CardDescription>
-
-          {/* Price */}
-          <div className="text-muted-background text-lg">
-            <Badge variant="outline" className="text-sm ">
-              GHS {price.toFixed(2)} {/* Format price as GHS */}
-            </Badge>
+          <div className=" text-gray-600 ml-18 text-sm ">
+            GHS {price.toFixed(2)} {/* Format price as GHS */}
           </div>
         </div>
-        <div className="  w-full p-4 bg-white">
-          <Link
-            className=" bg-yellow-500  text-white  px-4  py-2  rounded-lg w-full text-center "
-            href={`\products\${item.id}`}
-          >
-            view
+        <div className=" w-full flex items-center bg-yellow-500 bg-gradient-to-r from-orange-400 shadow-xl cursor-pointer hover:-translate-y-0.5 text-center justify-center  text-lg p-2 bg-white mx-auto cursor-pointer">
+          <Link className="w-full " href={`\products\${item.id}`}>
+            <div className="tracking-wider text-white font-bold  cursor-pointer ">
+              view
+            </div>
           </Link>
         </div>
       </CardContent>
