@@ -25,7 +25,10 @@ export default function HorizontalProductCard({
   imageurl,
 }: ProductCardProps) {
   return (
-    <Card className="flex w-full max-w-md rounded-lg border w-[280px] h-[280px]  hover:shadow-xl transition-shadow duration-300 rounded-lg bg-gray p-0 bg-white hover:translate-y-0.5 duration-300 ease-out cursor-pointer ">
+    <Card
+      key={label}
+      className="flex w-full max-w-md rounded-lg border w-[280px] h-[280px]  hover:shadow-xl transition-shadow duration-300 rounded-lg bg-gray p-0 bg-white hover:translate-y-0.5 duration-300 ease-out cursor-pointer "
+    >
       <CardContent className=" flex flex-col  w-full h-full p-0 m-0 bg-white ">
         <div className="relative w-full h-80 p-4 m-0 overflow-hidden rounded-md bg-muted object-contain">
           <Image

@@ -1,14 +1,33 @@
+"use client";
 import { cn } from "@/lib/utils";
-import { Menu } from "lucide-react";
-import Link from "next/link";
-import React from "react";
 import { SiteNav } from "./menubar";
 import Image from "next/image";
+import LoginBtn from "./login";
+import { supabase } from "@/lib/supabase";
+import { useEffect, useState } from "react";
 
 interface navbarprops {
   className?: string;
 }
 function NavBar({ className }: navbarprops) {
+  const [user, setUser] = useState();
+
+  useEffect(() => {
+    const runfunc = async () => {
+      const { data, error } = await supabase.auth.getUser();
+
+      if (error) {
+        console.log(error);
+      }
+
+      setUser((prev) => {
+        data;
+      });
+    };
+    runfunc();
+  }, [user]);
+
+  console.log(user);
   return (
     <div
       className={cn(
@@ -25,8 +44,7 @@ function NavBar({ className }: navbarprops) {
           height={400}
         />
       </div>
-
-      <SiteNav />
+      <div className="">{!user ? <LoginBtn /> : <SiteNav />} </div>
     </div>
   );
 }

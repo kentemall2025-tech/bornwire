@@ -25,7 +25,10 @@ export default function VerticalProductCard({
   imageurl,
 }: ProductCardProps) {
   return (
-    <Card className="flex w-full  rounded-lg border w-full hover:shadow-lg transition-shadow duration-300 rounded-lg bg-gray p-0 my-2 ">
+    <Card
+      key={label}
+      className="flex w-full  rounded-lg border w-full hover:shadow-lg transition-shadow duration-300 rounded-lg bg-gray p-0 my-2 "
+    >
       <CardContent className=" flex flex-col h-full w-full p-0 m-0  ">
         <div className="relative w-full h-50 p-0 m-0 overflow-hidden rounded-md bg-muted object-contain">
           <Image
@@ -36,7 +39,7 @@ export default function VerticalProductCard({
             objectFit="cover"
           />
         </div>
-        <div className="flex flex-col justify-center  shadow-xl p-4">
+        <div className="flex flex-col justify-center text-center shadow-xl p-4">
           <CardHeader className=" p-0 ">
             <CardTitle className="text-lg font-semibold uppercase">
               {label}
