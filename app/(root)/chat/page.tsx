@@ -1,5 +1,4 @@
 import { RealtimeChat } from "@/components/realtime-chat";
-import React from "react";
 
 export default function page() {
   return (
