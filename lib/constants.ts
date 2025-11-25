@@ -182,11 +182,4 @@ export const horizonproductsContent = [
     imageurl:
       "https://csmvkgdme8w3hyot.public.blob.vercel-storage.com/WhatsApp%20Image%202025-11-10%20at%2010.38.02%20PM%20%282%29.jpeg",
   },
-  {
-    id: "9",
-    label: "Blue Ivory",
-    price: 20000,
-    imageurl:
-      "https://csmvkgdme8w3hyot.public.blob.vercel-storage.com/WhatsApp%20Image%202025-11-10%20at%2010.38.01%20PM.jpeg",
-  },
 ];
