@@ -23,14 +23,14 @@ interface showcaseprops {
 function ShowcaseCarousel(props: showcaseprops) {
   return (
     <Carousel
-      className="w-full max-w-full  z-50 p-0 "
+      className="w-full max-w-full  z-50 p-0 bg-white "
       plugins={[
         Autoplay({
           delay: 2000,
         }),
       ]}
     >
-      <CarouselContent className="max-w-full  p-0">
+      <CarouselContent className="max-w-full  p-0 bg-white">
         {props.arr.map((item, index) => (
           <CarouselItem key={index} className="p-4">
             <div className="p-0 max-w-full ">

@@ -18,11 +18,11 @@ function NavBar({ className }: navbarprops) {
 
       if (error) {
         console.log(error);
+      } else {
+        setUser((prev) => {
+          data;
+        });
       }
-
-      setUser((prev) => {
-        data;
-      });
     };
     runfunc();
   }, [user]);
