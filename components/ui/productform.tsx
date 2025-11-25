@@ -11,7 +11,7 @@ import {
 import { Input } from "./input";
 import { Textarea } from "./textarea";
 import { Button } from "./button";
-import { supabase } from "@/lib/supabase";
+import { supabase } from "@/lib/supabase/supabase";
 
 const ProductForm = () => {
   return (

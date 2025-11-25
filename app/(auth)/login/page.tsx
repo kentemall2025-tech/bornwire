@@ -1,6 +1,6 @@
 "use client";
 import { Button } from "@/components/ui/button";
-import { supabase } from "@/lib/supabase";
+import { supabase } from "@/lib/supabase/supabase";
 
 export default function page() {
   const handleSignInWithGoogle = async () => {

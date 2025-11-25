@@ -3,8 +3,9 @@ import { cn } from "@/lib/utils";
 import { SiteNav } from "./menubar";
 import Image from "next/image";
 import LoginBtn from "./login";
-import { supabase } from "@/lib/supabase";
+import { supabase } from "@/lib/supabase/supabase";
 import { useEffect, useState } from "react";
+import Logoutbtn from "./logoutbtn";
 
 interface navbarprops {
   className?: string;
@@ -44,7 +45,14 @@ function NavBar({ className }: navbarprops) {
           height={400}
         />
       </div>
-      <div className="">{!user ? <LoginBtn /> : <SiteNav />} </div>
+      {user ? (
+        <LoginBtn />
+      ) : (
+        <div className="flex gap-2">
+          <SiteNav />
+        </div>
+      )}{" "}
+      {/* Show LoginBtn if no user, else show SiteNav */}
     </div>
   );
 }

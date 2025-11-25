@@ -20,7 +20,7 @@ export function HorizontalList<T>({
     <ScrollArea className={`w-full overflow-hidden ${className} `}>
       <div className={`flex w-max  ${itemSpacing}   shadow-lg gap-4`}>
         {data.map((item, index) => (
-          <div className="bg-white shadow-xl m-4  rounded-lg flex ">
+          <div key={index} className="bg-white shadow-xl m-4  rounded-lg flex ">
             {renderItem(item, index)}
           </div>
         ))}
