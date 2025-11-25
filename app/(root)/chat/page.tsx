@@ -3,7 +3,7 @@ import React from "react";
 
 export default function page() {
   return (
-    <div>
+    <div className="">
       <RealtimeChat roomName="my-chat-room" username="john_doe" />
     </div>
   );

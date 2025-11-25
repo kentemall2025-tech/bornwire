@@ -21,7 +21,7 @@ import { ChatIcon } from "@/components/ui/chaticon";
 export default function Home() {
   return (
     <section className=" w-full max-w-full relative space-y-20">
-      <div className="w-full h-[60vh] ">
+      <div className="w-full h-[60vh] z-10 ">
         <ImageBackground imageurl="https://csmvkgdme8w3hyot.public.blob.vercel-storage.com/WhatsApp%20Image%202025-11-11%20at%2011.05.56%20AM.jpeg" />
         <div className=" h-[80vh] md:h-[90vh] w-full bg-black/70 absolute  inset-0 z-2" />
         <div className=" z-50 w-full h-full space-y-10 md:space-y-6  inset-y-30  max-w-xl p-4 md:pl-10 md:pt-10 relative">
