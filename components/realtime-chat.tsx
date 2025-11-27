@@ -89,7 +89,7 @@ export const RealtimeChat = ({
             No messages yet. Start the conversation!
           </div>
         ) : null}
-        <div className="space-y-1 h-[78vh] md:h-[80vh] ">
+        <div className="space-y-1 h-[75vh] ">
           {allMessages.map((message, index) => {
             const prevMessage = index > 0 ? allMessages[index - 1] : null;
             const showHeader =
