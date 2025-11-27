@@ -16,14 +16,14 @@ interface testimonialsprops {
 
 function Testimonials(props: testimonialsprops) {
   return (
-    <div className={cn("flex flex-col items-center  gap-10", props.className)}>
+    <div className={cn("flex flex-col items-center  gap-10 ", props.className)}>
       {props.testies.map((item, index) => {
         return (
           <Card
-            className="shadow-lg max-w-lg my-5 shadow-yellow-400 "
+            className="shadow-lg max-w-lg my-5 shadow-yellow-400  w-full "
             key={item.id}
           >
-            <CardContent className="space-y-4 flex flex-col  items-center">
+            <CardContent className="space-y-4 flex flex-col  items-center ">
               <CardTitle className="font-extrabold text-2xl tracking-wider text-center text-yellow-500">
                 {item.name}
               </CardTitle>

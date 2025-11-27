@@ -39,6 +39,7 @@ export default function VerticalProductCard({
             objectFit="cover"
           />
         </div>
+
         <div className="flex flex-col justify-center text-center shadow-xl p-4">
           <CardHeader className=" p-0 ">
             <CardTitle className="text-lg font-semibold uppercase">
@@ -59,7 +60,7 @@ export default function VerticalProductCard({
           </div>
         </div>
         <Link
-          className="text-lg bg-yellow-500 text-white p-2  bg-yellow-500 bg-gradient-to-r from-orange-400 text-center"
+          className="text-lg bg-yellow-500 text-white p-2 bg-yellow-400 bg-gradient-to-r from-orange-400 uppercase text-center"
           href={`\product\${item.id}`}
         >
           buy

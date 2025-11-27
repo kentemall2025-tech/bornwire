@@ -20,7 +20,7 @@ import { ChatIcon } from "@/components/ui/chaticon";
 
 export default function Home() {
   return (
-    <section className=" w-full max-w-full relative space-y-20">
+    <section className=" w-full max-w-full relative space-y-10">
       <div className="w-full h-[60vh] z-10 ">
         <ImageBackground imageurl="https://csmvkgdme8w3hyot.public.blob.vercel-storage.com/WhatsApp%20Image%202025-11-11%20at%2011.05.56%20AM.jpeg" />
         <div className=" h-[80vh] md:h-[90vh] w-full bg-black/70 absolute  inset-0 z-2" />
@@ -43,8 +43,8 @@ export default function Home() {
 
       <ShowcaseCarousel arr={showcaseContent} />
 
-      <div>
-        <h2 className="text-4xl uppercase underline-offset-6  underline  font-bold font-poppins text-center  p-4">
+      <div className="">
+        <h2 className="text-4xl uppercase underline-offset-6  underline  font-bold font-poppins text-center  ">
           Services
         </h2>
         <Services services={servicesContent} />
