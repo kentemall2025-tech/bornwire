@@ -52,7 +52,7 @@ export default function HorizontalProductCard({
         <div className=" w-full flex items-center bg-yellow-500 bg-gradient-to-r from-orange-400 shadow-xl cursor-pointer hover:-translate-y-0.5 text-center justify-center  text-lg p-2 bg-white mx-auto cursor-pointer">
           <Link className="w-full " href={`\products\${item.id}`}>
             <div className="tracking-wider text-white font-bold  cursor-pointer ">
-              view
+              buy
             </div>
           </Link>
         </div>

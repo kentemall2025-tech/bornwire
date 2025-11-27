@@ -62,7 +62,7 @@ export default function VerticalProductCard({
           className="text-lg bg-yellow-500 text-white p-2  bg-yellow-500 bg-gradient-to-r from-orange-400 text-center"
           href={`\product\${item.id}`}
         >
-          view
+          buy
         </Link>
       </CardContent>
     </Card>
