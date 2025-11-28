@@ -69,7 +69,6 @@ export function SiteNav() {
                 <Menu size={20} />
               </Button>
             </SheetTrigger>
-            <LogoutBtn />
 
             {/* SheetContent */}
             <SheetContent side="left" className="w-72 pt-20">
