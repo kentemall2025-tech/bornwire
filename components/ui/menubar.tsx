@@ -1,5 +1,4 @@
 "use client";
-
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Home, Package, Settings, Menu } from "lucide-react";
@@ -9,7 +8,7 @@ import { useEffect, useState } from "react";
 import LoginBtn from "./login";
 import { supabase } from "@/lib/supabase/supabase";
 import { User } from "@supabase/supabase-js";
-import { Avatar } from "./avatar";
+import Logoutbtn from "./logoutbtn";
 
 export function SiteNav() {
   const pathname = usePathname();
@@ -61,23 +60,17 @@ export function SiteNav() {
           ))}
         </nav>
 
-        {/* User logged in conditionally renders */}
-        {user ? (
-          <LoginBtn />
-        ) : (
+        {/* Mobile Menu */}
+        <div className="md:hidden flex gap-2 items-center">
           <Sheet>
+            {/* SheetTrigger wraps only the Menu button */}
             <SheetTrigger asChild>
-              <Button
-                variant="outline"
-                size="icon"
-                className="md:hidden flex gap-6 p-2"
-                aria-label="Open menu"
-              >
+              <Button variant="ghost">
                 <Menu size={20} />
-                {/* Avatar, consider displaying a user's initials or image */}
-                <Avatar></Avatar>
               </Button>
             </SheetTrigger>
+
+            {/* SheetContent */}
             <SheetContent side="left" className="w-72 pt-20">
               <div className="flex flex-col gap-6 mt-6">
                 {navItems.map(({ href, label, icon: Icon }) => (
@@ -97,7 +90,9 @@ export function SiteNav() {
               </div>
             </SheetContent>
           </Sheet>
-        )}
+
+          {user ? <Logoutbtn /> : <LoginBtn />}
+        </div>
       </div>
     </header>
   );
