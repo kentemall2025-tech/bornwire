@@ -9,6 +9,7 @@ import LoginBtn from "./login";
 import { supabase } from "@/lib/supabase/supabase";
 import { User } from "@supabase/supabase-js";
 import Logoutbtn from "./logoutbtn";
+import LogoutBtn from "./logoutbtn";
 
 export function SiteNav() {
   const pathname = usePathname();
@@ -42,7 +43,6 @@ export function SiteNav() {
   return (
     <header className="border-b max-w-[20vw] object-contain">
       <div className="container flex h-10 items-center justify-between">
-        {/* Desktop Menu */}
         <nav className="hidden md:flex gap-6">
           {navItems.map(({ href, label, icon: Icon }) => (
             <Link
@@ -69,6 +69,7 @@ export function SiteNav() {
                 <Menu size={20} />
               </Button>
             </SheetTrigger>
+            <LogoutBtn />
 
             {/* SheetContent */}
             <SheetContent side="left" className="w-72 pt-20">

@@ -25,7 +25,7 @@ function LogoutBtn({ className }: LogoutProps) {
         onClick={handleLogout}
         className={cn("bg-yellow-500 text-sm capitalize", className)}
       >
-        Logout
+        Log out
       </Button>
     </div>
   );

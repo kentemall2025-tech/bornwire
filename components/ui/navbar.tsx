@@ -52,7 +52,6 @@ function NavBar({ className }: navbarprops) {
           <SiteNav />
         </div>
       )}{" "}
-      {/* Show LoginBtn if no user, else show SiteNav */}
     </div>
   );
 }
