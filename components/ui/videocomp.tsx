@@ -17,8 +17,8 @@ function Videocomp(props: videocompprops) {
         loop
         autoPlay
         src={props.src}
-        width={1000}
-        height={900}
+        width={900}
+        height={500}
       />
     </div>
   );

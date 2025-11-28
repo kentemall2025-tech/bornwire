@@ -8,12 +8,30 @@ import { Sheet, SheetTrigger, SheetContent } from "@/components/ui/sheet";
 import { useEffect, useState } from "react";
 import LoginBtn from "./login";
 import { supabase } from "@/lib/supabase/supabase";
+import { User } from "@supabase/supabase-js";
+import { Avatar } from "./avatar";
 
 export function SiteNav() {
   const pathname = usePathname();
-  const [user, setUser] = useState(false);
+  const [user, setUser] = useState<null | User>(null);
+
   useEffect(() => {
-    const data = async () => await supabase.auth.getUser();
+    const handleGetUser = async () => {
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
+      setUser(user);
+    };
+
+    handleGetUser();
+
+    const { data: authListener } = supabase.auth.onAuthStateChange(
+      (_event, session) => {
+        setUser(session?.user ?? null);
+      }
+    );
+
+    return () => authListener?.subscription.unsubscribe();
   }, []);
 
   const navItems = [
@@ -21,7 +39,7 @@ export function SiteNav() {
     { href: "/products", label: "Products", icon: Package },
     { href: "/settings", label: "Settings", icon: Settings },
   ];
-
+  console.log(user);
   return (
     <header className="border-b max-w-[20vw] object-contain">
       <div className="container flex h-10 items-center justify-between">
@@ -42,13 +60,22 @@ export function SiteNav() {
             </Link>
           ))}
         </nav>
+
+        {/* User logged in conditionally renders */}
         {user ? (
           <LoginBtn />
         ) : (
           <Sheet>
             <SheetTrigger asChild>
-              <Button variant="outline" size="icon" className="md:hidden">
+              <Button
+                variant="outline"
+                size="icon"
+                className="md:hidden flex gap-6 p-2"
+                aria-label="Open menu"
+              >
                 <Menu size={20} />
+                {/* Avatar, consider displaying a user's initials or image */}
+                <Avatar></Avatar>
               </Button>
             </SheetTrigger>
             <SheetContent side="left" className="w-72 pt-20">

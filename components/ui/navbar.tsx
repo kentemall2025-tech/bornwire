@@ -15,13 +15,13 @@ function NavBar({ className }: navbarprops) {
 
   useEffect(() => {
     const runfunc = async () => {
-      const { data, error } = await supabase.auth.getUser();
+      const { data: user, error } = await supabase.auth.getUser();
 
       if (error) {
         console.log(error);
       } else {
         setUser((prev) => {
-          data;
+          user;
         });
       }
     };
