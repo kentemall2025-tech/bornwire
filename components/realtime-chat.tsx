@@ -92,7 +92,7 @@ export const RealtimeChat = ({
             No messages yet. Start the conversation!
           </div>
         ) : null}
-        <div className="space-y-1  bg-yellow-500 bg-gradient-to-l from-orange-500  p-2">
+        <div className="space-y-1  bg-yellow-500 bg-gradient-to-l from-orange-500  p-2 h-[70vh]">
           {allMessages.map((message, index) => {
             const prevMessage = index > 0 ? allMessages[index - 1] : null;
             const showHeader =
@@ -116,7 +116,7 @@ export const RealtimeChat = ({
 
       <form
         onSubmit={handleSendMessage}
-        className="flex w-full gap-2 border-t border-border p-4"
+        className="flex w-full gap-2 border-t border-border p-4 "
       >
         <Input
           className={cn(

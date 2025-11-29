@@ -65,12 +65,13 @@ export function SiteNav() {
           <Sheet>
             {/* SheetTrigger wraps only the Menu button */}
             <SheetTrigger asChild>
-              <Button variant="ghost">
+              <div className="flex flex-row-reverse gap-2 items-center">
                 <Menu size={20} />
-              </Button>
+                <LogoutBtn />
+              </div>
             </SheetTrigger>
-
             {/* SheetContent */}
+
             <SheetContent side="left" className="w-72 pt-20">
               <div className="flex flex-col gap-6 mt-6">
                 {navItems.map(({ href, label, icon: Icon }) => (
@@ -90,8 +91,6 @@ export function SiteNav() {
               </div>
             </SheetContent>
           </Sheet>
-
-          {user ? <Logoutbtn /> : <LoginBtn />}
         </div>
       </div>
     </header>

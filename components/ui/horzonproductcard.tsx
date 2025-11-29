@@ -1,15 +1,8 @@
 "use client";
 
 import Image from "next/image";
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-  CardDescription,
-} from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import Link from "next/link";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import PaystackButton from "./paystackbtn";
 
 interface ProductCardProps {
   label: string;
@@ -20,7 +13,6 @@ interface ProductCardProps {
 
 export default function HorizontalProductCard({
   label,
-  description,
   price,
   imageurl,
 }: ProductCardProps) {
@@ -46,16 +38,11 @@ export default function HorizontalProductCard({
             </CardTitle>
           </CardHeader>
           <div className=" text-gray-600 ml-18 text-sm ">
-            GHS {price.toFixed(2)} {/* Format price as GHS */}
+            GHS {price.toFixed(2)}
           </div>
         </div>
-        <div className=" w-full flex items-center bg-yellow-500 bg-gradient-to-r from-orange-400 shadow-xl cursor-pointer hover:-translate-y-0.5 text-center justify-center  text-lg p-2 bg-white mx-auto cursor-pointer">
-          <Link className="w-full " href={`\products\${item.id}`}>
-            <div className="tracking-wider text-white font-bold  cursor-pointer capitalize">
-              buy
-            </div>
-          </Link>
-        </div>
+
+        <PaystackButton amount={500} email="" reference="" />
       </CardContent>
     </Card>
   );

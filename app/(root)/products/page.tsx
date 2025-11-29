@@ -6,14 +6,17 @@ import { VerticalProductList } from "@/components/ui/verticalproducts";
 import { supabase } from "@/lib/supabase/supabase";
 
 export default async function page() {
-  let { data: product, error } = await supabase.from("product").select("*");
+  let { data: product, error } = await supabase
+    .from("product")
+    .select("*")
+    .single();
+
   console.log(product);
 
   return (
     <section className="">
       <SearchBar />
       <div className=" p-4 flex flex-col gap-4  md:p-16">
-        ``
         <TitleTag
           className="text-xl font-extrabold tracking-wider uppercase p-2"
           message="Samples"

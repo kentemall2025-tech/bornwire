@@ -10,6 +10,7 @@ import {
 } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import Link from "next/link";
+import PaystackButton from "./paystackbtn";
 
 interface ProductCardProps {
   label: string;
@@ -59,12 +60,8 @@ export default function VerticalProductCard({
             </Badge>
           </div>
         </div>
-        <Link
-          className="text-lg bg-yellow-500 text-white p-2 bg-yellow-400 bg-gradient-to-r from-orange-400 uppercase text-center"
-          href={`\product\${item.id}`}
-        >
-          buy
-        </Link>
+
+        <PaystackButton amount={500} email="" reference="" />
       </CardContent>
     </Card>
   );

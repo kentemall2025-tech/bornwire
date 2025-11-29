@@ -1,6 +1,5 @@
 import { horizonproductsContent } from "@/lib/constants";
 import VerticalProductCard from "./veticalproductcard";
-import Link from "next/link";
 
 export function VerticalProductList() {
   return (
