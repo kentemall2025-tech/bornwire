@@ -12,7 +12,7 @@ const Videocomp = forwardRef<HTMLVideoElement, VideocompProps>(
     return (
       <div>
         <video ref={ref} controls title="">
-          <source src={src} type="video/mp4" />
+          <source title="" src={src} type="video/mp4" />
           Your browser does not support the video tag.
         </video>
         <p>{title}</p>
@@ -21,6 +21,8 @@ const Videocomp = forwardRef<HTMLVideoElement, VideocompProps>(
   }
 );
 
-Videocomp.displayName = "Videocomp"; // This is important for debugging
+Videocomp.displayName = "Videocomp";
+
+// This is important for debugging
 
 export default Videocomp;
