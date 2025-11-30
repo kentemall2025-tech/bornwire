@@ -1,13 +1,18 @@
 import { list } from "@vercel/blob";
 import Image from "next/image";
 
+export const dynamic = "force-dynamic";
+
 export default async function Page() {
-  const response = await list();
+  const response = await list({ limit: 500 });
 
   return (
     <>
       {response.blobs.map((blob) => (
-        <div className="grid grid-cols-1 md:grid-cols-2 items-center   gap-4 ">
+        <div
+          key={blob.pathname}
+          className="grid grid-cols-1 md:grid-cols-2 items-center   gap-4 "
+        >
           <Image
             src={`https://csmvkgdme8w3hyot.public.blob.vercel-storage.com/${blob.pathname}`}
             alt="consiege"
