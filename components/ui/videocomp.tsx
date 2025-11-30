@@ -11,7 +11,7 @@ const Videocomp = forwardRef<HTMLVideoElement, VideocompProps>(
   ({ src, title }, ref) => {
     return (
       <div>
-        <video ref={ref} controls>
+        <video ref={ref} controls title="">
           <source src={src} type="video/mp4" />
           Your browser does not support the video tag.
         </video>
