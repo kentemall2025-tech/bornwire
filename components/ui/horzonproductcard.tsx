@@ -43,7 +43,7 @@ export default function HorizontalProductCard({
           </div>
         </div>
 
-        <PaystackButton amount={price} email="" reference="" />
+        <PaystackButton amount={price} email="" />
       </CardContent>
     </Card>
   );
