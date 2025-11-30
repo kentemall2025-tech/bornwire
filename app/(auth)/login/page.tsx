@@ -17,70 +17,63 @@ export default function Page() {
     setLoading(true);
     setError(null);
 
-    try {
-      const { data: user, error } = await supabase.auth.signUp({
-        email,
-        password,
-      });
-
-      if (error) throw error;
-
-      // Optionally handle user data (e.g., navigate to another page)
-      console.log(user);
-    } catch (error) {
-      setError(""); // Display the error message
-    } finally {
-      setLoading(false);
-      router.push("/");
-    }
+    const { data: user, error } = await supabase.auth.signUp({
+      email,
+      password,
+    });
+    router.push("/");
+    if (error) throw error;
+    setLoading(false);
   };
 
   const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault(); // Prevent default form submission behavior
+    e.preventDefault();
     handleSignUp(email, password);
+    router.push("/");
   };
 
   return (
-    <div className="w-full max-w-md h-screen bg-yellow-500 p-12 pt-20">
-      <h4 className="text-lg mt-20 p-10 text-2xl text-center font-extrabold text-white">
-        Bornwire
-      </h4>
-      <form
-        onSubmit={handleSubmit}
-        className="flex flex-col gap-1 bg-white p-4 rounded-lg"
-      >
-        <div className="flex flex-col gap-2 p-4">
-          <p className="text-xl font-bold tracking-wide">Email</p>
-          <input
-            type="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)} // Handle email input change
-            className="bg-yellow-500 p-2 rounded-lg"
-            required
-          />
-        </div>
-        <div className="flex flex-col p-4 gap-2">
-          <p className="text-lg font-bold tracking-wide">Password</p>
-          <input
-            type="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)} // Handle password input change
-            className="bg-yellow-500 p-2 rounded-lg"
-            required
-          />
-        </div>
-        {error && <p className="text-red-500 text-sm">{error}</p>}{" "}
-        {/* Display error message */}
-        <div className="mx-auto mt-4">
-          <button
-            type="submit"
-            className="bg-yellow-500 from-orange-500 rounded-lg px-8 bg-gradient-to-l p-2"
-            disabled={loading} // Disable button while loading
-          >
-            {loading ? "Signing Up..." : "Sign Up"}
-          </button>
-        </div>
-      </form>
+    <div className=" bg-yellow-500 ">
+      <div className="w-full mx-auto md:max-w-[60%]  h-screen  p-12 pt-20">
+        <h4 className="text-lg mt-20  py-10 text-4xl text-center font-extrabold text-white">
+          Bornwire
+        </h4>
+        <form
+          onSubmit={handleSubmit}
+          className="flex flex-col gap-1 bg-white p-4 rounded-lg"
+        >
+          <div className="flex flex-col gap-2 p-4">
+            <p className="text-xl font-bold tracking-wide">Email</p>
+            <input
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)} // Handle email input change
+              className="bg-yellow-500 p-2 rounded-lg"
+              required
+            />
+          </div>
+          <div className="flex flex-col p-4 gap-2">
+            <p className="text-lg font-bold tracking-wide">Password</p>
+            <input
+              type="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)} // Handle password input change
+              className="bg-yellow-500 p-2 rounded-lg"
+              required
+            />
+          </div>
+          {error && <p className="text-red-500 text-sm">{error}</p>}{" "}
+          <div className="mx-auto mt-4">
+            <button
+              type="submit"
+              className="bg-yellow-500 from-orange-500 rounded-lg px-8 bg-gradient-to-l p-2"
+              disabled={loading}
+            >
+              {loading ? "Signing Up..." : "Sign Up"}
+            </button>
+          </div>
+        </form>
+      </div>
     </div>
   );
 }

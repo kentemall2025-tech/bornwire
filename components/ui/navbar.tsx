@@ -5,19 +5,21 @@ import Image from "next/image";
 import LoginBtn from "./login";
 import { supabase } from "@/lib/supabase/supabase";
 import { useEffect, useState } from "react";
-import Logoutbtn from "./logoutbtn";
 import Link from "next/link";
+import { redirect } from "next/navigation";
 
 interface navbarprops {
   className?: string;
 }
+
 function NavBar({ className }: navbarprops) {
   const [user, setUser] = useState();
-
+  if (!user) {
+    redirect("/login");
+  }
   useEffect(() => {
     const runfunc = async () => {
       const { data: user, error } = await supabase.auth.getUser();
-
       if (error) {
         console.log(error);
       } else {
@@ -29,7 +31,6 @@ function NavBar({ className }: navbarprops) {
     runfunc();
   }, [user]);
 
-  console.log(user);
   return (
     <div
       className={cn(

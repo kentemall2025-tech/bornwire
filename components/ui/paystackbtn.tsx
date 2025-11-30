@@ -22,7 +22,6 @@ const PaystackButton = (props: paystackprops) => {
       const { reference, amount, email } = await createPayment({
         amount: props.amount,
       });
-
       // Initialize
       const handler = window.PaystackPop.setup({
         key: process.env.PAYSTACK_PUBLIC_KEY as string,
@@ -37,7 +36,7 @@ const PaystackButton = (props: paystackprops) => {
           alert("Payment cancelled.");
         },
       });
-      handler.openIframe();
+      // handler.openIframe();
     } catch (error) {
       console.error("Payment initiation failed", error);
       setIsLoading(false);

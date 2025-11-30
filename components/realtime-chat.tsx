@@ -1,5 +1,4 @@
 "use client";
-
 import { cn } from "@/lib/utils";
 import { ChatMessageItem } from "@/components/chat-message";
 import { useChatScroll } from "@/hooks/use-chat-scroll";
@@ -16,14 +15,6 @@ interface RealtimeChatProps {
   messages?: ChatMessage[];
 }
 
-/**
- * Realtime chat component
- * @param roomName - The name of the room to join. Each room is a unique chat.
- * @param username - The username of the user
- * @param onMessage - The callback function to handle the messages. Useful if you want to store the messages in a database.
- * @param messages - The messages to display in the chat. Useful if you want to display messages from a database.
- * @returns The chat component
- */
 export const RealtimeChat = ({
   roomName,
   username,
@@ -42,15 +33,14 @@ export const RealtimeChat = ({
   });
   const [newMessage, setNewMessage] = useState("");
 
-  // Merge realtime messages with initial messages
   const allMessages = useMemo(() => {
     const mergedMessages = [...initialMessages, ...realtimeMessages];
-    // Remove duplicates based on message id
+
     const uniqueMessages = mergedMessages.filter(
       (message, index, self) =>
         index === self.findIndex((m) => m.id === message.id)
     );
-    // Sort by creation date
+
     const sortedMessages = uniqueMessages.sort((a, b) =>
       a.createdAt.localeCompare(b.createdAt)
     );
@@ -65,7 +55,6 @@ export const RealtimeChat = ({
   }, [allMessages, onMessage]);
 
   useEffect(() => {
-    // Scroll to bottom whenever messages change
     scrollToBottom();
   }, [allMessages, scrollToBottom]);
 

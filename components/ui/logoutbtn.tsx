@@ -3,16 +3,18 @@ import React from "react";
 import { Button } from "./button";
 import { cn } from "@/lib/utils";
 import { supabase } from "@/lib/supabase/supabase";
+import { useRouter } from "next/navigation";
 
 interface LogoutProps {
   className?: string;
 }
 
 function LogoutBtn({ className }: LogoutProps) {
+  const router = useRouter();
   const handleLogout = async () => {
     try {
       await supabase.auth.signOut();
-      // Optionally add feedback to user here (like a success message or redirect)
+      router.push("/");
     } catch (error) {
       console.error("Error logging out:", error);
       // Optionally handle the error here (show an alert, etc.)

@@ -65,10 +65,7 @@ export function SiteNav() {
           <Sheet>
             {/* SheetTrigger wraps only the Menu button */}
             <SheetTrigger asChild>
-              <div className="flex flex-row-reverse gap-2 items-center">
-                <Menu size={20} />
-                <LogoutBtn />
-              </div>
+              <Menu size={20} />
             </SheetTrigger>
             {/* SheetContent */}
 

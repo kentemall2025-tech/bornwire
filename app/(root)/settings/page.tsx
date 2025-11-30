@@ -2,6 +2,7 @@
 
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
+import LogoutBtn from "@/components/ui/logoutbtn";
 
 export default function page() {
   return (
@@ -29,9 +30,7 @@ export default function page() {
           </div>
 
           <div className="w-full">
-            <Button className="w-full bg-yellow-500  uppercase -translate-y-0.5  transition cursor-pointer ">
-              log out
-            </Button>
+            <LogoutBtn />
           </div>
         </CardContent>
       </Card>
