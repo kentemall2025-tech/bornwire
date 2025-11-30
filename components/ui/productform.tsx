@@ -2,7 +2,6 @@
 import React, { useState } from "react";
 import { Field, FieldGroup, FieldLabel, FieldLegend, FieldSet } from "./field";
 import { Input } from "./input";
-import { Textarea } from "./textarea";
 import { Button } from "./button";
 import { supabase } from "@/lib/supabase/supabase";
 
@@ -10,11 +9,7 @@ const ProductForm = () => {
   const [formData, setFormData] = useState({
     label: "",
     imageurl: "",
-    description: "",
     price: "",
-    bonus_price: "",
-    bonus_percentage: "",
-    thumbnail: "",
   });
 
   const [loading, setLoading] = useState(false);
@@ -35,50 +30,29 @@ const ProductForm = () => {
     setSuccess(false);
 
     // Add basic validation
-    if (
-      !formData.label ||
-      !formData.price ||
-      !formData.description ||
-      !formData.thumbnail ||
-      !formData.bonus_percentage ||
-      !formData
-    ) {
+    if (!formData.label || !formData.price || !formData.imageurl) {
       setError("Please fill in all required fields.");
       setLoading(false);
       return;
     }
 
-    try {
-      const { data, error } = await supabase.from("products").insert([
-        {
-          label: formData.label,
-          price: parseFloat(formData.price),
-          description: formData.description,
-          image: formData.imageurl,
-          bonus_percentage: parseInt(formData.bonus_percentage),
-          bonus_price: formData.bonus_price,
-        },
-      ]);
-      console.log(data);
-      if (error) {
-        throw error;
-      }
+    const { data, error } = await supabase.from("product").insert([
+      {
+        label: formData.label,
+        price: formData.price,
+        imageurl: formData.imageurl,
+      },
+    ]);
 
-      setSuccess(true);
-      setFormData({
-        label: "",
-        price: "",
-        description: "",
-        imageurl: "",
-        bonus_percentage: "",
-        bonus_price: "",
-        thumbnail: "",
-      });
-    } catch (error) {
-      setError("Something went wrong. Please try again.");
-    } finally {
-      setLoading(false);
-    }
+    console.log("number 200 ", data);
+
+    setSuccess(true);
+    setFormData({
+      label: "",
+      price: "",
+      imageurl: "",
+    });
+    setLoading(false);
   };
 
   return (
@@ -86,7 +60,7 @@ const ProductForm = () => {
       <FieldSet className="bg-yellow-500 rounded-lg shadow-lg">
         <FieldGroup className="rounded-lg shadow-xl p-4 flex flex-col gap-4">
           <FieldLegend className="text-4xl p-2 uppercase font-bold">
-            Create or Edit a New Product
+            Edit a New Product
           </FieldLegend>
           <form onSubmit={handleSubmit}>
             <Field>
@@ -113,20 +87,6 @@ const ProductForm = () => {
                 value={formData.price}
                 onChange={handleChange}
                 type="number"
-                step="0.01"
-              />
-            </Field>
-
-            <Field>
-              <FieldLabel htmlFor="description" className="text-lg capitalize">
-                Description
-              </FieldLabel>
-              <Textarea
-                id="description"
-                name="description"
-                className="bg-white"
-                value={formData.description}
-                onChange={handleChange}
               />
             </Field>
 
@@ -142,35 +102,6 @@ const ProductForm = () => {
                 onChange={handleChange}
               />
             </Field>
-            <Field>
-              <FieldLabel
-                htmlFor="bonus_percentage"
-                className="text-lg capitalize"
-              >
-                Bonus Percentage
-              </FieldLabel>
-              <Input
-                id="bonus_percentage"
-                name="bonus_percentage"
-                className="bg-white"
-                value={formData.bonus_percentage}
-                onChange={handleChange}
-                type="number"
-              />
-            </Field>
-            <Field>
-              <FieldLabel htmlFor="thumbnail" className="text-lg capitalize">
-                Thumbnail
-              </FieldLabel>
-              <Input
-                id="thumbnail"
-                name="thumbnail"
-                className="bg-white"
-                value={formData.thumbnail}
-                onChange={handleChange}
-              />
-            </Field>
-
             {error && <p className="text-red-500">{error}</p>}
             {success && (
               <p className="text-green-500">Product created successfully!</p>

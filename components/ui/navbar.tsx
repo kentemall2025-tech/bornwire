@@ -13,23 +13,27 @@ interface navbarprops {
 }
 
 function NavBar({ className }: navbarprops) {
-  const [user, setUser] = useState();
-  if (!user) {
-    redirect("/login");
-  }
+  const [user, setUser] = useState<any>(null);
+
   useEffect(() => {
     const runfunc = async () => {
-      const { data: user, error } = await supabase.auth.getUser();
-      if (error) {
-        console.log(error);
-      } else {
-        setUser((prev) => {
-          user;
-        });
-      }
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
+      setUser((prev: any) => {
+        user;
+      });
     };
     runfunc();
-  }, [user]);
+
+    const { data: authListener } = supabase.auth.onAuthStateChange(
+      (_event, session) => {
+        setUser(session?.user ?? null);
+      }
+    );
+
+    return () => authListener?.subscription.unsubscribe();
+  }, []);
 
   return (
     <div

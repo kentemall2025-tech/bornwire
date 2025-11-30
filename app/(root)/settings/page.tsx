@@ -3,8 +3,23 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import LogoutBtn from "@/components/ui/logoutbtn";
+import { supabase } from "@/lib/supabase/supabase";
+import { useEffect, useState } from "react";
 
 export default function page() {
+  const [user, setUser] = useState<any>(null);
+
+  const handlegetusers = async () => {
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+    setUser((prev: any) => user);
+  };
+
+  useEffect(() => {
+    handlegetusers();
+  }, [user]);
+
   return (
     <div className="p-4 flex w-full mt-10 ">
       <Card className="w-full shadow-lg">
@@ -13,20 +28,20 @@ export default function page() {
             <div className="text-2xl tracking-wider capitalize tracking-wide">
               name
             </div>
-            <div></div>
+            <div>{user?.name}</div>
           </div>
           <div className="w-full flex items-center gap-4 ">
             <div className="text-2xl tracking-wider capitalize tracking-wide">
               email
             </div>
 
-            <div></div>
+            <div> {user?.email}</div>
           </div>
           <div className="w-full flex items-center gap-4 ">
             <div className="text-2xl tracking-wider capitalize tracking-wide">
               joined
             </div>
-            <div></div>
+            <div>{user?.created_at}</div>
           </div>
 
           <div className="w-full">

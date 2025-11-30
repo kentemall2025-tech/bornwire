@@ -18,7 +18,7 @@ export default function Page() {
     setError(null);
 
     try {
-      const { data: user, error } = await supabase.auth.signUp({
+      const { data: user, error } = await supabase.auth.signInWithPassword({
         email,
         password,
       });
@@ -62,20 +62,19 @@ export default function Page() {
             <input
               type="password"
               value={password}
-              onChange={(e) => setPassword(e.target.value)} // Handle password input change
+              onChange={(e) => setPassword(e.target.value)}
               className="bg-yellow-500 p-2 rounded-lg"
               required
             />
           </div>
           {error && <p className="text-red-500 text-sm">{error}</p>}{" "}
-          {/* Display error message */}
           <div className="mx-auto mt-4">
             <button
               type="submit"
               className="bg-yellow-500 from-orange-500 rounded-lg px-8 bg-gradient-to-l p-2"
-              disabled={loading} // Disable button while loading
+              disabled={loading}
             >
-              {loading ? "Signing Up..." : "Sign Up"}
+              {loading ? "Logging in ..." : " log in"}
             </button>
           </div>
         </form>
