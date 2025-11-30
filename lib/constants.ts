@@ -138,21 +138,21 @@ export const horizonproductsContent = [
     label: "Diamondnics",
     price: 8000,
     imageurl:
-      "https://csmvkgdme8w3hyot.public.blob.vercel-storage.com/WhatsApp%20Image%202025-11-10%20at%2010.38.02%20PM%20%282%29.jpeg",
+      "https://csmvkgdme8w3hyot.public.blob.vercel-storage.com/WhatsApp%20Image%202025-11-22%20at%209.36.51%20PM%20%281%29.jpeg",
   },
   {
     id: "3",
     label: "Blue Ivory",
     price: 20000,
     imageurl:
-      "https://csmvkgdme8w3hyot.public.blob.vercel-storage.com/WhatsApp%20Image%202025-11-10%20at%2010.38.01%20PM.jpeg",
+      "https://csmvkgdme8w3hyot.public.blob.vercel-storage.com/WhatsApp%20Image%202025-11-22%20at%209.36.51%20PM.jpeg",
   },
   {
     id: "4",
     label: "Edwene si Edwene so",
     price: 5000,
     imageurl:
-      "https://csmvkgdme8w3hyot.public.blob.vercel-storage.com/WhatsApp%20Image%202025-11-10%20at%2010.38.02%20PM%20%283%29.jpeg",
+      "https://csmvkgdme8w3hyot.public.blob.vercel-storage.com/WhatsApp%20Image%202025-11-22%20at%209.36.48%20PM.jpeg",
   },
   {
     id: "5",
@@ -166,7 +166,7 @@ export const horizonproductsContent = [
     label: "Blue Ivory",
     price: 20000,
     imageurl:
-      "https://csmvkgdme8w3hyot.public.blob.vercel-storage.com/WhatsApp%20Image%202025-11-10%20at%2010.38.01%20PM.jpeg",
+      "https://csmvkgdme8w3hyot.public.blob.vercel-storage.com/WhatsApp%20Image%202025-11-22%20at%209.36.49%20PM.jpeg",
   },
   {
     id: "7",

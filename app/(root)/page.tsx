@@ -1,6 +1,5 @@
 "use client";
 import ImageBackground from "@/components/ui/imagebackground";
-import Image from "next/image";
 import TitleTag from "@/components/ui/title";
 import SubTitleTag from "@/components/ui/subtitle";
 import Btn from "@/components/ui/btn";
@@ -36,7 +35,7 @@ export default function Home() {
           <Btn
             label="order now"
             className="text-lg tracking-wide font-bold w-full bg-yellow-500 hover:bg-yellow-500 cursor-pointer md:w-60"
-            href=""
+            href="/products"
           />
         </div>
       </div>

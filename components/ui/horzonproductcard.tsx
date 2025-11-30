@@ -3,6 +3,7 @@
 import Image from "next/image";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import PaystackButton from "./paystackbtn";
+import { useState } from "react";
 
 interface ProductCardProps {
   label: string;
@@ -22,7 +23,7 @@ export default function HorizontalProductCard({
       className="flex w-full max-w-md rounded-lg border w-[280px] h-[280px]  hover:shadow-xl transition-shadow duration-300 rounded-lg bg-gray p-0 bg-white hover:translate-y-0.5 duration-300 ease-out cursor-pointer "
     >
       <CardContent className=" flex flex-col  w-full h-full p-0 m-0 bg-white ">
-        <div className="relative w-full h-80 p-4 m-0 overflow-hidden rounded-md bg-muted object-contain">
+        <div className="relative w-full h-100  p-4 m-0 overflow-hidden rounded-md bg-muted object-cover">
           <Image
             className={"rounded-lg w-full h-auto "}
             src={imageurl}
@@ -42,7 +43,7 @@ export default function HorizontalProductCard({
           </div>
         </div>
 
-        <PaystackButton amount={500} email="" reference="" />
+        <PaystackButton amount={price} email="" reference="" />
       </CardContent>
     </Card>
   );

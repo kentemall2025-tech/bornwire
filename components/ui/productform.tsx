@@ -38,9 +38,9 @@ const ProductForm = () => {
 
     const { data, error } = await supabase.from("product").insert([
       {
-        label: formData.label,
         price: formData.price,
         imageurl: formData.imageurl,
+        label: formData.label,
       },
     ]);
 
@@ -56,9 +56,9 @@ const ProductForm = () => {
   };
 
   return (
-    <div className="p-4">
-      <FieldSet className="bg-yellow-500 rounded-lg shadow-lg">
-        <FieldGroup className="rounded-lg shadow-xl p-4 flex flex-col gap-4">
+    <div className="p-4 bg-yellow-500 w-full h-screen">
+      <FieldSet className=" bg-white  mt-20 h-[60vh]">
+        <FieldGroup className="rounded-lg  shadow-xl p-4 flex flex-col gap-8">
           <FieldLegend className="text-4xl p-2 uppercase font-bold">
             Edit a New Product
           </FieldLegend>
@@ -109,7 +109,7 @@ const ProductForm = () => {
 
             <Button
               type="submit"
-              className="text-lg bg-orange-500 shadow-xl p-6 w-full mt-2  uppercase font-bold tracking-wider"
+              className="text-lg bg-orange-500 shadow-xl p-6 w-full mt-8  uppercase font-bold tracking-wider"
               disabled={loading}
             >
               {loading ? "Submitting..." : "Submit"}

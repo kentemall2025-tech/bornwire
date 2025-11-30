@@ -11,6 +11,7 @@ import {
 import { Badge } from "@/components/ui/badge";
 import Link from "next/link";
 import PaystackButton from "./paystackbtn";
+import { useState } from "react";
 
 interface ProductCardProps {
   label: string;
@@ -25,6 +26,8 @@ export default function VerticalProductCard({
   price,
   imageurl,
 }: ProductCardProps) {
+  const [user, setUser] = useState<any>();
+
   return (
     <Card
       key={label}
@@ -61,7 +64,7 @@ export default function VerticalProductCard({
           </div>
         </div>
 
-        <PaystackButton amount={500} email="" reference="" />
+        <PaystackButton amount={price} email="" />
       </CardContent>
     </Card>
   );

@@ -1,14 +1,10 @@
 "use client";
-
 import React, { useState } from "react";
 import { useRouter } from "next/navigation";
-
-import { createPayment } from "../../app/api/actions";
 
 interface paystackprops {
   amount: number;
   email?: string;
-  reference?: string;
 }
 
 const PaystackButton = (props: paystackprops) => {
@@ -17,30 +13,46 @@ const PaystackButton = (props: paystackprops) => {
 
   const handlePayment = async () => {
     setIsLoading(true);
+
     try {
-      // Call the server action to initialize the payment
-      const { reference, amount, email } = await createPayment({
-        amount: props.amount,
-      });
-      // Initialize
-      const handler = window.PaystackPop.setup({
-        key: process.env.PAYSTACK_PUBLIC_KEY as string,
-        email: email,
-        amount: amount,
-        reference: reference,
-        callback: (response: any) => {
-          alert("Payment successful! Reference: " + response.reference);
-          router.push(`/verify-payment?reference=${response.reference}`);
+      // Call the server API to initialize the payment
+      const response = await fetch("/api/create-payment", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
         },
-        onclose: () => {
-          alert("Payment cancelled.");
-        },
+        body: JSON.stringify({
+          amount: props.amount, // Amount in GHS or NGN
+          email: props.email, // Customer's email
+        }),
       });
-      // handler.openIframe();
+
+      const { reference, amount, email } = await response.json();
+
+      if (response.ok) {
+        // Initialize Paystack payment popup
+        const handler = window.PaystackPop.setup({
+          key: process.env.PAYSTACK_PUBLIC_KEY as string, // Paystack public key
+          email: email, // Customer's email
+          amount: amount, // Amount in kobo or pesewa
+          reference: reference, // Reference from server
+          callback: (response: any) => {
+            alert("Payment successful! Reference: " + response.reference);
+            router.push(`/verify-payment?reference=${response.reference}`);
+          },
+          onclose: () => {
+            alert("Payment cancelled.");
+          },
+        });
+
+        // handler.openIframe();
+      } else {
+        alert("Payment initialization failed");
+      }
     } catch (error) {
-      console.error("Payment initiation failed", error);
+      console.error("Payment initialization failed", error);
       setIsLoading(false);
-      alert("Payment initialization failed");
+      alert("Error initializing payment");
     }
   };
 
@@ -50,7 +62,7 @@ const PaystackButton = (props: paystackprops) => {
       onClick={handlePayment}
       disabled={isLoading}
     >
-      {isLoading ? "Processing..." : "buy"}
+      {isLoading ? "Processing..." : "Buy Now"}
     </button>
   );
 };

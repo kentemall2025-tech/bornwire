@@ -1,3 +1,4 @@
+"use server";
 // paystackaction.ts
 export async function verifyPayment(reference: string): Promise<any> {
   try {

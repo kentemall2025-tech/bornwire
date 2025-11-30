@@ -7,7 +7,7 @@ export default function AvatarUploadPage() {
   const inputFileRef = useRef<HTMLInputElement>(null);
   const [blob, setBlob] = useState<PutBlobResult | null>(null);
   return (
-    <>
+    <div className=" p-4 flex flex-col gap-4 p-6">
       <h1>Upload Your Avatar</h1>
 
       <form
@@ -47,6 +47,6 @@ export default function AvatarUploadPage() {
           Blob url: <a href={blob.url}>{blob.url}</a>
         </div>
       )}
-    </>
+    </div>
   );
 }

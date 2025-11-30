@@ -1,4 +1,3 @@
-// pages/api/create-payment.ts
 import { NextApiRequest, NextApiResponse } from "next";
 import axios from "axios";
 
@@ -8,7 +7,7 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
-  const { amount } = req.body;
+  const { amount, email } = req.body;
 
   if (!amount) {
     return res.status(400).json({ message: "Amount is required" });
@@ -19,7 +18,7 @@ export default async function handler(
       "https://api.paystack.co/transaction/initialize",
       {
         amount: amount * 100,
-        email: "user@example.com",
+        email,
       },
       {
         headers: {
@@ -34,7 +33,7 @@ export default async function handler(
       return res.status(200).json({
         reference: data.data.reference,
         amount: data.data.amount,
-        email: "user@example.com",
+        email,
       });
     } else {
       return res.status(400).json({
