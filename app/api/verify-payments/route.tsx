@@ -1,3 +1,4 @@
+"use client";
 import { useEffect, useState } from "react";
 
 // Define the types for the payment status and response
