@@ -1,28 +1,27 @@
 "use client";
-// videocomp.tsx
-import React, { forwardRef } from "react";
 
-interface VideocompProps {
+import Video from "next-video";
+import { cn } from "@/lib/utils";
+
+interface videocompprops {
+  className?: string;
   src: string;
-  title: string;
 }
 
-const Videocomp = forwardRef<HTMLVideoElement, VideocompProps>(
-  ({ src, title }, ref) => {
-    return (
-      <div>
-        <video ref={ref} controls title="">
-          <source title="" src={src} type="video/mp4" />
-          Your browser does not support the video tag.
-        </video>
-        <p>{title}</p>
-      </div>
-    );
-  }
-);
-
-Videocomp.displayName = "Videocomp";
-
-// This is important for debugging
+function Videocomp(props: videocompprops) {
+  return (
+    <div className="w-full md:max-w-4xl lg:max-w-[60%] max-w-full h-auto rounded-lg  md:mx-auto  md:h-screen overflow-hidden shadow-lg  p-0 object-cover">
+      <Video
+        className={cn("object-cover  w-full ", props.className)}
+        muted
+        loop
+        autoPlay
+        src={props.src}
+        width={900}
+        height={500}
+      />
+    </div>
+  );
+}
 
 export default Videocomp;
