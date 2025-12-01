@@ -2,16 +2,9 @@ import { HeartHandshake, Server, Truck } from "lucide-react";
 
 export const showcaseContent = [
   {
-    id: "1",
-    imageurl:
-      "https://csmvkgdme8w3hyot.public.blob.vercel-storage.com/WhatsApp%20Image%202025-11-11%20at%2012.41.37%20PM%20%283%29.jpeg",
-    description:
-      "Lorem ipsum, dolor sit amet consectetur adipisicing elit. Tempore, magnam ipsam? Illum, iste et. Aliquid, animi aspernatur? Quisquam, dolorem eveniet.",
-  },
-  {
     id: "2",
     imageurl:
-      "https://csmvkgdme8w3hyot.public.blob.vercel-storage.com/WhatsApp%20Image%202025-11-11%20at%2012.41.37%20PM%20%282%29.jpeg",
+      "https://csmvkgdme8w3hyot.public.blob.vercel-storage.com/7199929c-dbdb-4061-827f-7de035c6983d.jpg",
     description:
       "Lorem ipsum, dolor sit amet consectetur adipisicing elit. Tempore, magnam ipsam? Illum, iste et. Aliquid, animi aspernatur? Quisquam, dolorem eveniet.",
   },
@@ -46,7 +39,7 @@ export const showcaseContent = [
   {
     id: "5",
     imageurl:
-      "https://csmvkgdme8w3hyot.public.blob.vercel-storage.com/WhatsApp%20Image%202025-11-11%20at%2012.42.46%20PM.jpeg",
+      "https://csmvkgdme8w3hyot.public.blob.vercel-storage.com/WhatsApp%20Image%202025-11-10%20at%2010.37.45%20PM%20%281%29.jpeg",
     description:
       "Lorem ipsum, dolor sit amet consectetur adipisicing elit. Tempore, magnam ipsam? Illum, iste et. Aliquid, animi aspernatur? Quisquam, dolorem eveniet.",
   },
@@ -131,7 +124,7 @@ export const horizonproductsContent = [
     label: "Edwene si Edwene so",
     price: 5000,
     imageurl:
-      "https://csmvkgdme8w3hyot.public.blob.vercel-storage.com/WhatsApp%20Image%202025-11-10%20at%2010.38.02%20PM%20%283%29.jpeg",
+      "https://csmvkgdme8w3hyot.public.blob.vercel-storage.com/WhatsApp%20Image%202025-11-10%20at%2010.37.45%20PM%20%281%29.jpeg",
   },
   {
     id: "2",
@@ -159,7 +152,7 @@ export const horizonproductsContent = [
     label: "Diamondnics",
     price: 8000,
     imageurl:
-      "https://csmvkgdme8w3hyot.public.blob.vercel-storage.com/WhatsApp%20Image%202025-11-10%20at%2010.38.02%20PM%20%282%29.jpeg",
+      "https://csmvkgdme8w3hyot.public.blob.vercel-storage.com/WhatsApp%20Image%202025-11-10%20at%2010.37.45%20PM%20%281%29.jpeg",
   },
   {
     id: "6",

@@ -1,9 +1,6 @@
 "use client";
-
 import Image from "next/image";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import PaystackButton from "./paystackbtn";
-import { useState } from "react";
 
 interface ProductCardProps {
   label: string;
@@ -17,6 +14,24 @@ export default function HorizontalProductCard({
   price,
   imageurl,
 }: ProductCardProps) {
+  const initializePayment = async () => {
+    const res = await fetch("/api/paystack/initialize", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        email: "customers@gmail.com",
+        amount: price * 100,
+      }),
+    });
+
+    const data = await res.json();
+    console.log(data);
+
+    if (data?.data?.authorization_url) {
+      window.location.href = data.data.authorization_url;
+    }
+  };
+
   return (
     <Card
       key={label}
@@ -38,12 +53,14 @@ export default function HorizontalProductCard({
               {label}
             </CardTitle>
           </CardHeader>
-          <div className=" text-gray-600 ml-18 text-sm ">
-            GHS {price.toFixed(2)}
-          </div>
+          <div className=" text-gray-600 ml-18 text-sm ">GHS {price}</div>
         </div>
-
-        <PaystackButton amount={price} email="" />
+        <button
+          className="bg-yellow-500  p-4 cursor-pointer"
+          onClick={() => initializePayment()}
+        >
+          buy
+        </button>
       </CardContent>
     </Card>
   );

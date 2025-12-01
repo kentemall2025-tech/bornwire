@@ -9,14 +9,12 @@ import {
   CardDescription,
 } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import Link from "next/link";
-import PaystackButton from "./paystackbtn";
 import { useState } from "react";
 
 interface ProductCardProps {
   label: string;
   description?: string;
-  price: number; // Price in GHS
+  price: number;
   imageurl: string;
 }
 
@@ -26,7 +24,23 @@ export default function VerticalProductCard({
   price,
   imageurl,
 }: ProductCardProps) {
-  const [user, setUser] = useState<any>();
+  const initializePayment = async () => {
+    const res = await fetch("/api/paystack/initialize", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        email: "marcus@email.com",
+        amount: price * 100,
+      }),
+    });
+
+    const data = await res.json();
+    console.log(data);
+
+    if (data?.data?.authorization_url) {
+      window.location.href = data.data.authorization_url;
+    }
+  };
 
   return (
     <Card
@@ -39,8 +53,8 @@ export default function VerticalProductCard({
             className={"rounded-lg w-full h-auto"}
             src={imageurl}
             alt={label}
-            layout="fill"
             objectFit="cover"
+            layout="fill"
           />
         </div>
 
@@ -64,7 +78,12 @@ export default function VerticalProductCard({
           </div>
         </div>
 
-        <PaystackButton amount={price} email="" />
+        <button
+          className="bg-yellow-500  p-4 cursor-pointer"
+          onClick={() => initializePayment()}
+        >
+          buy
+        </button>
       </CardContent>
     </Card>
   );

@@ -2,14 +2,10 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Home, Package, Settings, Menu } from "lucide-react";
-import { Button } from "@/components/ui/button";
 import { Sheet, SheetTrigger, SheetContent } from "@/components/ui/sheet";
 import { useEffect, useState } from "react";
-import LoginBtn from "./login";
 import { supabase } from "@/lib/supabase/supabase";
 import { User } from "@supabase/supabase-js";
-import Logoutbtn from "./logoutbtn";
-import LogoutBtn from "./logoutbtn";
 
 export function SiteNav() {
   const pathname = usePathname();
@@ -39,7 +35,7 @@ export function SiteNav() {
     { href: "/products", label: "Products", icon: Package },
     { href: "/settings", label: "Settings", icon: Settings },
   ];
-  console.log(user);
+
   return (
     <header className="border-b max-w-[20vw] object-contain">
       <div className="container flex h-10 items-center justify-between">
@@ -60,14 +56,11 @@ export function SiteNav() {
           ))}
         </nav>
 
-        {/* Mobile Menu */}
         <div className="md:hidden flex gap-2 items-center">
           <Sheet>
-            {/* SheetTrigger wraps only the Menu button */}
             <SheetTrigger asChild>
               <Menu size={20} />
             </SheetTrigger>
-            {/* SheetContent */}
 
             <SheetContent side="left" className="w-72 pt-20">
               <div className="flex flex-col gap-6 mt-6">

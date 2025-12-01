@@ -1,4 +1,3 @@
-import { horizonproductsContent } from "@/lib/constants";
 import VerticalProductCard from "./veticalproductcard";
 import { supabase } from "@/lib/supabase/supabase";
 

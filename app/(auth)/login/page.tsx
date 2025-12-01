@@ -1,7 +1,5 @@
 "use client";
-
-import { Button } from "@/components/ui/button"; // Button component, can be used instead of the default button
-import { supabase } from "@/lib/supabase/supabase"; // Make sure your Supabase config is correct
+import { supabase } from "@/lib/supabase/supabase";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 
@@ -12,7 +10,6 @@ export default function Page() {
   const [loading, setLoading] = useState(false);
   const router = useRouter();
 
-  // Handle sign up
   const handleSignUp = async (email: string, password: string) => {
     setLoading(true);
     setError(null);
@@ -52,7 +49,7 @@ export default function Page() {
             <input
               type="email"
               value={email}
-              onChange={(e) => setEmail(e.target.value)} // Handle email input change
+              onChange={(e) => setEmail(e.target.value)}
               className="bg-yellow-500 p-2 rounded-lg"
               required
             />
@@ -60,22 +57,21 @@ export default function Page() {
           <div className="flex flex-col p-4 gap-2">
             <p className="text-lg font-bold tracking-wide">Password</p>
             <input
-              type="password"
               value={password}
-              onChange={(e) => setPassword(e.target.value)} // Handle password input change
+              onChange={(e) => setPassword(e.target.value)}
               className="bg-yellow-500 p-2 rounded-lg"
               required
+              type="password"
             />
           </div>
           {error && <p className="text-red-500 text-sm">{error}</p>}{" "}
-          {/* Display error message */}
           <div className="mx-auto mt-4">
             <button
               type="submit"
               className="bg-yellow-500 from-orange-500 rounded-lg px-8 bg-gradient-to-l p-2"
-              disabled={loading} // Disable button while loading
+              disabled={loading}
             >
-              {loading ? "Signing Up..." : "Sign Up"}
+              {loading ? "Signing Up... " : "Sign Up"}
             </button>
           </div>
         </form>

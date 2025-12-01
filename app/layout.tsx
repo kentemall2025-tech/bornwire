@@ -1,3 +1,4 @@
+import NavBar from "@/components/ui/navbar";
 import type { Metadata } from "next";
 import { Geist, Geist_Mono, Poppins } from "next/font/google";
 import "./globals.css";
@@ -34,8 +35,10 @@ export default function RootLayout({
       <body
         className={`${poppinsSans.variable} ${geistMono.variable} antialiased`}
       >
-        {/* <NavBar /> */}
-        {children}
+        <>
+          <NavBar />
+          <div>{children}</div>
+        </>
       </body>
     </html>
   );

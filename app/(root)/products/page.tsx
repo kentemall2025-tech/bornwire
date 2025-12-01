@@ -11,6 +11,7 @@ export default async function page() {
     .select("*")
     .single();
 
+  let { data } = await supabase.from("user").select("email");
   return (
     <section className="">
       <SearchBar />

@@ -1,6 +1,4 @@
 "use client";
-
-import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import LogoutBtn from "@/components/ui/logoutbtn";
 import { supabase } from "@/lib/supabase/supabase";
