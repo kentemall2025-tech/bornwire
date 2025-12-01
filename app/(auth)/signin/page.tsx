@@ -1,7 +1,7 @@
 "use client";
 import { supabase } from "@/lib/supabase/supabase";
 import { useState } from "react";
-import { useRouter } from "next/router";
+import { useRouter } from "next/navigation";
 import useCountStore from "@/lib/useStore";
 
 export default function LoginPage() {
