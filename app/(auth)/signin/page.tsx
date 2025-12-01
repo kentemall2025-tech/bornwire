@@ -1,3 +1,4 @@
+"use client";
 import { supabase } from "@/lib/supabase/supabase";
 import { useState } from "react";
 import { useRouter } from "next/router";
