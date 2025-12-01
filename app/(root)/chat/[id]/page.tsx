@@ -9,6 +9,7 @@ export default async function page({
 
   return (
     <div className="p-4">
+      {/* foijawoifjio */}
       <RealtimeChat username="fake user name" roomName={`${id}`} />
     </div>
   );
