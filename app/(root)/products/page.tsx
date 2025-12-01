@@ -11,8 +11,6 @@ export default async function page() {
     .select("*")
     .single();
 
-  console.log(product);
-
   return (
     <section className="">
       <SearchBar />
