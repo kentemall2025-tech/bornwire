@@ -9,26 +9,6 @@ import { User } from "@supabase/supabase-js";
 
 export function SiteNav() {
   const pathname = usePathname();
-  const [user, setUser] = useState<null | User>(null);
-
-  useEffect(() => {
-    const handleGetUser = async () => {
-      const {
-        data: { user },
-      } = await supabase.auth.getUser();
-      setUser(user);
-    };
-
-    handleGetUser();
-
-    const { data: authListener } = supabase.auth.onAuthStateChange(
-      (_event, session) => {
-        setUser(session?.user ?? null);
-      }
-    );
-
-    return () => authListener?.subscription.unsubscribe();
-  }, []);
 
   const navItems = [
     { href: "/", label: "Home", icon: Home },
