@@ -7,7 +7,6 @@ export default async function Page({
   params: { id: string };
   searchParams: { [key: string]: string | string[] | undefined };
 }) {
-  // Example: simulate async work
   await new Promise((resolve) => setTimeout(resolve, 10));
   const { roomName } = await searchParams;
   return (
