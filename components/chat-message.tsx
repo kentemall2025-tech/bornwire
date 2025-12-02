@@ -40,7 +40,9 @@ export const ChatMessageItem = ({
         <div
           className={cn(
             "py-2 px-3 rounded-xl text-sm w-fit",
-            isOwnMessage ? "bg-white text-black" : "bg-muted text-foreground"
+            isOwnMessage
+              ? "bg-white text-black"
+              : "bg-muted text-black text-foreground"
           )}
         >
           {message.content}
