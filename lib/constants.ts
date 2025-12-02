@@ -131,7 +131,7 @@ export const horizonproductsContent = [
     label: "Adinkra Purse",
     price: 500.0,
     imageurl:
-      "https://csmvkgdme8w3hyot.public.blob.vercel-storage.com/WhatsApp Image 2025-11-22 at 9.36.51 PM (1).jpeg",
+      "https://csmvkgdme8w3hyot.public.blob.vercel-storage.com/WhatsApp Image 2025-11-22 at 9.36.49 PM.jpeg",
   },
   {
     id: "4",
