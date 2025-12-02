@@ -87,7 +87,6 @@ export default function RealtimeChat({ roomName, username }: Props) {
         schema: "public",
         table: "messages",
         event: "INSERT",
-        filter: `room_id=eq.${rid}`,
       },
       (payload) => {
         setMessages((prev) => [...prev, payload.new as ChatMessage]);
@@ -134,8 +133,8 @@ export default function RealtimeChat({ roomName, username }: Props) {
 
     await supabase.from("messages").insert({
       room_id: roomId,
-      user: username,
       content: newMessage,
+      user: username,
     });
     setNewMessage("");
   };
