@@ -1,5 +1,4 @@
 "use client";
-
 import { useState, useEffect, useCallback, useMemo } from "react";
 import { supabase } from "@/lib/supabase/supabase";
 import { ChatMessageItem } from "@/components/chat-message";
@@ -63,9 +62,6 @@ export default function RealtimeChat({ roomName, username }: Props) {
     setRoomId(newRoom.id);
   }, [roomName]);
 
-  //----------------------------------------------------------------------
-  // 2️⃣ Load chat history once
-  //----------------------------------------------------------------------
   const loadHistory = useCallback(async (rid: string) => {
     const { data, error } = await supabase
       .from("messages")
@@ -74,12 +70,14 @@ export default function RealtimeChat({ roomName, username }: Props) {
       .order("created_at", { ascending: true });
 
     if (error) console.error("LOAD HISTORY ERROR:", error);
+
     if (data) setMessages(data);
   }, []);
 
   //----------------------------------------------------------------------
   // 3️⃣ Subscribe to realtime updates ONLY once
   //----------------------------------------------------------------------
+
   const subscribeRealtime = useCallback((rid: string) => {
     const channel = supabase.channel(`room-${rid}`);
 
@@ -106,6 +104,7 @@ export default function RealtimeChat({ roomName, username }: Props) {
   //----------------------------------------------------------------------
   // INIT: Make sure room exists
   //----------------------------------------------------------------------
+
   useEffect(() => {
     ensureRoom();
   }, [ensureRoom]);
@@ -113,6 +112,7 @@ export default function RealtimeChat({ roomName, username }: Props) {
   //----------------------------------------------------------------------
   // When roomId becomes available, load messages + subscribe
   //----------------------------------------------------------------------
+
   useEffect(() => {
     if (!roomId) return;
 
@@ -128,22 +128,22 @@ export default function RealtimeChat({ roomName, username }: Props) {
   //----------------------------------------------------------------------
   // Send message (NO select() so realtime handles it)
   //----------------------------------------------------------------------
+
   const sendMessage = async () => {
     if (!roomId || !newMessage.trim()) return;
 
-    const { data } = await supabase.from("messages").insert({
+    await supabase.from("messages").insert({
       room_id: roomId,
       user: username,
       content: newMessage,
     });
-    console.log(data);
-
     setNewMessage("");
   };
 
   //----------------------------------------------------------------------
   // Sorting (guaranteed stable)
   //----------------------------------------------------------------------
+
   const sortedMessages = useMemo(() => {
     return [...messages].sort((a, b) =>
       a.created_at.localeCompare(b.created_at)
@@ -153,6 +153,7 @@ export default function RealtimeChat({ roomName, username }: Props) {
   //----------------------------------------------------------------------
   // Auto-scroll when messages update
   //----------------------------------------------------------------------
+
   useEffect(() => {
     scrollToBottom();
   }, [sortedMessages, scrollToBottom]);
@@ -160,6 +161,7 @@ export default function RealtimeChat({ roomName, username }: Props) {
   //----------------------------------------------------------------------
   // UI Rendering
   //----------------------------------------------------------------------
+
   return (
     <div className="flex flex-col h-[80vh] max-w-[90%] mt-10 mx-auto bg-yellow-500 rounded-lg">
       {/* MESSAGES */}

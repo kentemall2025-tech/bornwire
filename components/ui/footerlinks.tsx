@@ -4,7 +4,7 @@ import React from "react";
 
 function FooterLinks() {
   return (
-    <div className="max-w-full  h-40">
+    <div className="max-w-full  h-20">
       <div className="flex flex-wrap justify-center gap-4 p-4">
         {footerlinkContent.map((item, index) => {
           return (

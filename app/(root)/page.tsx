@@ -16,10 +16,11 @@ import SearchBar from "@/components/ui/searchbar";
 import About from "@/components/ui/about";
 import FooterLinks from "@/components/ui/footerlinks";
 import { ChatIcon } from "@/components/ui/chaticon";
+import Socials from "@/components/ui/socials";
 
 export default function Home() {
   return (
-    <section className=" w-full max-w-full relative space-y-10">
+    <section className=" w-full max-w-full relative space-y-5">
       <div className="w-full h-[60vh] z-10 ">
         <ImageBackground imageurl="https://csmvkgdme8w3hyot.public.blob.vercel-storage.com/WhatsApp%20Image%202025-11-11%20at%2011.05.56%20AM.jpeg" />
         <div className=" h-[80vh] md:h-[90vh] w-full bg-black/70 absolute  inset-0 z-2" />
@@ -63,7 +64,10 @@ export default function Home() {
       <SearchBar />
       <ChatIcon />
       <About />
-      <FooterLinks />
+      <div className="">
+        <FooterLinks />
+        <Socials />
+      </div>
     </section>
   );
 }

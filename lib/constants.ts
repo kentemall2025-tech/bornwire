@@ -4,21 +4,21 @@ export const showcaseContent = [
   {
     id: "2",
     imageurl:
-      "https://csmvkgdme8w3hyot.public.blob.vercel-storage.com/7199929c-dbdb-4061-827f-7de035c6983d.jpg",
+      "https://csmvkgdme8w3hyot.public.blob.vercel-storage.com/WhatsApp Image 2025-11-11 at 12.41.37 PM (1).jpeg",
     description:
       "Lorem ipsum, dolor sit amet consectetur adipisicing elit. Tempore, magnam ipsam? Illum, iste et. Aliquid, animi aspernatur? Quisquam, dolorem eveniet.",
   },
   {
     id: "3",
     imageurl:
-      "https://csmvkgdme8w3hyot.public.blob.vercel-storage.com/WhatsApp%20Image%202025-11-11%20at%2012.39.57%20PM.jpeg",
+      "https://csmvkgdme8w3hyot.public.blob.vercel-storage.com/WhatsApp Image 2025-11-11 at 12.41.37 PM.jpeg",
     description:
       "Lorem ipsum, dolor sit amet consectetur adipisicing elit. Tempore, magnam ipsam? Illum, iste et. Aliquid, animi aspernatur? Quisquam, dolorem eveniet.",
   },
   {
     id: "4",
     imageurl:
-      "https://csmvkgdme8w3hyot.public.blob.vercel-storage.com/WhatsApp%20Image%202025-11-11%20at%2011.05.56%20AM.jpeg",
+      "https://csmvkgdme8w3hyot.public.blob.vercel-storage.com/WhatsApp Image 2025-11-22 at 9.36.48 PM.jpeg",
     description:
       "Lorem ipsum, dolor sit amet consectetur adipisicing elit. Tempore, magnam ipsam? Illum, iste et. Aliquid, animi aspernatur? Quisquam, dolorem eveniet.",
   },
@@ -26,20 +26,6 @@ export const showcaseContent = [
     id: "5",
     imageurl:
       "https://csmvkgdme8w3hyot.public.blob.vercel-storage.com/WhatsApp%20Image%202025-11-11%20at%2012.42.46%20PM.jpeg",
-    description:
-      "Lorem ipsum, dolor sit amet consectetur adipisicing elit. Tempore, magnam ipsam? Illum, iste et. Aliquid, animi aspernatur? Quisquam, dolorem eveniet.",
-  },
-  {
-    id: "4",
-    imageurl:
-      "https://csmvkgdme8w3hyot.public.blob.vercel-storage.com/WhatsApp%20Image%202025-11-11%20at%2011.05.56%20AM.jpeg",
-    description:
-      "Lorem ipsum, dolor sit amet consectetur adipisicing elit. Tempore, magnam ipsam? Illum, iste et. Aliquid, animi aspernatur? Quisquam, dolorem eveniet.",
-  },
-  {
-    id: "5",
-    imageurl:
-      "https://csmvkgdme8w3hyot.public.blob.vercel-storage.com/WhatsApp%20Image%202025-11-10%20at%2010.37.45%20PM%20%281%29.jpeg",
     description:
       "Lorem ipsum, dolor sit amet consectetur adipisicing elit. Tempore, magnam ipsam? Illum, iste et. Aliquid, animi aspernatur? Quisquam, dolorem eveniet.",
   },
@@ -62,7 +48,7 @@ export const servicesContent = [
     icon: HeartHandshake,
     title: "More Services",
     message:
-      "Feel free to task us with your product process. Some customers prefer outfit made out of kente. We can find you the best of designers to get it done for you.We deliver on our promise of quality.Products off of quality.",
+      "We help you get high-quality products, including custom Kente outfits made by top designers. Count on us for reliable service and premium results.",
   },
 ];
 
