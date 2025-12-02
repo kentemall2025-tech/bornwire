@@ -8,11 +8,15 @@ export default function Socials() {
   return (
     <div className={cn("my-5")}>
       <div className="flex items-center justify-center gap-8 ">
-        <Link href="">
+        <Link className="text-yellow-500" href="">
           <Facebook />
         </Link>
-        <Instagram />
-        <WhatsApp />
+        <Link className="text-yellow-500" href="">
+          <Instagram />
+        </Link>
+        <Link className="text-yellow-500" href="">
+          <WhatsApp />
+        </Link>
       </div>
     </div>
   );
