@@ -34,35 +34,20 @@ export function SiteNav() {
     <header className="border-b max-w-[20vw] object-contain">
       <div className="container flex h-10 items-center justify-between">
         <nav className="hidden md:flex gap-6">
-          {user?.email === "kente.mall2025@gmail.com"
-            ? navItems.map(({ href, label, icon: Icon }) => (
-                <Link
-                  key={href}
-                  href={href}
-                  className={`flex items-center ease-out gap-2 text-sm transition ${
-                    pathname === href
-                      ? "text-primary font-bold"
-                      : "text-muted-foreground"
-                  }`}
-                >
-                  <Icon size={18} />
-                  {label}
-                </Link>
-              ))
-            : navItems.map(({ href, label, icon: Icon }) => (
-                <Link
-                  key={href}
-                  href={href}
-                  className={`flex items-center ease-out gap-2 text-sm transition ${
-                    pathname === href
-                      ? "text-primary font-bold"
-                      : "text-muted-foreground"
-                  }`}
-                >
-                  <Icon size={18} />
-                  {label}
-                </Link>
-              ))}
+          {navItems.map(({ href, label, icon: Icon }) => (
+            <Link
+              key={href}
+              href={href}
+              className={`flex items-center ease-out gap-2 text-sm transition ${
+                pathname === href
+                  ? "text-primary font-bold"
+                  : "text-muted-foreground"
+              }`}
+            >
+              <Icon size={18} />
+              {label}
+            </Link>
+          ))}
         </nav>
 
         <div className="md:hidden flex gap-2 items-center">
