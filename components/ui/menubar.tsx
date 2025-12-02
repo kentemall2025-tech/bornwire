@@ -1,13 +1,13 @@
 "use client";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Home, Package, Settings, Menu } from "lucide-react";
+import { Home, Package, Settings, Menu, LayoutDashboard } from "lucide-react";
 import { Sheet, SheetTrigger, SheetContent } from "@/components/ui/sheet";
-import { useEffect, useState } from "react";
 import { supabase } from "@/lib/supabase/supabase";
-import { User } from "@supabase/supabase-js";
+import { useEffect, useState } from "react";
 
 export function SiteNav() {
+  const [user, setUser] = useState<any>(null);
   const pathname = usePathname();
 
   const navItems = [
@@ -15,25 +15,54 @@ export function SiteNav() {
     { href: "/products", label: "Products", icon: Package },
     { href: "/settings", label: "Settings", icon: Settings },
   ];
+  const navItems2 = [
+    { href: "/", label: "Home", icon: Home },
+    { href: "/products", label: "Products", icon: Package },
+    { href: "/settings", label: "Settings", icon: Settings },
+    { href: "/admin", label: "Admin" },
+  ];
+
+  useEffect(() => {
+    const handleuser = async () => {
+      const { data: user } = await supabase.auth.getUser();
+      setUser(user);
+    };
+    handleuser();
+  }, []);
 
   return (
     <header className="border-b max-w-[20vw] object-contain">
       <div className="container flex h-10 items-center justify-between">
         <nav className="hidden md:flex gap-6">
-          {navItems.map(({ href, label, icon: Icon }) => (
-            <Link
-              key={href}
-              href={href}
-              className={`flex items-center ease-out gap-2 text-sm transition ${
-                pathname === href
-                  ? "text-primary font-bold"
-                  : "text-muted-foreground"
-              }`}
-            >
-              <Icon size={18} />
-              {label}
-            </Link>
-          ))}
+          {user?.email === "kente.mall2025@gmail.com"
+            ? navItems.map(({ href, label, icon: Icon }) => (
+                <Link
+                  key={href}
+                  href={href}
+                  className={`flex items-center ease-out gap-2 text-sm transition ${
+                    pathname === href
+                      ? "text-primary font-bold"
+                      : "text-muted-foreground"
+                  }`}
+                >
+                  <Icon size={18} />
+                  {label}
+                </Link>
+              ))
+            : navItems.map(({ href, label, icon: Icon }) => (
+                <Link
+                  key={href}
+                  href={href}
+                  className={`flex items-center ease-out gap-2 text-sm transition ${
+                    pathname === href
+                      ? "text-primary font-bold"
+                      : "text-muted-foreground"
+                  }`}
+                >
+                  <Icon size={18} />
+                  {label}
+                </Link>
+              ))}
         </nav>
 
         <div className="md:hidden flex gap-2 items-center">

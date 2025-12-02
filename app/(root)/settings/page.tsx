@@ -26,7 +26,7 @@ export default function page() {
             <div className="text-2xl tracking-wider capitalize tracking-wide">
               name
             </div>
-            <div>{user?.name}</div>
+            <div className="text-black">{user?.full_name}</div>
           </div>
           <div className="w-full flex items-center gap-4 ">
             <div className="text-2xl tracking-wider capitalize tracking-wide">
