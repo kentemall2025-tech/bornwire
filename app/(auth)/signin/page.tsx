@@ -1,11 +1,8 @@
 "use client";
-
 import { supabase } from "@/lib/supabase/supabase";
 import { useState } from "react";
 
 export default function LoginPage() {
-  const site_url = process.env.SITE_URL;
-
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -16,7 +13,7 @@ export default function LoginPage() {
     const { data, error } = await supabase.auth.signInWithOAuth({
       provider: "google",
       options: {
-        redirectTo: `${site_url}/products`, // redirect after login
+        redirectTo: `/products`,
       },
     });
 

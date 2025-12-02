@@ -1,19 +1,4 @@
-// Enhanced RealtimeChat component with database persistence
-// This file will include:
-// - Realtime chat
-// - Message persistence to Supabase
-// - Room creation & joining system
-//
-// NOTE: You must implement the matching Supabase SQL schema:
-//
-//   tables:
-//   - rooms: { id (uuid), name (text) }
-//   - messages: { id (uuid), room_id (uuid), user (text), content (text), created_at (timestamptz) }
-//
-// You must also create RLS policies allowing authenticated users to insert/select messages.
-
 "use client";
-
 import { useState, useEffect, useMemo, useCallback } from "react";
 import { supabase } from "@/lib/supabase/supabase";
 import { ChatMessageItem } from "@/components/chat-message";
@@ -21,7 +6,6 @@ import { useChatScroll } from "@/hooks/use-chat-scroll";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Send } from "lucide-react";
-import { cn } from "@/lib/utils";
 
 export interface ChatMessage {
   id: string;
