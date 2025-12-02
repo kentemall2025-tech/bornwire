@@ -68,7 +68,7 @@ export default function HorizontalProductCard({
           <div className=" text-gray-600 ml-18 text-sm ">GHS {price}</div>
         </div>
         <button
-          className="bg-yellow-500  p-4 cursor-pointer"
+          className="bg-yellow-500  text-white uppercase p-4 cursor-pointer"
           onClick={() => initializePayment()}
         >
           buy

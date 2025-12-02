@@ -79,7 +79,7 @@ export default function VerticalProductCard({
         </div>
 
         <button
-          className="bg-yellow-500  p-4 cursor-pointer"
+          className="bg-yellow-500  text-white uppercase p-4 cursor-pointer"
           onClick={() => initializePayment()}
         >
           buy
