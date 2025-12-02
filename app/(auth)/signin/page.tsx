@@ -1,13 +1,11 @@
 "use client";
 
 import { supabase } from "@/lib/supabase/supabase";
-import { useRouter } from "next/navigation";
-import useCountStore from "@/lib/useStore";
 import { useState } from "react";
 
 export default function LoginPage() {
-  const router = useRouter();
-  const { setEmail: setStoreEmail } = useCountStore();
+  const site_url = process.env.SITE_URL;
+
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -18,7 +16,7 @@ export default function LoginPage() {
     const { data, error } = await supabase.auth.signInWithOAuth({
       provider: "google",
       options: {
-        redirectTo: `${process.env.SITE_URL}/products`, // redirect after login
+        redirectTo: `${site_url}/products`, // redirect after login
       },
     });
 
