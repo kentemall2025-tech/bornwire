@@ -22,7 +22,7 @@ export default async function page() {
         />
         <ProductsHorizontal />
       </div>
-      <div className="font-extrabold  text-xl tracking-wider flex flex-col gap-4 mt-5 md:p-16 ">
+      <div className="font-extrabold  text-xl tracking-wider flex flex-col gap-4  md:p-10 ">
         <TitleTag
           message="More Kente Fabrics"
           className="text-2xl font-bold uppercase p-2 my-5"

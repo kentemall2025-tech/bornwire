@@ -40,9 +40,7 @@ export default function Home() {
           />
         </div>
       </div>
-
       <ShowcaseCarousel arr={showcaseContent} />
-
       <div className="">
         <h2 className="text-4xl uppercase underline-offset-6  underline  font-bold font-poppins text-center  ">
           Services
