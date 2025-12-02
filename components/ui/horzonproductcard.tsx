@@ -1,6 +1,8 @@
 "use client";
 import Image from "next/image";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { useEffect, useState } from "react";
+import { supabase } from "@/lib/supabase/supabase";
 
 interface ProductCardProps {
   label: string;
@@ -14,12 +16,14 @@ export default function HorizontalProductCard({
   price,
   imageurl,
 }: ProductCardProps) {
+  const [user, setUser] = useState<any>(null);
+
   const initializePayment = async () => {
     const res = await fetch("/api/paystack/initialize", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
-        email: "customers@gmail.com",
+        email: user?.email,
         amount: price * 100,
       }),
     });
@@ -31,6 +35,14 @@ export default function HorizontalProductCard({
       window.location.href = data.data.authorization_url;
     }
   };
+
+  useEffect(() => {
+    const getUser = async () => {
+      const { data, error } = await supabase.auth.getUser();
+      if (data?.user) setUser(data.user);
+    };
+    getUser();
+  }, []);
 
   return (
     <Card
