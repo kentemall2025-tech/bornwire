@@ -152,7 +152,7 @@ export default function RealtimeChat({
   }, [sortedMessages, scrollToBottom]);
 
   return (
-    <div className="flex flex-col h-[92vh] max-w-[90%] mx-auto bg-yellow-500">
+    <div className="flex flex-col h-[70vh] max-w-[90%] mx-auto bg-yellow-500">
       <div ref={containerRef} className="flex-1 overflow-y-auto p-4 space-y-4">
         {sortedMessages.map((msg) => (
           <ChatMessageItem
