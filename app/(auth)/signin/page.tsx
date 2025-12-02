@@ -1,75 +1,51 @@
 "use client";
+
 import { supabase } from "@/lib/supabase/supabase";
-import { useState } from "react";
 import { useRouter } from "next/navigation";
 import useCountStore from "@/lib/useStore";
+import { useState } from "react";
 
 export default function LoginPage() {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [error, setError] = useState<string | null>(null);
-  const [loading, setLoading] = useState(false);
   const router = useRouter();
+  const { setEmail: setStoreEmail } = useCountStore();
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
-  const handleLogin = async (email: string, password: string) => {
-    const { email: Email, setEmail } = useCountStore();
+  const signInWithGoogle = async () => {
     setLoading(true);
     setError(null);
 
-    const { data: user, error } = await supabase.auth.signInWithPassword({
-      email,
-      password,
+    const { data, error } = await supabase.auth.signInWithOAuth({
+      provider: "google",
+      options: {
+        redirectTo: `${location.origin}/products`, // redirect after login
+      },
     });
 
-    const handleSubmit = (e: React.FormEvent) => {
-      e.preventDefault();
-      setEmail(user.user?.email as string);
-      handleLogin(email, password);
-    };
+    if (error) {
+    }
+    setLoading(false);
+  };
 
-    return (
-      <div className="bg-yellow-500">
-        <div className="w-full mx-auto md:max-w-[60%] h-screen p-12 pt-20">
-          <h4 className="text-lg mt-20 text-4xl text-center font-extrabold text-white">
-            Bornwire
-          </h4>
-          <form
-            onSubmit={handleSubmit}
-            className="flex flex-col gap-1 bg-white p-4 rounded-lg"
+  return (
+    <div className="bg-yellow-500">
+      <div className="w-full mx-auto md:max-w-[60%] h-screen p-12 pt-20">
+        <h4 className="text-lg mt-20 text-4xl text-center font-extrabold text-white">
+          Bornwire
+        </h4>
+
+        <div className="flex flex-col gap-2 bg-white p-6 rounded-lg mt-6">
+          {error && <p className="text-red-500 text-sm">{error}</p>}
+
+          <button
+            onClick={signInWithGoogle}
+            disabled={loading}
+            className="bg-yellow-500 text-white rounded-lg px-8 p-3 bg-gradient-to-l from-orange-500 to-yellow-500 font-bold"
           >
-            <div className="flex flex-col gap-2 p-4">
-              <p className="text-xl font-bold tracking-wide">Email</p>
-              <input
-                type="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                className="bg-yellow-500 p-2 rounded-lg"
-                required
-              />
-            </div>
-            <div className="flex flex-col p-4 gap-2">
-              <p className="text-lg font-bold tracking-wide">Password</p>
-              <input
-                type="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                className="bg-yellow-500 p-2 rounded-lg"
-                required
-              />
-            </div>
-            {error && <p className="text-red-500 text-sm">{error?.message}</p>}{" "}
-            <div className="mx-auto mt-4">
-              <button
-                type="submit"
-                className="bg-yellow-500 from-orange-500 rounded-lg px-8 bg-gradient-to-l p-2"
-                disabled={loading}
-              >
-                {loading ? "Logging in ..." : "Log in"}
-              </button>
-            </div>
-          </form>
+            {loading ? "Redirecting..." : "Sign in with Google"}
+          </button>
         </div>
       </div>
-    );
-  };
+    </div>
+  );
 }

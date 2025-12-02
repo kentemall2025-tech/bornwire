@@ -4,16 +4,27 @@ import Image from "next/image";
 import Link from "next/link";
 import { SiteNav } from "./menubar";
 import LoginBtn from "./login";
-import useCountStore from "@/lib/useStore";
+import { useEffect, useState } from "react";
+import { supabase } from "@/lib/supabase/supabase";
+import { Avatar, AvatarImage } from "./avatar";
 
 interface NavbarProps {
   className?: string;
 }
 
-export const dynamic = "force-dynamic";
-
 function NavBar({ className }: NavbarProps) {
-  const { email } = useCountStore();
+  const [user, setUser] = useState<any>(null);
+
+  useEffect(() => {
+    const getUser = async () => {
+      const { data, error } = await supabase.auth.getUser();
+      if (data?.user) setUser(data.user);
+    };
+    getUser();
+
+    const avatar =
+      user?.user_metadata.picture || user?.user_metadata.avatar_url;
+  }, []);
 
   return (
     <div
@@ -28,14 +39,30 @@ function NavBar({ className }: NavbarProps) {
       >
         <Image
           src="https://csmvkgdme8w3hyot.public.blob.vercel-storage.com/WhatsApp%20Image%202025-11-23%20at%2012.21.54%20AM.jpeg"
+          width={500}
           alt="logo"
           className="h-10 w-10 rounded-lg object-contain"
-          width={300}
           height={400}
         />
       </Link>
       <div className="flex  gap-2 flex-row-reverse">
-        {email ? <SiteNav /> : <LoginBtn />}
+        {user ? (
+          <div className="flex flex-row-reverse p-2 gap-2 items-center">
+            <Avatar className="bg-yellow-500 ">
+              <AvatarImage
+                src={
+                  user?.user_metadata.picture || user?.user_metadata.avatar_url
+                }
+                alt={"avatar"}
+                width={50}
+                height={50}
+              />
+            </Avatar>
+            <SiteNav />
+          </div>
+        ) : (
+          <LoginBtn />
+        )}
       </div>
     </div>
   );

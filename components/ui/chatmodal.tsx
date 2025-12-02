@@ -1,6 +1,6 @@
 "use client";
 import { Button } from "./button";
-// components/ChatModal.tsx
+
 import { Dialog, DialogClose, DialogContent } from "./dialog"; // Shadcn Dialog component for modal
 import { useEffect } from "react";
 

@@ -1,16 +1,18 @@
 import { RealtimeChat } from "@/components/realtime-chat";
 
-export default async function page({
+export default async function Page({
   params,
+  searchParams,
 }: {
-  params: Promise<{ id: string }>;
+  params: { id: string };
+  searchParams: { [key: string]: string | string[] | undefined };
 }) {
-  const { id } = await params;
-
+  // Example: simulate async work
+  await new Promise((resolve) => setTimeout(resolve, 10));
+  const { roomName } = await searchParams;
   return (
-    <div className="p-4">
-      {/* foijawoifjio */}
-      <RealtimeChat username="fake user name" roomName={`${id}`} />
+    <div>
+      <RealtimeChat username={params.id} roomName={roomName as string} />
     </div>
   );
 }
