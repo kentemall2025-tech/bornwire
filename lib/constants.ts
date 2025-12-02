@@ -117,7 +117,7 @@ export const horizonproductsContent = [
     label: "Edwene si Edwene so",
     price: 5000,
     imageurl:
-      "https://csmvkgdme8w3hyot.public.blob.vercel-storage.com/WhatsApp%20Image%202025-11-10%20at%2010.37.45%20PM%20%281%29.jpeg",
+      "https://csmvkgdme8w3hyot.public.blob.vercel-storage.com/f56ce606-80b5-478b-a3e7-dad0ca0b40ad.jpg",
   },
   {
     id: "2",
