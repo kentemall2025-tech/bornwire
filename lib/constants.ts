@@ -29,6 +29,13 @@ export const showcaseContent = [
     description:
       "Lorem ipsum, dolor sit amet consectetur adipisicing elit. Tempore, magnam ipsam? Illum, iste et. Aliquid, animi aspernatur? Quisquam, dolorem eveniet.",
   },
+  {
+    id: "6",
+    imageurl:
+      "https://csmvkgdme8w3hyot.public.blob.vercel-storage.com/WhatsApp Image 2025-11-11 at 12.42.46 PM.jpeg",
+    description:
+      "Lorem ipsum, dolor sit amet consectetur adipisicing elit. Tempore, magnam ipsam? Illum, iste et. Aliquid, animi aspernatur? Quisquam, dolorem eveniet.",
+  },
 ];
 
 export const servicesContent = [
