@@ -38,33 +38,48 @@ export default function RealtimeChat({
       .eq("name", roomName)
       .maybeSingle();
 
+    if (error) console.error("ROOM FETCH ERROR:", error);
+
     if (room) {
       setRoomId(room.id);
     } else {
-      const { data: newRoom } = await supabase
+      const { data: newRoom, error: insertError } = await supabase
         .from("rooms")
         .insert({ name: roomName })
         .select()
         .single();
 
+      if (insertError) {
+        console.error("ROOM CREATE ERROR:", insertError);
+        return;
+      }
+
       if (newRoom) setRoomId(newRoom.id);
     }
-  }, [roomName]); // ← missing bracket fixed here!
+  }, [roomName]);
 
   // 2️⃣ Load chat history
   const loadMessages = useCallback(async (rid: string) => {
     const { data, error } = await supabase
-      .from("messages") // ← FIXED
+      .from("messages")
       .select("*")
       .eq("room_id", rid)
       .order("created_at", { ascending: true });
 
-    if (!error && data) setMessages(data);
+    if (error) {
+      console.error("LOAD MESSAGES ERROR:", error);
+    }
+
+    if (data) setMessages(data);
   }, []);
 
   // 3️⃣ Subscribe to realtime messages
   const subscribeRealtime = useCallback((rid: string) => {
-    const channel = supabase.channel(`room-${rid}`);
+    const channel = supabase.channel(`room-${rid}`, {
+      config: {
+        broadcast: { self: false },
+      },
+    });
 
     channel.on(
       "postgres_changes",
@@ -75,25 +90,28 @@ export default function RealtimeChat({
         filter: `room_id=eq.${rid}`,
       },
       (payload) => {
-        console.log("Realtime message received:", payload);
+        console.log("REALTIME RECEIVED:", payload.new);
         setMessages((prev) => [...prev, payload.new as ChatMessage]);
       }
     );
 
     channel.subscribe((status) => {
+      console.log("Realtime status:", status);
       if (status === "SUBSCRIBED") setConnected(true);
     });
 
     return channel;
   }, []);
 
-  // 4️⃣ Initialize everything
+  // 4️⃣ Initialize room
   useEffect(() => {
     initRoom();
   }, [initRoom]);
 
+  // 5️⃣ Setup realtime once roomId is ready
   useEffect(() => {
     if (!roomId) return;
+
     loadMessages(roomId);
     const channel = subscribeRealtime(roomId);
 
@@ -102,15 +120,26 @@ export default function RealtimeChat({
     };
   }, [roomId, loadMessages, subscribeRealtime]);
 
-  // 5️⃣ Send message (save to DB)
+  // 6️⃣ Send message with proper error logs
   const sendMessage = async () => {
     if (!newMessage.trim() || !roomId) return;
 
-    await supabase.from("messages").insert({
-      room_id: roomId,
-      user: username,
-      content: newMessage,
-    });
+    const { data, error } = await supabase
+      .from("messages")
+      .insert({
+        room_id: roomId,
+        user: username,
+        content: newMessage,
+      })
+      .select()
+      .single();
+
+    if (error) {
+      console.error("INSERT MESSAGE ERROR:", error);
+      return;
+    }
+
+    console.log("INSERTED:", data);
 
     setNewMessage("");
   };
@@ -121,13 +150,13 @@ export default function RealtimeChat({
     [messages]
   );
 
+  // 7️⃣ Auto-scroll
   useEffect(() => {
     scrollToBottom();
   }, [sortedMessages, scrollToBottom]);
 
   return (
     <div className="flex flex-col h-[92vh] w-full bg-yellow-500">
-      {/* Messages */}
       <div ref={containerRef} className="flex-1 overflow-y-auto p-4 space-y-4">
         {sortedMessages.map((msg) => (
           <ChatMessageItem
