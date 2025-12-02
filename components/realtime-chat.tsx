@@ -160,7 +160,7 @@ export default function RealtimeChat({ roomName, username }: Props) {
   // UI Rendering
   //----------------------------------------------------------------------
   return (
-    <div className="flex flex-col h-[70vh] max-w-[90%] mx-auto bg-yellow-500/30 rounded-lg">
+    <div className="flex flex-col h-[70vh] max-w-[90%] mt-20 mx-auto bg-yellow-500 rounded-lg">
       {/* MESSAGES */}
       <div ref={containerRef} className="flex-1 overflow-y-auto p-4 space-y-4">
         {sortedMessages.map((msg) => (
