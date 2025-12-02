@@ -140,32 +140,4 @@ export const horizonproductsContent = [
     imageurl:
       "https://csmvkgdme8w3hyot.public.blob.vercel-storage.com/WhatsApp Image 2025-11-22 at 9.36.51 PM.jpeg",
   },
-  {
-    id: "5",
-    label: "Diamondnics",
-    price: 8000,
-    imageurl:
-      "https://csmvkgdme8w3hyot.public.blob.vercel-storage.com/WhatsApp%20Image%202025-11-10%20at%2010.37.45%20PM%20%281%29.jpeg",
-  },
-  {
-    id: "6",
-    label: "Blue Ivory",
-    price: 2000,
-    imageurl:
-      "https://csmvkgdme8w3hyot.public.blob.vercel-storage.com/WhatsApp%20Image%202025-11-22%20at%209.36.49%20PM.jpeg",
-  },
-  {
-    id: "7",
-    label: "Edwene si Edwene so",
-    price: 5000,
-    imageurl:
-      "https://csmvkgdme8w3hyot.public.blob.vercel-storage.com/WhatsApp%20Image%202025-11-10%20at%2010.38.02%20PM%20%283%29.jpeg",
-  },
-  {
-    id: "8",
-    label: "Diamondnics",
-    price: 8000,
-    imageurl:
-      "https://csmvkgdme8w3hyot.public.blob.vercel-storage.com/WhatsApp%20Image%202025-11-10%20at%2010.38.02%20PM%20%282%29.jpeg",
-  },
 ];
