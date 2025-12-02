@@ -1,4 +1,4 @@
-import { RealtimeChat } from "@/components/realtime-chat";
+import RealtimeChat from "@/components/realtime-chat";
 
 export default async function Page({
   params,

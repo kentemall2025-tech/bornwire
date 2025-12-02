@@ -1,141 +1,187 @@
+// Enhanced RealtimeChat component with database persistence
+// This file will include:
+// - Realtime chat
+// - Message persistence to Supabase
+// - Room creation & joining system
+//
+// NOTE: You must implement the matching Supabase SQL schema:
+//
+//   tables:
+//   - rooms: { id (uuid), name (text) }
+//   - messages: { id (uuid), room_id (uuid), user (text), content (text), created_at (timestamptz) }
+//
+// You must also create RLS policies allowing authenticated users to insert/select messages.
+
 "use client";
 
-import { cn } from "@/lib/utils";
+import { useState, useEffect, useMemo, useCallback } from "react";
+import { supabase } from "@/lib/supabase/supabase";
 import { ChatMessageItem } from "@/components/chat-message";
 import { useChatScroll } from "@/hooks/use-chat-scroll";
-import { type ChatMessage, useRealtimeChat } from "@/hooks/use-realtime-chat";
-import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Button } from "@/components/ui/button";
 import { Send } from "lucide-react";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { cn } from "@/lib/utils";
+
+export interface ChatMessage {
+  id: string;
+  room_id: string;
+  user: string;
+  content: string;
+  created_at: string;
+}
 
 interface RealtimeChatProps {
   roomName: string;
   username: string;
-  onMessage?: (messages: ChatMessage[]) => void;
-  messages?: ChatMessage[];
 }
 
-/**
- * Realtime chat component
- * @param roomName - The name of the room to join. Each room is a unique chat.
- * @param username - The username of the user
- * @param onMessage - The callback function to handle the messages. Useful if you want to store the messages in a database.
- * @param messages - The messages to display in the chat. Useful if you want to display messages from a database.
- * @returns The chat component
- */
-export const RealtimeChat = ({
+export default function RealtimeChat({
   roomName,
   username,
-  onMessage,
-  messages: initialMessages = [],
-}: RealtimeChatProps) => {
+}: RealtimeChatProps) {
   const { containerRef, scrollToBottom } = useChatScroll();
-
-  const {
-    messages: realtimeMessages,
-    sendMessage,
-    isConnected,
-  } = useRealtimeChat({
-    roomName,
-    username,
-  });
+  const [roomId, setRoomId] = useState<string | null>(null);
+  const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [newMessage, setNewMessage] = useState("");
+  const [connected, setConnected] = useState(false);
 
-  // Merge realtime messages with initial messages
-  const allMessages = useMemo(() => {
-    const mergedMessages = [...initialMessages, ...realtimeMessages];
-    // Remove duplicates based on message id
-    const uniqueMessages = mergedMessages.filter(
-      (message, index, self) =>
-        index === self.findIndex((m) => m.id === message.id)
-    );
-    // Sort by creation date
-    const sortedMessages = uniqueMessages.sort((a, b) =>
-      a.createdAt.localeCompare(b.createdAt)
-    );
+  // 1️⃣ Ensure room exists or create it
+  const initRoom = useCallback(async () => {
+    const { data: room, error } = await supabase
+      .from("rooms")
+      .select("id")
+      .eq("name", roomName)
+      .maybeSingle();
 
-    return sortedMessages;
-  }, [initialMessages, realtimeMessages]);
+    if (error) console.error(error);
 
-  useEffect(() => {
-    if (onMessage) {
-      onMessage(allMessages);
+    if (room) {
+      setRoomId(room.id);
+    } else {
+      const { data: newRoom, error: createError } = await supabase
+        .from("rooms")
+        .insert({ name: roomName })
+        .select()
+        .single();
+
+      if (createError) console.error(createError);
+      if (newRoom) setRoomId(newRoom.id);
     }
-  }, [allMessages, onMessage]);
+  }, [roomName]);
+
+  // 2️⃣ Load chat history
+  const loadMessages = useCallback(async (rid: string) => {
+    const { data, error } = await supabase
+      .from("messages")
+      .select("*")
+      .eq("room_id", rid)
+      .order("created_at", { ascending: true });
+
+    if (!error && data) setMessages(data);
+  }, []);
+
+  // 3️⃣ Subscribe to realtime messages
+  const subscribeRealtime = useCallback((rid: string) => {
+    const channel = supabase.channel(`room-${rid}`);
+
+    channel.on(
+      "postgres_changes",
+      {
+        event: "INSERT",
+        schema: "public",
+        table: "messages",
+        filter: `room_id=eq.${rid}`,
+      },
+      (payload) => {
+        setMessages((prev) => [...prev, payload.new as ChatMessage]);
+      }
+    );
+
+    channel.subscribe((status) => {
+      if (status === "SUBSCRIBED") setConnected(true);
+    });
+
+    return channel;
+  }, []);
+
+  // 4️⃣ Initialize everything
+  useEffect(() => {
+    initRoom();
+  }, [initRoom]);
 
   useEffect(() => {
-    // Scroll to bottom whenever messages change
-    scrollToBottom();
-  }, [allMessages, scrollToBottom]);
+    if (!roomId) return;
+    loadMessages(roomId);
+    const channel = subscribeRealtime(roomId);
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, [roomId, loadMessages, subscribeRealtime]);
 
-  const handleSendMessage = useCallback(
-    (e: React.FormEvent) => {
-      e.preventDefault();
-      if (!newMessage.trim() || !isConnected) return;
+  // 5️⃣ Send message (save to DB)
+  const sendMessage = async () => {
+    if (!newMessage.trim() || !roomId) return;
 
-      sendMessage(newMessage);
-      setNewMessage("");
-    },
-    [newMessage, isConnected, sendMessage]
+    await supabase.from("messages").insert({
+      room_id: roomId,
+      user: username,
+      content: newMessage,
+    });
+
+    setNewMessage("");
+  };
+
+  // Merge + auto-scroll
+  const sortedMessages = useMemo(
+    () => messages.sort((a, b) => a.created_at.localeCompare(b.created_at)),
+    [messages]
   );
 
+  useEffect(() => {
+    scrollToBottom();
+  }, [sortedMessages, scrollToBottom]);
+
   return (
-    <div className="flex flex-col h-[92vh] w-full bg-background text-foreground antialiased bg-yellow-500">
+    <div className="flex flex-col h-[92vh] w-full bg-yellow-500">
       {/* Messages */}
       <div ref={containerRef} className="flex-1 overflow-y-auto p-4 space-y-4">
-        {allMessages.length === 0 ? (
-          <div className="text-center text-sm text-muted-foreground ">
-            No messages yet. Start the conversation!
-          </div>
-        ) : null}
-        <div className="space-y-1 h-[70vh]  ">
-          {allMessages.map((message, index) => {
-            const prevMessage = index > 0 ? allMessages[index - 1] : null;
-            const showHeader =
-              !prevMessage || prevMessage.user.name !== message.user.name;
-
-            return (
-              <div
-                key={message.id}
-                className="animate-in fade-in slide-in-from-bottom-4 duration-300  "
-              >
-                <ChatMessageItem
-                  message={message}
-                  isOwnMessage={message.user.name === username}
-                  showHeader={showHeader}
-                />
-              </div>
-            );
-          })}
-        </div>
+        {sortedMessages.map((msg) => (
+          <ChatMessageItem
+            key={msg.id}
+            message={{
+              id: msg.id,
+              user: { name: msg.user },
+              content: msg.content,
+              createdAt: msg.created_at,
+            }}
+            isOwnMessage={msg.user === username}
+            showHeader={true}
+          />
+        ))}
       </div>
 
+      {/* Input */}
       <form
-        onSubmit={handleSendMessage}
+        onSubmit={(e) => {
+          e.preventDefault();
+          sendMessage();
+        }}
         className="flex w-full gap-2 border-t border-border p-4"
       >
         <Input
-          className={cn(
-            "rounded-full bg-background text-sm transition-all duration-300",
-            isConnected && newMessage.trim() ? "w-[calc(100%-36px)]" : "w-full"
-          )}
+          className="rounded-full bg-white text-sm"
           type="text"
           value={newMessage}
           onChange={(e) => setNewMessage(e.target.value)}
-          placeholder="Type a message..."
-          disabled={!isConnected}
+          placeholder={connected ? "Type a message..." : "Connecting..."}
+          disabled={!connected}
         />
-        {isConnected && newMessage.trim() && (
-          <Button
-            className="aspect-square rounded-full animate-in fade-in slide-in-from-right-4 duration-300"
-            type="submit"
-            disabled={!isConnected}
-          >
-            <Send className="size-4" />
-          </Button>
-        )}
+
+        <Button type="submit" disabled={!connected || !newMessage.trim()}>
+          <Send className="size-4" />
+        </Button>
       </form>
     </div>
   );
-};
+}
