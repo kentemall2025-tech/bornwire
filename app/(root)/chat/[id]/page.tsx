@@ -10,7 +10,7 @@ export default async function Page({
   await new Promise((resolve) => setTimeout(resolve, 10));
   const { roomName, username } = await searchParams;
   return (
-    <div>
+    <div className="p-4">
       <RealtimeChat
         username={username as string}
         roomName={roomName as string}
