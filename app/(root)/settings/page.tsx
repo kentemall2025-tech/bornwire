@@ -2,6 +2,7 @@
 import { Card, CardContent } from "@/components/ui/card";
 import LogoutBtn from "@/components/ui/logoutbtn";
 import { supabase } from "@/lib/supabase/supabase";
+import Link from "next/link";
 import { useEffect, useState } from "react";
 
 export default function page() {
@@ -44,6 +45,16 @@ export default function page() {
 
           <div className="w-full">
             <LogoutBtn />
+          </div>
+          <div>
+            {user?.email === "kente.mall2025@gmail.com" && (
+              <Link
+                href={"/admin"}
+                className="uppercase bg-white ring-1 ring-yellow-500 rounded-lg"
+              >
+                admin
+              </Link>
+            )}
           </div>
         </CardContent>
       </Card>
