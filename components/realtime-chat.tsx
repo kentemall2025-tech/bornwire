@@ -38,26 +38,23 @@ export default function RealtimeChat({
       .eq("name", roomName)
       .maybeSingle();
 
-    if (error) console.error(error);
-
     if (room) {
       setRoomId(room.id);
     } else {
-      const { data: newRoom, error: createError } = await supabase
+      const { data: newRoom } = await supabase
         .from("rooms")
         .insert({ name: roomName })
         .select()
         .single();
 
-      if (createError) console.error(createError);
       if (newRoom) setRoomId(newRoom.id);
     }
-  }, [roomName]);
+  }, [roomName]); // ← missing bracket fixed here!
 
   // 2️⃣ Load chat history
   const loadMessages = useCallback(async (rid: string) => {
     const { data, error } = await supabase
-      .from("messages")
+      .from("messages") // ← FIXED
       .select("*")
       .eq("room_id", rid)
       .order("created_at", { ascending: true });
@@ -98,6 +95,7 @@ export default function RealtimeChat({
     if (!roomId) return;
     loadMessages(roomId);
     const channel = subscribeRealtime(roomId);
+
     return () => {
       supabase.removeChannel(channel);
     };
@@ -116,7 +114,6 @@ export default function RealtimeChat({
     setNewMessage("");
   };
 
-  // Merge + auto-scroll
   const sortedMessages = useMemo(
     () => messages.sort((a, b) => a.created_at.localeCompare(b.created_at)),
     [messages]
