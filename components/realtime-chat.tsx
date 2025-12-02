@@ -1,5 +1,6 @@
 "use client";
-import { useState, useEffect, useMemo, useCallback } from "react";
+
+import { useState, useEffect, useCallback, useMemo } from "react";
 import { supabase } from "@/lib/supabase/supabase";
 import { ChatMessageItem } from "@/components/chat-message";
 import { useChatScroll } from "@/hooks/use-chat-scroll";
@@ -15,144 +16,152 @@ export interface ChatMessage {
   created_at: string;
 }
 
-interface RealtimeChatProps {
+interface Props {
   roomName: string;
   username: string;
 }
 
-export default function RealtimeChat({
-  roomName,
-  username,
-}: RealtimeChatProps) {
+export default function RealtimeChat({ roomName, username }: Props) {
   const { containerRef, scrollToBottom } = useChatScroll();
   const [roomId, setRoomId] = useState<string | null>(null);
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [newMessage, setNewMessage] = useState("");
   const [connected, setConnected] = useState(false);
 
-  // 1️⃣ Ensure room exists or create it
-  const initRoom = useCallback(async () => {
-    const { data: room, error } = await supabase
+  //----------------------------------------------------------------------
+  // 1️⃣ Create room or fetch existing
+  //----------------------------------------------------------------------
+  const ensureRoom = useCallback(async () => {
+    const { data: existing, error } = await supabase
       .from("rooms")
       .select("id")
       .eq("name", roomName)
       .maybeSingle();
 
-    if (error) console.error("ROOM FETCH ERROR:", error);
-
-    if (room) {
-      setRoomId(room.id);
-    } else {
-      const { data: newRoom, error: insertError } = await supabase
-        .from("rooms")
-        .insert({ name: roomName })
-        .select()
-        .single();
-
-      if (insertError) {
-        console.error("ROOM CREATE ERROR:", insertError);
-        return;
-      }
-
-      if (newRoom) setRoomId(newRoom.id);
+    if (error) {
+      console.error("ROOM ERROR:", error);
+      return;
     }
+
+    if (existing) {
+      setRoomId(existing.id);
+      return;
+    }
+
+    // create new room
+    const { data: newRoom, error: createError } = await supabase
+      .from("rooms")
+      .insert({ name: roomName })
+      .select()
+      .single();
+
+    if (createError) {
+      console.error("ROOM CREATE ERROR:", createError);
+      return;
+    }
+
+    setRoomId(newRoom.id);
   }, [roomName]);
 
-  // 2️⃣ Load chat history
-  const loadMessages = useCallback(async (rid: string) => {
+  //----------------------------------------------------------------------
+  // 2️⃣ Load chat history once
+  //----------------------------------------------------------------------
+  const loadHistory = useCallback(async (rid: string) => {
     const { data, error } = await supabase
       .from("messages")
       .select("*")
       .eq("room_id", rid)
       .order("created_at", { ascending: true });
 
-    if (error) {
-      console.error("LOAD MESSAGES ERROR:", error);
-    }
-
+    if (error) console.error("LOAD HISTORY ERROR:", error);
     if (data) setMessages(data);
   }, []);
 
+  //----------------------------------------------------------------------
+  // 3️⃣ Subscribe to realtime updates ONLY once
+  //----------------------------------------------------------------------
   const subscribeRealtime = useCallback((rid: string) => {
-    const channel = supabase.channel(`room-${rid}`, {
-      config: {
-        broadcast: { self: false },
-      },
-    });
+    const channel = supabase.channel(`room-${rid}`);
 
     channel.on(
       "postgres_changes",
       {
-        event: "INSERT",
         schema: "public",
         table: "messages",
+        event: "INSERT",
         filter: `room_id=eq.${rid}`,
       },
       (payload) => {
-        console.log("REALTIME RECEIVED:", payload.new);
         setMessages((prev) => [...prev, payload.new as ChatMessage]);
       }
     );
 
     channel.subscribe((status) => {
-      console.log("Realtime status:", status);
       if (status === "SUBSCRIBED") setConnected(true);
     });
 
     return channel;
   }, []);
 
+  //----------------------------------------------------------------------
+  // INIT: Make sure room exists
+  //----------------------------------------------------------------------
   useEffect(() => {
-    initRoom();
-  }, [initRoom]);
+    ensureRoom();
+  }, [ensureRoom]);
 
+  //----------------------------------------------------------------------
+  // When roomId becomes available, load messages + subscribe
+  //----------------------------------------------------------------------
   useEffect(() => {
     if (!roomId) return;
 
-    loadMessages(roomId);
+    loadHistory(roomId);
+
     const channel = subscribeRealtime(roomId);
 
     return () => {
       supabase.removeChannel(channel);
     };
-  }, [roomId, loadMessages, subscribeRealtime]);
+  }, [roomId, loadHistory, subscribeRealtime]);
 
-  // 6️⃣ Send message with proper error logs
+  //----------------------------------------------------------------------
+  // Send message (NO select() so realtime handles it)
+  //----------------------------------------------------------------------
   const sendMessage = async () => {
-    if (!newMessage.trim() || !roomId) return;
+    if (!roomId || !newMessage.trim()) return;
 
-    const { data, error } = await supabase
-      .from("messages")
-      .insert({
-        room_id: roomId,
-        user: username,
-        content: newMessage,
-      })
-      .select()
-      .single();
-
-    if (error) {
-      console.error("INSERT MESSAGE ERROR:", error);
-      return;
-    }
-
-    console.log("INSERTED:", data);
+    await supabase.from("messages").insert({
+      room_id: roomId,
+      user: username,
+      content: newMessage,
+    });
 
     setNewMessage("");
   };
 
-  const sortedMessages = useMemo(
-    () =>
-      [...messages].sort((a, b) => a.created_at.localeCompare(b.created_at)),
-    [messages]
-  );
+  //----------------------------------------------------------------------
+  // Sorting (guaranteed stable)
+  //----------------------------------------------------------------------
+  const sortedMessages = useMemo(() => {
+    return [...messages].sort((a, b) =>
+      a.created_at.localeCompare(b.created_at)
+    );
+  }, [messages]);
 
+  //----------------------------------------------------------------------
+  // Auto-scroll when messages update
+  //----------------------------------------------------------------------
   useEffect(() => {
     scrollToBottom();
   }, [sortedMessages, scrollToBottom]);
 
+  //----------------------------------------------------------------------
+  // UI Rendering
+  //----------------------------------------------------------------------
   return (
-    <div className="flex flex-col h-[70vh] max-w-[90%] mx-auto bg-yellow-500">
+    <div className="flex flex-col h-[70vh] max-w-[90%] mx-auto bg-yellow-500/30 rounded-lg">
+      {/* MESSAGES */}
       <div ref={containerRef} className="flex-1 overflow-y-auto p-4 space-y-4">
         {sortedMessages.map((msg) => (
           <ChatMessageItem
@@ -169,25 +178,25 @@ export default function RealtimeChat({
         ))}
       </div>
 
-      {/* Input */}
+      {/* INPUT */}
       <form
         onSubmit={(e) => {
           e.preventDefault();
           sendMessage();
         }}
-        className="flex w-full gap-2 border-t border-border p-4"
+        className="flex items-center gap-2 p-4 border-t"
       >
         <Input
-          className="rounded-full bg-white text-sm"
           type="text"
+          className="rounded-full bg-white"
+          placeholder={connected ? "Type..." : "Connecting..."}
           value={newMessage}
           onChange={(e) => setNewMessage(e.target.value)}
-          placeholder={connected ? "Type a message..." : "Connecting..."}
           disabled={!connected}
         />
 
         <Button type="submit" disabled={!connected || !newMessage.trim()}>
-          <Send className="size-4" />
+          <Send size={18} />
         </Button>
       </form>
     </div>
