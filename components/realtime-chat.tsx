@@ -75,6 +75,7 @@ export default function RealtimeChat({
         filter: `room_id=eq.${rid}`,
       },
       (payload) => {
+        console.log("Realtime message received:", payload);
         setMessages((prev) => [...prev, payload.new as ChatMessage]);
       }
     );
@@ -115,7 +116,8 @@ export default function RealtimeChat({
   };
 
   const sortedMessages = useMemo(
-    () => messages.sort((a, b) => a.created_at.localeCompare(b.created_at)),
+    () =>
+      [...messages].sort((a, b) => a.created_at.localeCompare(b.created_at)),
     [messages]
   );
 
