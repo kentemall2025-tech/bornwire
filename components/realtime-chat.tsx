@@ -134,7 +134,7 @@ export default function RealtimeChat({ roomName, username }: Props) {
     await supabase.from("messages").insert({
       room_id: roomId,
       user: username,
-      content: newMessage,
+      text: newMessage,
     });
 
     setNewMessage("");
