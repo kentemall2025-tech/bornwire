@@ -121,24 +121,24 @@ export const horizonproductsContent = [
   },
   {
     id: "2",
-    label: "Diamondnics",
-    price: 8000,
+    label: "Mama Africa",
+    price: 1000,
     imageurl:
-      "https://csmvkgdme8w3hyot.public.blob.vercel-storage.com/WhatsApp%20Image%202025-11-22%20at%209.36.51%20PM%20%281%29.jpeg",
+      "https://csmvkgdme8w3hyot.public.blob.vercel-storage.com/WhatsApp Image 2025-11-22 at 9.36.48 PM.jpeg",
   },
   {
     id: "3",
-    label: "Blue Ivory",
-    price: 20000,
+    label: "Adinkra Purse",
+    price: 500.0,
     imageurl:
       "https://csmvkgdme8w3hyot.public.blob.vercel-storage.com/WhatsApp%20Image%202025-11-22%20at%209.36.51%20PM.jpeg",
   },
   {
     id: "4",
-    label: "Edwene si Edwene so",
-    price: 5000,
+    label: "Obaa Sima",
+    price: 1000,
     imageurl:
-      "https://csmvkgdme8w3hyot.public.blob.vercel-storage.com/WhatsApp%20Image%202025-11-22%20at%209.36.48%20PM.jpeg",
+      "https://csmvkgdme8w3hyot.public.blob.vercel-storage.com/WhatsApp Image 2025-11-22 at 9.36.51 PM.jpeg",
   },
   {
     id: "5",
@@ -150,7 +150,7 @@ export const horizonproductsContent = [
   {
     id: "6",
     label: "Blue Ivory",
-    price: 20000,
+    price: 2000,
     imageurl:
       "https://csmvkgdme8w3hyot.public.blob.vercel-storage.com/WhatsApp%20Image%202025-11-22%20at%209.36.49%20PM.jpeg",
   },
