@@ -14,7 +14,7 @@ export const ChatMessageItem = ({
 }: ChatMessageItemProps) => {
   return (
     <div
-      className={`flex mt-2 ${isOwnMessage ? "justify-end" : "justify-start"}`}
+      className={`flex mt-1 ${isOwnMessage ? "justify-end" : "justify-start"}`}
     >
       <div
         className={cn("max-w-[75%] w-fit flex flex-col gap-1", {

@@ -132,9 +132,7 @@ export default function RealtimeChat({ roomName, username }: Props) {
     if (!roomId || !newMessage.trim()) return;
 
     await supabase.from("messages").insert({
-      room_id: roomId,
       content: newMessage,
-      user: username,
     });
     setNewMessage("");
   };
@@ -182,15 +180,15 @@ export default function RealtimeChat({ roomName, username }: Props) {
 
       {/* INPUT */}
       <form
+        className="rounded-full bg-white"
         onSubmit={(e) => {
           e.preventDefault();
           sendMessage();
         }}
-        className="flex items-center gap-2 p-4 border-t"
       >
         <Input
+          className="flex items-center gap-2 p-4 border-t"
           type="text"
-          className="rounded-full bg-white"
           placeholder={connected ? "Type..." : "Connecting..."}
           value={newMessage}
           onChange={(e) => setNewMessage(e.target.value)}
