@@ -131,11 +131,12 @@ export default function RealtimeChat({ roomName, username }: Props) {
   const sendMessage = async () => {
     if (!roomId || !newMessage.trim()) return;
 
-    await supabase.from("messages").insert({
+    const { data } = await supabase.from("messages").insert({
       room_id: roomId,
       user: username,
       content: newMessage,
     });
+    console.log(data);
 
     setNewMessage("");
   };
