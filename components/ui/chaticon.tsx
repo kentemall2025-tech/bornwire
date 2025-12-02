@@ -19,7 +19,7 @@ export const ChatIcon = () => {
 
   return (
     <Link
-      href={`/chat/${user?.email}?roomName=${user?.id}`}
+      href={`/chat?roomName=${user?.id}&username=${user?.email}`}
       className="fixed bottom-4 right-5  bg-yellow-500 bg-gradient-to-r from-orange-500  text-white shadow-lg hover:bg-blue-400 text-3xl z-50 rounded-lg bg-blue-500 "
     >
       <div className="w-12 h-12 object-contain p-2 ">
