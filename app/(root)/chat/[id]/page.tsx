@@ -7,7 +7,6 @@ export default async function Page({
   params: { id: string };
   searchParams: { [key: string]: string | string[] | undefined };
 }) {
-  await new Promise((resolve) => setTimeout(resolve, 10));
   const { roomName, username } = await searchParams;
   return (
     <div className="max-w-[80%] mx-auto mt-20">

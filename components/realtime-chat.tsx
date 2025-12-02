@@ -73,7 +73,6 @@ export default function RealtimeChat({
     if (data) setMessages(data);
   }, []);
 
-  // 3️⃣ Subscribe to realtime messages
   const subscribeRealtime = useCallback((rid: string) => {
     const channel = supabase.channel(`room-${rid}`, {
       config: {
@@ -103,12 +102,10 @@ export default function RealtimeChat({
     return channel;
   }, []);
 
-  // 4️⃣ Initialize room
   useEffect(() => {
     initRoom();
   }, [initRoom]);
 
-  // 5️⃣ Setup realtime once roomId is ready
   useEffect(() => {
     if (!roomId) return;
 
@@ -150,7 +147,6 @@ export default function RealtimeChat({
     [messages]
   );
 
-  // 7️⃣ Auto-scroll
   useEffect(() => {
     scrollToBottom();
   }, [sortedMessages, scrollToBottom]);
