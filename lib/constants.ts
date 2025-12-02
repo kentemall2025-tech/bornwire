@@ -124,7 +124,7 @@ export const horizonproductsContent = [
     label: "Mama Africa",
     price: 1000,
     imageurl:
-      "https://csmvkgdme8w3hyot.public.blob.vercel-storage.com/WhatsApp Image 2025-11-22 at 9.36.48 PM.jpeg",
+      "https://csmvkgdme8w3hyot.public.blob.vercel-storage.com/WhatsApp Image 2025-11-22 at 9.36.51 PM (1).jpeg",
   },
   {
     id: "3",
