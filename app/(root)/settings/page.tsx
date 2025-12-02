@@ -42,19 +42,20 @@ export default function page() {
             </div>
             <div>{user?.created_at}</div>
           </div>
-
-          <div className="w-full">
-            <LogoutBtn />
-          </div>
-          <div>
-            {user?.email === "kente.mall2025@gmail.com" && (
-              <Link
-                href={"/admin"}
-                className="uppercase bg-white ring-1 ring-yellow-500 rounded-lg"
-              >
-                admin
-              </Link>
-            )}
+          <div className="flex gap-4 items-center ">
+            <div className="w-full">
+              <LogoutBtn />
+            </div>
+            <div>
+              {user?.email === "kente.mall2025@gmail.com" && (
+                <Link
+                  href={"/admin"}
+                  className="uppercase bg-white text-yellow-500 font-bold ring-1 ring-yellow-500 rounded-lg"
+                >
+                  admin
+                </Link>
+              )}
+            </div>
           </div>
         </CardContent>
       </Card>
