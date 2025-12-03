@@ -1,17 +1,21 @@
 import RealtimeChat from "@/components/realtime-chat";
-import { supabase } from "@/lib/supabase/supabase";
 
-export default async function Page({
+export default function Page({
   params,
   searchParams,
 }: {
   params: { id: string };
   searchParams: { [key: string]: string | string[] | undefined };
 }) {
-  const { roomName, username } = await searchParams;
+  const roomName = searchParams.roomName as string | undefined;
+  const username = searchParams.username as string | undefined;
+
+  if (!username || !roomName) {
+    return <div>Missing username or room name</div>;
+  }
 
   return (
-    <div className="max-w-[80%] mx-auto mt-5 bg-yellow-500">
+    <div className="max-w-[80%] mx-auto mt-20">
       <RealtimeChat username={username} roomName={roomName} />
     </div>
   );

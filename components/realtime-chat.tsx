@@ -24,6 +24,7 @@ interface ChatMessage {
 
 interface Props {
   roomName: string;
+  username: string;
 }
 
 export default function RealtimeChat({ roomName }: Props) {
