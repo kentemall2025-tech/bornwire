@@ -101,8 +101,6 @@ export default function RealtimeChat({ roomName, username }: Props) {
     if (!roomId || !newMessage.trim()) return;
 
     await supabase.from("messages").insert({
-      room_id: roomId,
-      user: username,
       content: newMessage,
     });
 
