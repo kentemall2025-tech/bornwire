@@ -7,12 +7,8 @@ export default function Page({
   params: { id: string };
   searchParams: { [key: string]: string | string[] | undefined };
 }) {
-  const roomName = searchParams.roomName as string | undefined;
-  const username = searchParams.username as string | undefined;
-
-  if (!username || !roomName) {
-    return <div>Missing username or room name</div>;
-  }
+  const roomName = searchParams.roomName as string;
+  const username = searchParams.username as string;
 
   return (
     <div className="max-w-[80%] mx-auto mt-20">
