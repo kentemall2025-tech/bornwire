@@ -129,7 +129,7 @@ export default function RealtimeChat({ roomName }: Props) {
             ...prev,
             {
               ...payload.new,
-              user: { email: payload.new.user_email ?? "Unknown" },
+              user: { email: payload.new.user_email ?? currentUser },
             },
           ]);
         }
