@@ -1,3 +1,4 @@
+"use client";
 import RealtimeChat from "@/components/realtime-chat";
 
 export default function Page({
@@ -5,10 +6,10 @@ export default function Page({
   searchParams,
 }: {
   params: { id: string };
-  searchParams: { [key: string]: string | string[] | undefined };
+  searchParams: Record<string, string | string[] | undefined>;
 }) {
-  const roomName = searchParams.roomName as string;
-  const username = searchParams.username as string;
+  const roomName = (searchParams.roomName as string) || params.id;
+  const username = (searchParams.username as string) || "Guest";
 
   return (
     <div className="max-w-[80%] mx-auto mt-20">

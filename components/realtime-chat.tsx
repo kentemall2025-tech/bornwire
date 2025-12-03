@@ -113,6 +113,7 @@ export default function RealtimeChat({ roomName }: Props) {
   // ──────────────────────────────────────────────
   // Subscribe to realtime
   // ──────────────────────────────────────────────
+
   const subscribeRealtime = useCallback(
     (rid: string) => {
       const channel = supabase.channel(`room-${rid}`);
@@ -156,6 +157,7 @@ export default function RealtimeChat({ roomName }: Props) {
   // ──────────────────────────────────────────────
   // Send message
   // ──────────────────────────────────────────────
+
   const sendMessage = async () => {
     if (!roomId || !currentUser || !newMessage.trim()) return;
 
@@ -171,6 +173,7 @@ export default function RealtimeChat({ roomName }: Props) {
   // ──────────────────────────────────────────────
   // Sorting
   // ──────────────────────────────────────────────
+
   const sortedMessages = useMemo(
     () =>
       [...messages].sort((a, b) => a.created_at.localeCompare(b.created_at)),
@@ -182,6 +185,7 @@ export default function RealtimeChat({ roomName }: Props) {
   // ──────────────────────────────────────────────
   // UI
   // ──────────────────────────────────────────────
+
   return (
     <div className="flex flex-col h-[85vh] w-full mx-auto rounded-2xl bg-yellow-500 border shadow">
       <div
