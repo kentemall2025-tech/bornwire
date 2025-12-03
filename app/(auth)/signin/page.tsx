@@ -12,9 +12,6 @@ export default function LoginPage() {
 
     const googleAuth = await supabase.auth.signInWithOAuth({
       provider: "google",
-      options: {
-        redirectTo: `/products`,
-      },
     });
 
     setLoading(false);
