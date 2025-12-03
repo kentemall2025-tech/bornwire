@@ -44,33 +44,43 @@ export default function RealtimeChat({ roomName }: Props) {
   }, []);
 
   // ──────────────────────────────────────────────
-  // 2. Ensure room exists but DO NOT duplicate rooms
+  // 2. Ensure room exists (NEVER NULL name)
   // ──────────────────────────────────────────────
   const ensureRoom = useCallback(async () => {
     if (!currentUser) return;
 
-    const { data: existing } = await supabase
+    const safeRoomName = roomName?.trim() || "default-room";
+
+    // Look for existing room
+    const { data: existing, error: findError } = await supabase
       .from("rooms")
       .select("id")
-      .eq("name", roomName)
+      .eq("name", safeRoomName)
       .maybeSingle();
+
+    if (findError) console.warn("Room lookup error:", findError);
 
     if (existing) {
       setRoomId(existing.id);
       return;
     }
 
-    // Create once
-    const { data: newRoom } = await supabase
+    // Create new room
+    const { data: newRoom, error: createError } = await supabase
       .from("rooms")
       .insert({
-        name: roomName,
+        name: safeRoomName,
         created_by: currentUser,
       })
       .select()
       .single();
 
-    if (newRoom) setRoomId(newRoom.id);
+    if (createError) {
+      console.error("Failed to create room:", createError);
+      return;
+    }
+
+    setRoomId(newRoom.id);
   }, [roomName, currentUser]);
 
   useEffect(() => {
@@ -78,10 +88,10 @@ export default function RealtimeChat({ roomName }: Props) {
   }, [ensureRoom, currentUser]);
 
   // ──────────────────────────────────────────────
-  // 3. Load message history (one-time)
+  // 3. Load message history
   // ──────────────────────────────────────────────
   const loadHistory = useCallback(async (rid: string) => {
-    const { data } = await supabase
+    const { data, error } = await supabase
       .from("messages")
       .select(
         `
@@ -96,11 +106,12 @@ export default function RealtimeChat({ roomName }: Props) {
       .eq("room_id", rid)
       .order("created_at", { ascending: true });
 
+    if (error) console.error("History load error:", error);
     if (data) setMessages(data as any);
   }, []);
 
   // ──────────────────────────────────────────────
-  // 4. Realtime insert listener (SUPER FAST — no DB re-fetch)
+  // 4. Realtime subscription (no refetch needed)
   // ──────────────────────────────────────────────
   const subscribeRealtime = useCallback((rid: string) => {
     const channel = supabase
@@ -114,7 +125,6 @@ export default function RealtimeChat({ roomName }: Props) {
           filter: `room_id=eq.${rid}`,
         },
         (payload) => {
-          // Use payload directly — no extra query!
           setMessages((prev: any) => [
             ...prev,
             {
