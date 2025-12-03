@@ -11,7 +11,7 @@ export default async function Page({
   const { roomName, username } = await searchParams;
 
   return (
-    <div className="max-w-[80%] mx-auto mt-10">
+    <div className="max-w-[80%] mx-auto mt-5">
       <RealtimeChat
         username={username as string}
         roomName={roomName as string}
