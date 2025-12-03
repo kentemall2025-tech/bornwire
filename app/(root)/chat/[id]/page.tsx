@@ -12,10 +12,7 @@ export default async function Page({
 
   return (
     <div className="max-w-[80%] mx-auto mt-5 bg-yellow-500">
-      <RealtimeChat
-        username={username as string}
-        roomName={roomName as string}
-      />
+      <RealtimeChat username={username} roomName={roomName} />
     </div>
   );
 }

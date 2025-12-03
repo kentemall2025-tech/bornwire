@@ -10,11 +10,25 @@ export default function LoginPage() {
     setLoading(true);
     setError(null);
 
-    const { data, error } = await supabase.auth.signInWithOAuth({
+    const googleAuth = await supabase.auth.signInWithOAuth({
       provider: "google",
       options: {
         redirectTo: `/products`,
       },
+    });
+    const { data: authUser } = await supabase.auth.getUser();
+
+    if (!authUser || !authUser.user) {
+      throw new Error("No authenticated user found");
+    }
+
+    const u = authUser.user;
+
+    const { data, error } = await supabase.from("profiles").upsert({
+      id: u.id,
+      full_name: u.user_metadata.full_name,
+      email: u.email,
+      provider: u.app_metadata.provider,
     });
 
     if (error) {
