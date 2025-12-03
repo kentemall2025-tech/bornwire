@@ -16,7 +16,7 @@ export default function Page({
 
   return (
     <div className="max-w-[80%] mx-auto mt-20">
-      <RealtimeChat username={username} roomName={roomName} />
+      <RealtimeChat username={username as string} roomName={roomName} />
     </div>
   );
 }

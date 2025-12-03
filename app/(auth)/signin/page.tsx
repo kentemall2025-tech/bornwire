@@ -16,26 +16,7 @@ export default function LoginPage() {
         redirectTo: `/products`,
       },
     });
-    console.log(JSON.stringify(googleAuth));
-    const { data: authUser } = await supabase.auth.getUser();
 
-    if (!authUser || !authUser.user) {
-      throw new Error("No authenticated user found");
-    }
-
-    const u = authUser.user;
-
-    const { data, error } = await supabase.from("profiles").upsert({
-      id: u.id,
-      full_name: u.user_metadata.full_name,
-      email: u.email,
-      provider: u.app_metadata.provider,
-    });
-    console.log("__________________AUTHUSER _______", authUser.user);
-    console.log("_________________Profiles________", data);
-
-    if (error) {
-    }
     setLoading(false);
   };
 

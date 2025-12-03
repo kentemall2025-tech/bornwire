@@ -7,64 +7,43 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Send } from "lucide-react";
 
-interface Profile {
-  id: string;
-  full_name: string;
-  provider: string;
-  email: string;
-  avatar_url: string;
-}
-
 interface ChatMessage {
   id: string;
   room_id: string;
   user_id: string;
   content: string;
   created_at: string;
-  user: Profile;
+  user: {
+    id: string;
+    email?: string;
+  };
 }
 
 interface Props {
   roomName: string;
   username: string;
 }
-
 export default function RealtimeChat({ roomName }: Props) {
   const { containerRef, scrollToBottom } = useChatScroll();
   const [roomId, setRoomId] = useState<string | null>(null);
   const [messages, setMessages] = useState<ChatMessage[]>([]);
-  const [profiles, setProfiles] = useState<Profile[]>([]);
   const [currentUser, setCurrentUser] = useState<string | null>(null);
   const [newMessage, setNewMessage] = useState("");
   const [connected, setConnected] = useState(false);
 
   // ──────────────────────────────────────────────
-  // Load auth user STEP-0ONE
+  // 1. Load Auth User (Supabase Auth)
   // ──────────────────────────────────────────────
   useEffect(() => {
     const loadUser = async () => {
       const { data } = await supabase.auth.getUser();
-      if (data.user) setCurrentUser(data.user.id);
+      if (data?.user) setCurrentUser(data.user.id);
     };
     loadUser();
-    console.log("step 1");
   }, []);
 
   // ──────────────────────────────────────────────
-  // Load all profiles STEP- TWO
-  // ──────────────────────────────────────────────
-  const loadProfiles = useCallback(async () => {
-    const { data } = await supabase.from("profiles").select("*");
-    if (data) setProfiles(data);
-  }, []);
-
-  useEffect(() => {
-    loadProfiles();
-    console.log("two");
-  }, [loadProfiles]);
-
-  // ──────────────────────────────────────────────
-  // Create or get room STEP- THREE
+  // 2. Ensure Room Exists or Create It
   // ──────────────────────────────────────────────
   const ensureRoom = useCallback(async () => {
     const { data: existing } = await supabase
@@ -86,74 +65,75 @@ export default function RealtimeChat({ roomName }: Props) {
 
   useEffect(() => {
     ensureRoom();
-    console.log("three");
   }, [ensureRoom]);
 
   // ──────────────────────────────────────────────
-  // Load old message history with joined profiles
+  // 3. Load message history with JOIN to auth.users
   // ──────────────────────────────────────────────
-  const loadHistory = useCallback(
-    async (rid: string) => {
-      const { data } = await supabase
-        .from("messages")
-        .select("*")
-        .eq("created_by", rid)
-        .order("created_at");
+  const loadHistory = useCallback(async (rid: string) => {
+    const { data } = await supabase
+      .from("messages")
+      .select(
+        `
+        id,
+        room_id,
+        user_id,
+        content,
+        created_at,
+        user:user_id (
+          id,
+          email
+        )
+      `
+      )
+      .eq("room_id", rid)
+      .order("created_at", { ascending: true });
 
-      if (!data) return;
-
-      const joined = data.map((m) => ({
-        ...m,
-        user: profiles.find((p) => p.id === m.user_id) || {
-          id: m.user_id,
-
-          full_name: "Unknown",
-        },
-      }));
-      console.log("four");
-      setMessages(joined);
-    },
-    [profiles]
-  );
+    if (data) setMessages(data as any);
+  }, []);
 
   // ──────────────────────────────────────────────
-  // Subscribe to realtime
+  // 4. Subscribe to realtime changes
   // ──────────────────────────────────────────────
+  const subscribeRealtime = useCallback((rid: string) => {
+    const channel = supabase.channel(`room-${rid}`);
 
-  const subscribeRealtime = useCallback(
-    (rid: string) => {
-      const channel = supabase.channel(`room-${rid}`);
+    channel.on(
+      "postgres_changes",
+      {
+        event: "INSERT",
+        schema: "public",
+        table: "messages",
+        filter: `room_id=eq.${rid}`,
+      },
+      async (payload) => {
+        const msg = payload.new;
 
-      channel.on(
-        "postgres_changes",
-        { event: "INSERT", schema: "public", table: "messages" },
+        const { data: userData } = await supabase
+          .from("messages")
+          .select(
+            `id, room_id, user_id, content, created_at,
+               user:user_id ( id, email )`
+          )
+          .eq("id", msg.id)
+          .single();
 
-        (payload) => {
-          const msg = payload.new as ChatMessage;
-
-          const profile = profiles.find((p) => p.id === msg.user_id) || {
-            id: msg.user_id,
-
-            full_name: "Unknown",
-          };
-
-          setMessages((prev: any) => [...prev, { ...msg, user: profile }]);
+        if (userData) {
+          setMessages((prev: any) => [...prev, userData]);
         }
-      );
+      }
+    );
 
-      channel.subscribe((status) => {
-        if (status === "SUBSCRIBED") setConnected(true);
-      });
+    channel.subscribe((status) => {
+      if (status === "SUBSCRIBED") setConnected(true);
+    });
 
-      console.log("five");
-      return channel;
-    },
-    [profiles]
-  );
+    return channel;
+  }, []);
 
-  // Subscribe when room + profiles are ready
+  // subscribe when room exists
   useEffect(() => {
-    if (!roomId || profiles.length === 0) return;
+    if (!roomId) return;
 
     loadHistory(roomId);
     const channel = subscribeRealtime(roomId);
@@ -161,42 +141,38 @@ export default function RealtimeChat({ roomName }: Props) {
     return () => {
       supabase.removeChannel(channel);
     };
-  }, [roomId, profiles, loadHistory, subscribeRealtime]);
+  }, [roomId, loadHistory, subscribeRealtime]);
 
   // ──────────────────────────────────────────────
-  // Send message
+  // 5. Send message (user_id references auth.users)
   // ──────────────────────────────────────────────
-
   const sendMessage = async () => {
     if (!roomId || !currentUser || !newMessage.trim()) return;
 
     await supabase.from("messages").insert({
       room_id: roomId,
-      user: currentUser,
+      user_id: currentUser,
       content: newMessage,
     });
-    console.log("step- six");
+
     setNewMessage("");
   };
 
   // ──────────────────────────────────────────────
-  // Sorting
+  // 6. Sort & Auto-Scroll
   // ──────────────────────────────────────────────
-
   const sortedMessages = useMemo(
     () =>
       [...messages].sort((a, b) => a.created_at.localeCompare(b.created_at)),
-
     [messages]
   );
 
   useEffect(() => {
     scrollToBottom();
-    console.log("step-seven");
   }, [sortedMessages]);
 
   // ──────────────────────────────────────────────
-  // UI
+  // 7. UI
   // ──────────────────────────────────────────────
 
   return (
@@ -210,7 +186,7 @@ export default function RealtimeChat({ roomName }: Props) {
             key={msg.id}
             message={{
               id: msg.id,
-              user: { name: msg.user.full_name },
+              user: { name: msg.user.email || "Unknown User" },
               content: msg.content,
               createdAt: msg.created_at,
             }}
