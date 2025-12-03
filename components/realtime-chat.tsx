@@ -13,7 +13,7 @@ interface ChatMessage {
   user_id: string;
   content: string;
   created_at: string;
-  user: { email?: string };
+  user_email?: string;
 }
 
 interface Props {
@@ -22,30 +22,30 @@ interface Props {
 
 export default function RealtimeChat({ roomName }: Props) {
   const { containerRef, scrollToBottom } = useChatScroll();
+
   const [roomId, setRoomId] = useState<string | null>(null);
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [currentUser, setCurrentUser] = useState<string | null>(null);
   const [currentUserEmail, setCurrentUserEmail] = useState<string | null>(null);
+
   const [newMessage, setNewMessage] = useState("");
   const [connected, setConnected] = useState(false);
   const [historyLoaded, setHistoryLoaded] = useState(false);
 
   // ──────────────────────────────────────────────
-  // 1. Load Auth User
+  // 1. Load authenticated user
   // ──────────────────────────────────────────────
   useEffect(() => {
-    const loadUser = async () => {
-      const { data } = await supabase.auth.getUser();
+    supabase.auth.getUser().then(({ data }) => {
       if (data?.user) {
         setCurrentUser(data.user.id);
         setCurrentUserEmail(data.user.email ?? null);
       }
-    };
-    loadUser();
+    });
   }, []);
 
   // ──────────────────────────────────────────────
-  // 2. Ensure Room Exists (name NOT NULL safe)
+  // 2. Ensure room exists
   // ──────────────────────────────────────────────
   const ensureRoom = useCallback(async () => {
     if (!currentUser) return;
@@ -85,7 +85,7 @@ export default function RealtimeChat({ roomName }: Props) {
   }, [ensureRoom, currentUser]);
 
   // ──────────────────────────────────────────────
-  // 3. Load Message History (fully fixes refresh issue)
+  // 3. Load persisted message history (fixed)
   // ──────────────────────────────────────────────
   const loadHistory = useCallback(async (rid: string) => {
     const { data, error } = await supabase
@@ -96,23 +96,37 @@ export default function RealtimeChat({ roomName }: Props) {
         room_id,
         user_id,
         content,
-        created_at,
-        user:user_id ( email )
+        created_at
       `
       )
       .eq("room_id", rid)
       .order("created_at", { ascending: true });
 
-    if (error) console.error("History load error:", error);
-
-    if (data) {
-      setMessages(data as any);
-      setHistoryLoaded(true);
+    if (error) {
+      console.error("History load error:", error);
+      return;
     }
+
+    // Post-process: fetch user emails for all messages
+    // This avoids broken relationships from auth.users
+    const enriched = await Promise.all(
+      (data ?? []).map(async (msg) => {
+        const { data: userInfo } = await supabase.auth.admin.getUserById(
+          msg.user_id
+        );
+        return {
+          ...msg,
+          user_email: userInfo?.user?.email ?? "Unknown",
+        };
+      })
+    );
+
+    setMessages(enriched as ChatMessage[]);
+    setHistoryLoaded(true);
   }, []);
 
   // ──────────────────────────────────────────────
-  // 4. Realtime Listener
+  // 4. Real-time subscription (fixed payload)
   // ──────────────────────────────────────────────
   const subscribeRealtime = useCallback((rid: string) => {
     const channel = supabase
@@ -125,12 +139,19 @@ export default function RealtimeChat({ roomName }: Props) {
           table: "messages",
           filter: `room_id=eq.${rid}`,
         },
-        (payload) => {
-          setMessages((prev: any) => [
+        async (payload) => {
+          const msg = payload.new as ChatMessage;
+
+          // fetch the correct email
+          const { data: userInfo } = await supabase.auth.admin.getUserById(
+            msg.user_id
+          );
+
+          setMessages((prev) => [
             ...prev,
             {
-              ...payload.new,
-              user: { email: payload.new.user_email ?? "Unknown" },
+              ...msg,
+              user_email: userInfo?.user?.email ?? "Unknown",
             },
           ]);
         }
@@ -145,10 +166,8 @@ export default function RealtimeChat({ roomName }: Props) {
   useEffect(() => {
     if (!roomId) return;
 
-    // Load history first
     loadHistory(roomId);
 
-    // Attach realtime afterward
     const channel = subscribeRealtime(roomId);
 
     return () => {
@@ -157,7 +176,7 @@ export default function RealtimeChat({ roomName }: Props) {
   }, [roomId, loadHistory, subscribeRealtime]);
 
   // ──────────────────────────────────────────────
-  // 5. Send Message
+  // 5. Send message
   // ──────────────────────────────────────────────
   const sendMessage = async () => {
     if (!roomId || !currentUser || !newMessage.trim()) return;
@@ -172,7 +191,7 @@ export default function RealtimeChat({ roomName }: Props) {
   };
 
   // ──────────────────────────────────────────────
-  // 6. Sort Messages
+  // 6. Sort messages
   // ──────────────────────────────────────────────
   const sortedMessages = useMemo(
     () =>
@@ -183,13 +202,13 @@ export default function RealtimeChat({ roomName }: Props) {
     [messages]
   );
 
-  // Auto-scroll
+  // Auto-scroll after history loads
   useEffect(() => {
     if (historyLoaded) scrollToBottom();
   }, [sortedMessages, historyLoaded]);
 
   // ──────────────────────────────────────────────
-  // 7. UI Rendering
+  // 7. UI
   // ──────────────────────────────────────────────
   return (
     <div className="flex flex-col h-[85vh] w-full mx-auto rounded-2xl bg-yellow-500 border shadow">
@@ -197,24 +216,23 @@ export default function RealtimeChat({ roomName }: Props) {
         ref={containerRef}
         className="flex-1 overflow-y-auto p-4 space-y-4 bg-white rounded-t-2xl"
       >
-        {!historyLoaded && (
+        {!historyLoaded ? (
           <p className="text-center text-gray-500">Loading messages…</p>
-        )}
-
-        {historyLoaded &&
+        ) : (
           sortedMessages.map((msg) => (
             <ChatMessageItem
               key={msg.id}
               message={{
                 id: msg.id,
-                user: { name: msg.user?.email || "Unknown" },
+                user: { name: msg.user_email ?? "Unknown" },
                 content: msg.content,
                 createdAt: msg.created_at,
               }}
               isOwnMessage={msg.user_id === currentUser}
               showHeader={true}
             />
-          ))}
+          ))
+        )}
       </div>
 
       <form
@@ -225,7 +243,7 @@ export default function RealtimeChat({ roomName }: Props) {
         className="flex items-center gap-3 p-3 bg-gray-100 border-t rounded-b-2xl"
       >
         <Input
-          placeholder={connected ? "Type your message..." : "Connecting..."}
+          placeholder={connected ? "Type your message…" : "Connecting…"}
           value={newMessage}
           disabled={!connected}
           onChange={(e) => setNewMessage(e.target.value)}
