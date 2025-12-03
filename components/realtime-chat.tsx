@@ -10,7 +10,9 @@ import { Send } from "lucide-react";
 interface Profile {
   id: string;
   full_name: string;
-  avatar_url?: string;
+  provider: string;
+  email: string;
+  avatar_url: string;
 }
 
 interface ChatMessage {
@@ -37,7 +39,7 @@ export default function RealtimeChat({ roomName }: Props) {
   const [connected, setConnected] = useState(false);
 
   // ──────────────────────────────────────────────
-  // Load auth user
+  // Load auth user STEP-0ONE
   // ──────────────────────────────────────────────
   useEffect(() => {
     const loadUser = async () => {
@@ -45,10 +47,11 @@ export default function RealtimeChat({ roomName }: Props) {
       if (data.user) setCurrentUser(data.user.id);
     };
     loadUser();
+    console.log("step 1");
   }, []);
 
   // ──────────────────────────────────────────────
-  // Load all profiles
+  // Load all profiles STEP- TWO
   // ──────────────────────────────────────────────
   const loadProfiles = useCallback(async () => {
     const { data } = await supabase.from("profiles").select("*");
@@ -57,10 +60,11 @@ export default function RealtimeChat({ roomName }: Props) {
 
   useEffect(() => {
     loadProfiles();
+    console.log("two");
   }, [loadProfiles]);
 
   // ──────────────────────────────────────────────
-  // Create or get room
+  // Create or get room STEP- THREE
   // ──────────────────────────────────────────────
   const ensureRoom = useCallback(async () => {
     const { data: existing } = await supabase
@@ -82,6 +86,7 @@ export default function RealtimeChat({ roomName }: Props) {
 
   useEffect(() => {
     ensureRoom();
+    console.log("three");
   }, [ensureRoom]);
 
   // ──────────────────────────────────────────────
@@ -92,7 +97,7 @@ export default function RealtimeChat({ roomName }: Props) {
       const { data } = await supabase
         .from("messages")
         .select("*")
-        .eq("room_id", rid)
+        .eq("created_by", rid)
         .order("created_at");
 
       if (!data) return;
@@ -101,10 +106,11 @@ export default function RealtimeChat({ roomName }: Props) {
         ...m,
         user: profiles.find((p) => p.id === m.user_id) || {
           id: m.user_id,
+
           full_name: "Unknown",
         },
       }));
-
+      console.log("four");
       setMessages(joined);
     },
     [profiles]
@@ -121,15 +127,17 @@ export default function RealtimeChat({ roomName }: Props) {
       channel.on(
         "postgres_changes",
         { event: "INSERT", schema: "public", table: "messages" },
+
         (payload) => {
           const msg = payload.new as ChatMessage;
 
           const profile = profiles.find((p) => p.id === msg.user_id) || {
             id: msg.user_id,
+
             full_name: "Unknown",
           };
 
-          setMessages((prev) => [...prev, { ...msg, user: profile }]);
+          setMessages((prev: any) => [...prev, { ...msg, user: profile }]);
         }
       );
 
@@ -137,6 +145,7 @@ export default function RealtimeChat({ roomName }: Props) {
         if (status === "SUBSCRIBED") setConnected(true);
       });
 
+      console.log("five");
       return channel;
     },
     [profiles]
@@ -163,10 +172,10 @@ export default function RealtimeChat({ roomName }: Props) {
 
     await supabase.from("messages").insert({
       room_id: roomId,
-      user_id: currentUser,
+      user: currentUser,
       content: newMessage,
     });
-
+    console.log("step- six");
     setNewMessage("");
   };
 
@@ -177,10 +186,14 @@ export default function RealtimeChat({ roomName }: Props) {
   const sortedMessages = useMemo(
     () =>
       [...messages].sort((a, b) => a.created_at.localeCompare(b.created_at)),
+
     [messages]
   );
 
-  useEffect(() => scrollToBottom(), [sortedMessages]);
+  useEffect(() => {
+    scrollToBottom();
+    console.log("step-seven");
+  }, [sortedMessages]);
 
   // ──────────────────────────────────────────────
   // UI

@@ -1,4 +1,5 @@
 "use client";
+
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Home, Package, Settings, Menu, LayoutDashboard } from "lucide-react";
@@ -14,12 +15,6 @@ export function SiteNav() {
     { href: "/", label: "Home", icon: Home },
     { href: "/products", label: "Products", icon: Package },
     { href: "/settings", label: "Settings", icon: Settings },
-  ];
-  const navItems2 = [
-    { href: "/", label: "Home", icon: Home },
-    { href: "/products", label: "Products", icon: Package },
-    { href: "/settings", label: "Settings", icon: Settings },
-    { href: "/admin", label: "Admin" },
   ];
 
   useEffect(() => {

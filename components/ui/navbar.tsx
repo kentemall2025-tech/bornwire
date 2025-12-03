@@ -1,4 +1,5 @@
 "use client";
+
 import { cn } from "@/lib/utils";
 import Image from "next/image";
 import Link from "next/link";
@@ -38,13 +39,14 @@ function NavBar({ className }: NavbarProps) {
         className="font-poppins text-lg text-yellow-500 rounded-lg object-contain md:text-2xl lowercase font-bold"
       >
         <Image
-          src="https://csmvkgdme8w3hyot.public.blob.vercel-storage.com/WhatsApp%20Image%202025-11-23%20at%2012.21.54%20AM.jpeg"
+          src="https://csmvkgdme8w3hyot.public.blob.vercel-storage.com/WhatsApp Image 2025-11-23 at 12.21.54 AM.jpeg"
           width={500}
           alt="logo"
           className="h-10 w-10 rounded-lg object-contain"
           height={400}
         />
       </Link>
+
       <div className="flex  gap-2 flex-row-reverse">
         {user ? (
           <div className="flex flex-row-reverse p-2 gap-2 items-center">
@@ -58,6 +60,7 @@ function NavBar({ className }: NavbarProps) {
                 height={50}
               />
             </Avatar>
+
             <SiteNav />
           </div>
         ) : (

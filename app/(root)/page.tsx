@@ -10,7 +10,7 @@ import {
   testimonialContent,
 } from "@/lib/constants";
 import Services from "@/components/ui/service";
-import Videocomp from "@/components/ui/videocomp";
+import { Videocomp } from "@/components/ui/videocomp";
 import Testimonials from "@/components/ui/testies";
 import SearchBar from "@/components/ui/searchbar";
 import About from "@/components/ui/about";
@@ -47,11 +47,11 @@ export default function Home() {
         </h2>
         <Services services={servicesContent} />
       </div>
-      <div className="p-4">
-        <Videocomp src="https://csmvkgdme8w3hyot.public.blob.vercel-storage.com/WhatsApp%20Video%202025-11-11%20at%201.19.37%20PM.mp4" />
+      <div className="p-2 my-10 ">
+        <Videocomp src="https://csmvkgdme8w3hyot.public.blob.vercel-storage.com/WhatsApp%20Video%202025-11-11%20at%201.18.28%20PM.mp4" />
       </div>
-      <div className="mt-5">
-        <h2 className="text-4xl uppercase underline-offset-6  underline  font-bold font-poppins text-center  p-4">
+      <div className="mt-10">
+        <h2 className="text-4xl uppercase underline-offset-6  underline  font-bold font-poppins text-center  p-4 mt-6">
           Testimonials
         </h2>
         <Testimonials

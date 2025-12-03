@@ -1,4 +1,5 @@
 "use client";
+
 import Video from "next-video";
 import { cn } from "@/lib/utils";
 
@@ -7,21 +8,21 @@ interface videocompprops {
   src: string;
 }
 
-function Videocomp(props: videocompprops) {
+export const Videocomp = (props: videocompprops) => {
   return (
-    <div className="w-full md:max-w-4xl lg:max-w-[60%] max-w-full h-auto rounded-lg md:mx-auto md:h-screen overflow-hidden shadow-lg p-0 object-cover">
+    <div className="md:max-w-[90%]  mx-auto h-[50vh] md:object-contain">
       <Video
-        className={cn("object-cover w-full", props.className)}
-        muted
-        loop
-        autoPlay
-        playsInline
+        className={cn("", props.className)}
+        controls={false}
+        muted={true}
+        loop={true}
+        autoPlay={true}
         src={props.src}
-        width={900}
+        width={1000}
         height={500}
-      />
+      >
+        <source src={props.src} />
+      </Video>
     </div>
   );
-}
-
-export default Videocomp;
+};

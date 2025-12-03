@@ -16,6 +16,7 @@ export default function LoginPage() {
         redirectTo: `/products`,
       },
     });
+    console.log(JSON.stringify(googleAuth));
     const { data: authUser } = await supabase.auth.getUser();
 
     if (!authUser || !authUser.user) {
@@ -30,6 +31,8 @@ export default function LoginPage() {
       email: u.email,
       provider: u.app_metadata.provider,
     });
+    console.log("__________________AUTHUSER _______", authUser.user);
+    console.log("_________________Profiles________", data);
 
     if (error) {
     }

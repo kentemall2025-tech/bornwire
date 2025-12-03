@@ -35,10 +35,10 @@ export default function RootLayout({
       <body
         className={`${poppinsSans.variable} ${geistMono.variable} antialiased`}
       >
-        <>
+        <main>
           <NavBar />
-          <div>{children}</div>
-        </>
+          <>{children}</>
+        </main>
       </body>
     </html>
   );
