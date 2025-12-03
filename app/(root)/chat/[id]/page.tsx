@@ -15,7 +15,7 @@ export default function Page({
   const username = searchParams.username as string;
 
   return (
-    <div className="max-w-[80%] mx-auto mt-20">
+    <div className="max-w-[80%] mx-auto mt-10">
       <RealtimeChat username={username as string} roomName={roomName} />
     </div>
   );
