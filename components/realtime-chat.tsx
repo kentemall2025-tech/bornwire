@@ -28,9 +28,10 @@ export default function RealtimeChat({ roomName }: Props) {
   const [currentUserEmail, setCurrentUserEmail] = useState<string | null>(null);
   const [newMessage, setNewMessage] = useState("");
   const [connected, setConnected] = useState(false);
+  const [historyLoaded, setHistoryLoaded] = useState(false);
 
   // ──────────────────────────────────────────────
-  // 1. Load Supabase authenticated user
+  // 1. Load Auth User
   // ──────────────────────────────────────────────
   useEffect(() => {
     const loadUser = async () => {
@@ -44,29 +45,25 @@ export default function RealtimeChat({ roomName }: Props) {
   }, []);
 
   // ──────────────────────────────────────────────
-  // 2. Ensure room exists (NEVER NULL name)
+  // 2. Ensure Room Exists (name NOT NULL safe)
   // ──────────────────────────────────────────────
   const ensureRoom = useCallback(async () => {
     if (!currentUser) return;
 
     const safeRoomName = roomName?.trim() || "default-room";
 
-    // Look for existing room
-    const { data: existing, error: findError } = await supabase
+    const { data: existing } = await supabase
       .from("rooms")
       .select("id")
       .eq("name", safeRoomName)
       .maybeSingle();
-
-    if (findError) console.warn("Room lookup error:", findError);
 
     if (existing) {
       setRoomId(existing.id);
       return;
     }
 
-    // Create new room
-    const { data: newRoom, error: createError } = await supabase
+    const { data: newRoom, error } = await supabase
       .from("rooms")
       .insert({
         name: safeRoomName,
@@ -75,8 +72,8 @@ export default function RealtimeChat({ roomName }: Props) {
       .select()
       .single();
 
-    if (createError) {
-      console.error("Failed to create room:", createError);
+    if (error) {
+      console.error("Room creation error:", error);
       return;
     }
 
@@ -88,7 +85,7 @@ export default function RealtimeChat({ roomName }: Props) {
   }, [ensureRoom, currentUser]);
 
   // ──────────────────────────────────────────────
-  // 3. Load message history
+  // 3. Load Message History (fully fixes refresh issue)
   // ──────────────────────────────────────────────
   const loadHistory = useCallback(async (rid: string) => {
     const { data, error } = await supabase
@@ -107,11 +104,15 @@ export default function RealtimeChat({ roomName }: Props) {
       .order("created_at", { ascending: true });
 
     if (error) console.error("History load error:", error);
-    if (data) setMessages(data as any);
+
+    if (data) {
+      setMessages(data as any);
+      setHistoryLoaded(true);
+    }
   }, []);
 
   // ──────────────────────────────────────────────
-  // 4. Realtime subscription (no refetch needed)
+  // 4. Realtime Listener
   // ──────────────────────────────────────────────
   const subscribeRealtime = useCallback((rid: string) => {
     const channel = supabase
@@ -129,7 +130,7 @@ export default function RealtimeChat({ roomName }: Props) {
             ...prev,
             {
               ...payload.new,
-              user: { email: payload.new.user_email ?? currentUser },
+              user: { email: payload.new.user_email ?? "Unknown" },
             },
           ]);
         }
@@ -144,16 +145,19 @@ export default function RealtimeChat({ roomName }: Props) {
   useEffect(() => {
     if (!roomId) return;
 
+    // Load history first
     loadHistory(roomId);
+
+    // Attach realtime afterward
     const channel = subscribeRealtime(roomId);
 
     return () => {
       supabase.removeChannel(channel);
     };
-  }, [roomId, subscribeRealtime, loadHistory]);
+  }, [roomId, loadHistory, subscribeRealtime]);
 
   // ──────────────────────────────────────────────
-  // 5. Send a message
+  // 5. Send Message
   // ──────────────────────────────────────────────
   const sendMessage = async () => {
     if (!roomId || !currentUser || !newMessage.trim()) return;
@@ -168,7 +172,7 @@ export default function RealtimeChat({ roomName }: Props) {
   };
 
   // ──────────────────────────────────────────────
-  // 6. Sorted messages
+  // 6. Sort Messages
   // ──────────────────────────────────────────────
   const sortedMessages = useMemo(
     () =>
@@ -179,9 +183,10 @@ export default function RealtimeChat({ roomName }: Props) {
     [messages]
   );
 
+  // Auto-scroll
   useEffect(() => {
-    scrollToBottom();
-  }, [sortedMessages]);
+    if (historyLoaded) scrollToBottom();
+  }, [sortedMessages, historyLoaded]);
 
   // ──────────────────────────────────────────────
   // 7. UI Rendering
@@ -192,19 +197,24 @@ export default function RealtimeChat({ roomName }: Props) {
         ref={containerRef}
         className="flex-1 overflow-y-auto p-4 space-y-4 bg-white rounded-t-2xl"
       >
-        {sortedMessages.map((msg) => (
-          <ChatMessageItem
-            key={msg.id}
-            message={{
-              id: msg.id,
-              user: { name: msg.user?.email || "Unknown" },
-              content: msg.content,
-              createdAt: msg.created_at,
-            }}
-            isOwnMessage={msg.user_id === currentUser}
-            showHeader={true}
-          />
-        ))}
+        {!historyLoaded && (
+          <p className="text-center text-gray-500">Loading messages…</p>
+        )}
+
+        {historyLoaded &&
+          sortedMessages.map((msg) => (
+            <ChatMessageItem
+              key={msg.id}
+              message={{
+                id: msg.id,
+                user: { name: msg.user?.email || "Unknown" },
+                content: msg.content,
+                createdAt: msg.created_at,
+              }}
+              isOwnMessage={msg.user_id === currentUser}
+              showHeader={true}
+            />
+          ))}
       </div>
 
       <form
