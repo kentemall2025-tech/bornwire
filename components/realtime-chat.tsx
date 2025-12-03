@@ -124,7 +124,7 @@ export default function RealtimeChat({ roomName, username }: Props) {
   // UI
   // ────────────────────────────────────────────
   return (
-    <div className="flex flex-col h-[85vh] max-w-2xl w-full mx-auto rounded-2xl bg-yellow-500 border shadow ">
+    <div className="flex flex-col h-[85vh]  w-full mx-auto rounded-2xl bg-yellow-500 border shadow ">
       {/* Messages */}
       <div
         ref={containerRef}
