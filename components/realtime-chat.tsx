@@ -27,67 +27,46 @@ export default function RealtimeChat({ roomName, username }: Props) {
   const [newMessage, setNewMessage] = useState("");
   const [connected, setConnected] = useState(false);
 
-  //----------------------------------------------------------------------
-  // 1️⃣ Create room or fetch existing
-  //----------------------------------------------------------------------
+  // ────────────────────────────────────────────
+  //  Create room or fetch existing
+  // ────────────────────────────────────────────
   const ensureRoom = useCallback(async () => {
-    const { data: existing, error } = await supabase
+    const { data: existing } = await supabase
       .from("rooms")
       .select("id")
       .eq("name", roomName)
       .maybeSingle();
 
-    if (error) {
-      console.error("ROOM ERROR:", error);
-      return;
-    }
+    if (existing) return setRoomId(existing.id);
 
-    if (existing) {
-      setRoomId(existing.id);
-      return;
-    }
-
-    // create new room
-    const { data: newRoom, error: createError } = await supabase
+    const { data: newRoom } = await supabase
       .from("rooms")
       .insert({ name: roomName })
       .select()
       .single();
 
-    if (createError) {
-      console.error("ROOM CREATE ERROR:", createError);
-      return;
-    }
-
-    setRoomId(newRoom.id);
+    if (newRoom) setRoomId(newRoom.id);
   }, [roomName]);
 
   const loadHistory = useCallback(async (rid: string) => {
-    const { data, error } = await supabase
+    const { data } = await supabase
       .from("messages")
       .select("*")
       .eq("room_id", rid)
       .order("created_at", { ascending: true });
 
-    if (error) console.error("LOAD HISTORY ERROR:", error);
-
     if (data) setMessages(data);
   }, []);
 
-  //----------------------------------------------------------------------
-  // 3️⃣ Subscribe to realtime updates ONLY once
-  //----------------------------------------------------------------------
-
+  // ────────────────────────────────────────────
+  // Realtime subscription
+  // ────────────────────────────────────────────
   const subscribeRealtime = useCallback((rid: string) => {
     const channel = supabase.channel(`room-${rid}`);
 
     channel.on(
       "postgres_changes",
-      {
-        schema: "public",
-        table: "messages",
-        event: "INSERT",
-      },
+      { event: "INSERT", schema: "public", table: "messages" },
       (payload) => {
         setMessages((prev) => [...prev, payload.new as ChatMessage]);
       }
@@ -100,23 +79,14 @@ export default function RealtimeChat({ roomName, username }: Props) {
     return channel;
   }, []);
 
-  //----------------------------------------------------------------------
-  // INIT: Make sure room exists
-  //----------------------------------------------------------------------
-
   useEffect(() => {
     ensureRoom();
   }, [ensureRoom]);
-
-  //----------------------------------------------------------------------
-  // When roomId becomes available, load messages + subscribe
-  //----------------------------------------------------------------------
 
   useEffect(() => {
     if (!roomId) return;
 
     loadHistory(roomId);
-
     const channel = subscribeRealtime(roomId);
 
     return () => {
@@ -124,45 +94,44 @@ export default function RealtimeChat({ roomName, username }: Props) {
     };
   }, [roomId, loadHistory, subscribeRealtime]);
 
-  //----------------------------------------------------------------------
-  // Send message (NO select() so realtime handles it)
-  //----------------------------------------------------------------------
-
+  // ────────────────────────────────────────────
+  // Send message
+  // ────────────────────────────────────────────
   const sendMessage = async () => {
     if (!roomId || !newMessage.trim()) return;
 
     await supabase.from("messages").insert({
+      room_id: roomId,
+      user: username,
       content: newMessage,
     });
+
     setNewMessage("");
   };
 
-  //----------------------------------------------------------------------
-  // Sorting (guaranteed stable)
-  //----------------------------------------------------------------------
-
-  const sortedMessages = useMemo(() => {
-    return [...messages].sort((a, b) =>
-      a.created_at.localeCompare(b.created_at)
-    );
-  }, [messages]);
-
-  //----------------------------------------------------------------------
-  // Auto-scroll when messages update
-  //----------------------------------------------------------------------
+  // ────────────────────────────────────────────
+  // Sort messages
+  // ────────────────────────────────────────────
+  const sortedMessages = useMemo(
+    () =>
+      [...messages].sort((a, b) => a.created_at.localeCompare(b.created_at)),
+    [messages]
+  );
 
   useEffect(() => {
     scrollToBottom();
   }, [sortedMessages, scrollToBottom]);
 
-  //----------------------------------------------------------------------
-  // UI Rendering
-  //----------------------------------------------------------------------
-
+  // ────────────────────────────────────────────
+  // UI
+  // ────────────────────────────────────────────
   return (
-    <div className="flex flex-col h-[80vh] max-w-[90%] mt-5 mx-auto bg-yellow-500 rounded-lg">
-      {/* MESSAGES */}
-      <div ref={containerRef} className="flex-1 overflow-y-auto p-4 space-y-4">
+    <div className="flex flex-col h-[85vh] max-w-2xl w-full mx-auto mt-6 rounded-2xl bg-gray-50 border shadow">
+      {/* Messages */}
+      <div
+        ref={containerRef}
+        className="flex-1 overflow-y-auto p-4 space-y-4 bg-white rounded-t-2xl"
+      >
         {sortedMessages.map((msg) => (
           <ChatMessageItem
             key={msg.id}
@@ -178,24 +147,28 @@ export default function RealtimeChat({ roomName, username }: Props) {
         ))}
       </div>
 
-      {/* INPUT */}
+      {/* Input Section */}
       <form
-        className="rounded-full bg-white"
         onSubmit={(e) => {
           e.preventDefault();
           sendMessage();
         }}
+        className="flex items-center gap-3 p-3 bg-gray-100 border-t rounded-b-2xl"
       >
         <Input
-          className="flex items-center gap-2 p-4 border-t"
           type="text"
-          placeholder={connected ? "Type..." : "Connecting..."}
+          placeholder={connected ? "Type your message..." : "Connecting..."}
+          className="flex-1 rounded-full bg-white shadow-sm px-4 py-2"
           value={newMessage}
-          onChange={(e) => setNewMessage(e.target.value)}
           disabled={!connected}
+          onChange={(e) => setNewMessage(e.target.value)}
         />
 
-        <Button type="submit" disabled={!connected || !newMessage.trim()}>
+        <Button
+          type="submit"
+          className="rounded-full px-4 py-2"
+          disabled={!connected || !newMessage.trim()}
+        >
           <Send size={18} />
         </Button>
       </form>

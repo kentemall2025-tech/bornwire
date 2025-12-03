@@ -14,7 +14,10 @@ export const ChatMessageItem = ({
 }: ChatMessageItemProps) => {
   return (
     <div
-      className={`flex mt-1 ${isOwnMessage ? "justify-end" : "justify-start"}`}
+      className={cn("flex w-full", {
+        "justify-end": isOwnMessage,
+        "justify-start": !isOwnMessage,
+      })}
     >
       <div
         className={cn("max-w-[75%] w-fit flex flex-col gap-1", {
@@ -23,12 +26,15 @@ export const ChatMessageItem = ({
       >
         {showHeader && (
           <div
-            className={cn("flex items-center gap-2 text-xs px-3", {
+            className={cn("flex items-center gap-2 text-xs px-1 opacity-80", {
               "justify-end flex-row-reverse": isOwnMessage,
             })}
           >
-            <span className={"font-medium"}>{message.user.name}</span>
-            <span className="text-foreground/50 text-xs">
+            <span className="font-semibold text-xs text-foreground/80">
+              {message.user.name}
+            </span>
+
+            <span className="text-foreground/50 text-[10px]">
               {new Date(message.createdAt).toLocaleTimeString("en-US", {
                 hour: "2-digit",
                 minute: "2-digit",
@@ -37,12 +43,13 @@ export const ChatMessageItem = ({
             </span>
           </div>
         )}
+
         <div
           className={cn(
-            "py-2 px-3 rounded-xl text-sm w-fit",
+            "py-2 px-4 rounded-2xl text-sm shadow-sm transition-all",
             isOwnMessage
-              ? "bg-white text-black"
-              : "bg-muted text-black text-foreground"
+              ? "bg-blue-500 text-white shadow-blue-300/30"
+              : "bg-gray-200 text-gray-900 shadow-gray-300/30"
           )}
         >
           {message.content}
