@@ -14,7 +14,7 @@ export const ChatMessageItem = ({
 }: ChatMessageItemProps) => {
   return (
     <div
-      className={cn("flex w-full", {
+      className={cn("flex w-full bg-yellow-500", {
         "justify-end": isOwnMessage,
         "justify-start": !isOwnMessage,
       })}
