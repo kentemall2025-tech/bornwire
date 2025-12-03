@@ -1,5 +1,4 @@
 "use client";
-
 import { useState, useEffect, useCallback, useMemo } from "react";
 import { supabase } from "@/lib/supabase/supabase";
 import { ChatMessageItem } from "@/components/chat-message";
@@ -22,7 +21,7 @@ interface ChatMessage {
 
 interface Props {
   roomName: string;
-  username: string;
+  username:string
 }
 
 export default function RealtimeChat({ roomName }: Props) {
@@ -34,22 +33,22 @@ export default function RealtimeChat({ roomName }: Props) {
   const [connected, setConnected] = useState(false);
 
   // ──────────────────────────────────────────────
-  // 1. Load Auth User (Supabase Auth)
+  // 1. Load Supabase Auth User
   // ──────────────────────────────────────────────
   useEffect(() => {
     const loadUser = async () => {
       const { data } = await supabase.auth.getUser();
-      if (data?.user) {
-        setCurrentUser(data.user.id);
-      }
+      if (data?.user) setCurrentUser(data.user.id);
     };
     loadUser();
   }, []);
 
   // ──────────────────────────────────────────────
-  // 2. Ensure Room Exists or Create It
+  // 2. Ensure Room Exists (FIX: MUST include created_by)
   // ──────────────────────────────────────────────
   const ensureRoom = useCallback(async () => {
+    if (!currentUser) return;
+
     const { data: existing } = await supabase
       .from("rooms")
       .select("id")
@@ -61,21 +60,27 @@ export default function RealtimeChat({ roomName }: Props) {
       return;
     }
 
-    const { data: newRoom } = await supabase
+    // IMPORTANT FIX––must include created_by
+    const { data: newRoom, error } = await supabase
       .from("rooms")
-      .insert({ name: roomName })
+      .insert({
+        name: roomName,
+        created_by: currentUser, // FIX
+      })
       .select()
       .single();
 
+    if (error) console.error("Room creation error:", error);
+
     if (newRoom) setRoomId(newRoom.id);
-  }, [roomName]);
+  }, [roomName, currentUser]);
 
   useEffect(() => {
-    ensureRoom();
-  }, [ensureRoom]);
+    if (currentUser) ensureRoom();
+  }, [ensureRoom, currentUser]);
 
   // ──────────────────────────────────────────────
-  // 3. Load message history with JOIN to auth.users
+  // 3. Load history with JOIN to auth.users
   // ──────────────────────────────────────────────
   const loadHistory = useCallback(async (rid: string) => {
     const { data } = await supabase
@@ -100,53 +105,47 @@ export default function RealtimeChat({ roomName }: Props) {
   }, []);
 
   // ──────────────────────────────────────────────
-  // 4. Subscribe to realtime changes
+  // 4. Realtime subscription (CORRECTED)
   // ──────────────────────────────────────────────
-  const subscribeRealtime = useCallback(
-    (rid: string) => {
-      const channel = supabase
-        .channel(`room-${rid}`, {
-          config: {
-            broadcast: { ack: true },
-            presence: { key: currentUser || "unknown" },
-          },
-        })
-        .on(
-          "postgres_changes",
-          {
-            event: "INSERT",
-            schema: "public",
-            table: "messages",
-            filter: `room_id=eq.${rid}`,
-          },
-          async (payload) => {
-            // Fetch full joined user row
-            const { data } = await supabase
-              .from("messages")
-              .select(
-                `id, room_id, user_id, content, created_at,
-                 user:user_id ( id, email )`
-              )
-              .eq("id", payload.new.id)
-              .single();
+  const subscribeRealtime = useCallback((rid: string) => {
+    const channel = supabase
+      .channel(`room-${rid}`)
+      .on(
+        "postgres_changes",
+        {
+          event: "INSERT",
+          schema: "public",
+          table: "messages",
+          filter: `room_id=eq.${rid}`,
+        },
+        async (payload) => {
+          const { data } = await supabase
+            .from("messages")
+            .select(
+              `
+                id,
+                room_id,
+                user_id,
+                content,
+                created_at,
+                user:user_id ( id, email )
+              `
+            )
+            .eq("id", payload.new.id)
+            .single();
 
-            if (data) {
-              setMessages((prev: any) => [...prev, data]);
-            }
+          if (data) {
+            setMessages((prev: any) => [...prev, data]);
           }
-        )
-        .subscribe((status) => {
-          if (status === "SUBSCRIBED") {
-            setConnected(true); // FIX: this now fires correctly
-          }
-        });
+        }
+      )
+      .subscribe((status) => {
+        if (status === "SUBSCRIBED") setConnected(true);
+      });
 
-      return channel;
-    },
-    [currentUser]
-  );
+    return channel;
+  }, []);
 
-  // subscribe when room exists
   useEffect(() => {
     if (!roomId) return;
 
@@ -156,10 +155,10 @@ export default function RealtimeChat({ roomName }: Props) {
     return () => {
       supabase.removeChannel(channel);
     };
-  }, [roomId, loadHistory, subscribeRealtime]);
+  }, [roomId, subscribeRealtime, loadHistory]);
 
   // ──────────────────────────────────────────────
-  // 5. Send message
+  // 5. Send message (works)
   // ──────────────────────────────────────────────
   const sendMessage = async () => {
     if (!roomId || !currentUser || !newMessage.trim()) return;
@@ -178,11 +177,10 @@ export default function RealtimeChat({ roomName }: Props) {
   // ──────────────────────────────────────────────
   const sortedMessages = useMemo(
     () =>
-      [...messages].sort((a, b) => {
-        return (
+      [...messages].sort(
+        (a, b) =>
           new Date(a.created_at).getTime() - new Date(b.created_at).getTime()
-        );
-      }),
+      ),
     [messages]
   );
 
