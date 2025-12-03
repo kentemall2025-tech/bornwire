@@ -78,13 +78,7 @@ export default function RealtimeChat({ roomName }: Props) {
         id,
         room_id,
         user_id,
-        content,
-        created_at,
-        user:user_id (
-          id,
-          email
-        )
-      `
+        content,`
       )
       .eq("room_id", rid)
       .order("created_at", { ascending: true });
@@ -104,7 +98,6 @@ export default function RealtimeChat({ roomName }: Props) {
         event: "INSERT",
         schema: "public",
         table: "messages",
-        filter: `room_id=eq.${rid}`,
       },
       async (payload) => {
         const msg = payload.new;
