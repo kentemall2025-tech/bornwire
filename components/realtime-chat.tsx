@@ -13,15 +13,11 @@ interface ChatMessage {
   user_id: string;
   content: string;
   created_at: string;
-  user: {
-    id: string;
-    email?: string;
-  };
+  user: { email?: string };
 }
 
 interface Props {
   roomName: string;
-  username:string
 }
 
 export default function RealtimeChat({ roomName }: Props) {
@@ -29,22 +25,26 @@ export default function RealtimeChat({ roomName }: Props) {
   const [roomId, setRoomId] = useState<string | null>(null);
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [currentUser, setCurrentUser] = useState<string | null>(null);
+  const [currentUserEmail, setCurrentUserEmail] = useState<string | null>(null);
   const [newMessage, setNewMessage] = useState("");
   const [connected, setConnected] = useState(false);
 
   // ──────────────────────────────────────────────
-  // 1. Load Supabase Auth User
+  // 1. Load Supabase authenticated user
   // ──────────────────────────────────────────────
   useEffect(() => {
     const loadUser = async () => {
       const { data } = await supabase.auth.getUser();
-      if (data?.user) setCurrentUser(data.user.id);
+      if (data?.user) {
+        setCurrentUser(data.user.id);
+        setCurrentUserEmail(data.user.email ?? null);
+      }
     };
     loadUser();
   }, []);
 
   // ──────────────────────────────────────────────
-  // 2. Ensure Room Exists (FIX: MUST include created_by)
+  // 2. Ensure room exists but DO NOT duplicate rooms
   // ──────────────────────────────────────────────
   const ensureRoom = useCallback(async () => {
     if (!currentUser) return;
@@ -60,17 +60,15 @@ export default function RealtimeChat({ roomName }: Props) {
       return;
     }
 
-    // IMPORTANT FIX––must include created_by
-    const { data: newRoom, error } = await supabase
+    // Create once
+    const { data: newRoom } = await supabase
       .from("rooms")
       .insert({
         name: roomName,
-        created_by: currentUser, // FIX
+        created_by: currentUser,
       })
       .select()
       .single();
-
-    if (error) console.error("Room creation error:", error);
 
     if (newRoom) setRoomId(newRoom.id);
   }, [roomName, currentUser]);
@@ -80,7 +78,7 @@ export default function RealtimeChat({ roomName }: Props) {
   }, [ensureRoom, currentUser]);
 
   // ──────────────────────────────────────────────
-  // 3. Load history with JOIN to auth.users
+  // 3. Load message history (one-time)
   // ──────────────────────────────────────────────
   const loadHistory = useCallback(async (rid: string) => {
     const { data } = await supabase
@@ -92,10 +90,7 @@ export default function RealtimeChat({ roomName }: Props) {
         user_id,
         content,
         created_at,
-        user:user_id (
-          id,
-          email
-        )
+        user:user_id ( email )
       `
       )
       .eq("room_id", rid)
@@ -105,7 +100,7 @@ export default function RealtimeChat({ roomName }: Props) {
   }, []);
 
   // ──────────────────────────────────────────────
-  // 4. Realtime subscription (CORRECTED)
+  // 4. Realtime insert listener (SUPER FAST — no DB re-fetch)
   // ──────────────────────────────────────────────
   const subscribeRealtime = useCallback((rid: string) => {
     const channel = supabase
@@ -118,25 +113,15 @@ export default function RealtimeChat({ roomName }: Props) {
           table: "messages",
           filter: `room_id=eq.${rid}`,
         },
-        async (payload) => {
-          const { data } = await supabase
-            .from("messages")
-            .select(
-              `
-                id,
-                room_id,
-                user_id,
-                content,
-                created_at,
-                user:user_id ( id, email )
-              `
-            )
-            .eq("id", payload.new.id)
-            .single();
-
-          if (data) {
-            setMessages((prev: any) => [...prev, data]);
-          }
+        (payload) => {
+          // Use payload directly — no extra query!
+          setMessages((prev: any) => [
+            ...prev,
+            {
+              ...payload.new,
+              user: { email: payload.new.user_email ?? "Unknown" },
+            },
+          ]);
         }
       )
       .subscribe((status) => {
@@ -158,7 +143,7 @@ export default function RealtimeChat({ roomName }: Props) {
   }, [roomId, subscribeRealtime, loadHistory]);
 
   // ──────────────────────────────────────────────
-  // 5. Send message (works)
+  // 5. Send a message
   // ──────────────────────────────────────────────
   const sendMessage = async () => {
     if (!roomId || !currentUser || !newMessage.trim()) return;
@@ -173,7 +158,7 @@ export default function RealtimeChat({ roomName }: Props) {
   };
 
   // ──────────────────────────────────────────────
-  // 6. Sort messages
+  // 6. Sorted messages
   // ──────────────────────────────────────────────
   const sortedMessages = useMemo(
     () =>
@@ -189,7 +174,7 @@ export default function RealtimeChat({ roomName }: Props) {
   }, [sortedMessages]);
 
   // ──────────────────────────────────────────────
-  // 7. UI
+  // 7. UI Rendering
   // ──────────────────────────────────────────────
   return (
     <div className="flex flex-col h-[85vh] w-full mx-auto rounded-2xl bg-yellow-500 border shadow">
