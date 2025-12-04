@@ -47,7 +47,7 @@ function NavBar({ className }: NavbarProps) {
             height={400}
           />
           <p className="capitalize font-bold text-lg text-yellow-black">
-            Born{" "}
+            born
             <p className="text-yellow-500 font-extrabold capitalize">wire</p>
           </p>
         </div>
