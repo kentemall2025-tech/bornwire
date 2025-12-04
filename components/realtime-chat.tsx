@@ -22,7 +22,6 @@ interface Props {
 
 export default function RealtimeChat({ roomName }: Props) {
   const { containerRef, scrollToBottom } = useChatScroll();
-
   const [roomId, setRoomId] = useState<string | null>(null);
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [currentUser, setCurrentUser] = useState<string | null>(null);
@@ -107,8 +106,6 @@ export default function RealtimeChat({ roomName }: Props) {
       return;
     }
 
-    // Post-process: fetch user emails for all messages
-    // This avoids broken relationships from auth.users
     const enriched = await Promise.all(
       (data ?? []).map(async (msg) => {
         const { data: userInfo } = await supabase.auth.admin.getUserById(
