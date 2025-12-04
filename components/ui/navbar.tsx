@@ -38,13 +38,19 @@ function NavBar({ className }: NavbarProps) {
         href="/"
         className="font-poppins text-lg text-yellow-500 rounded-lg object-contain md:text-2xl lowercase font-bold"
       >
-        <Image
-          src="https://csmvkgdme8w3hyot.public.blob.vercel-storage.com/WhatsApp Image 2025-11-23 at 12.21.54 AM.jpeg"
-          width={500}
-          alt="logo"
-          className="h-10 w-10 rounded-lg object-contain"
-          height={400}
-        />
+        <div>
+          <Image
+            src="https://csmvkgdme8w3hyot.public.blob.vercel-storage.com/WhatsApp Image 2025-11-23 at 12.21.54 AM.jpeg"
+            width={500}
+            alt="logo"
+            className="h-10 w-10 rounded-lg object-contain"
+            height={400}
+          />
+          <p className="capitalize font-bold text-2xl">
+            Born{" "}
+            <p className="text-yellow-500 font-extrabold capitalize">wire</p>
+          </p>
+        </div>
       </Link>
 
       <div className="flex  gap-2 flex-row-reverse">

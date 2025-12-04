@@ -20,7 +20,7 @@ export default function Socials() {
         >
           <Instagram />
         </Link>
-        <Link className="text-yellow-500" href="/bornwire.shop">
+        <Link className="text-yellow-500" href="">
           <WhatsApp />
         </Link>
       </div>
