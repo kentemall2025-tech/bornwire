@@ -1,14 +1,14 @@
 "use client";
-
 import { useEffect, useState, useRef } from "react";
 import { supabase } from "@/lib/supabase/supabase";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 
+
+
 export default function RealtimeChatAdmin({ roomId }: any) {
   const [messages, setMessages] = useState<any>([]);
   const [content, setContent] = useState<any>("");
-
   // Load old messages
   const loadMessages = async () => {
     const { data }: any = await supabase
@@ -28,7 +28,7 @@ export default function RealtimeChatAdmin({ roomId }: any) {
     setMessages(data || []);
   };
 
-  // Realtime listener
+  
   useEffect(() => {
     loadMessages();
 
