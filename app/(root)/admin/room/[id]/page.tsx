@@ -1,13 +1,13 @@
 "use client";
 
-import RealtimeChat from "@/components/realtime-chat";
+import RealtimeChatAdmin from "../../../admin/realtimechatadmin";
 
-export default function AdminRoomPage({ searchParams }: any) {
-  const roomId = searchParams.roomId;
+export default function AdminRoomPage({ params }: any) {
+  const roomId = params.id;
 
   return (
     <div className="max-w-[80%] mx-auto mt-10">
-      <RealtimeChat roomName={roomId} />
+      <RealtimeChatAdmin roomId={roomId} />
     </div>
   );
 }
