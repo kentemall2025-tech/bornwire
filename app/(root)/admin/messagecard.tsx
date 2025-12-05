@@ -6,7 +6,9 @@ import {
   CardDescription,
   CardTitle,
 } from "@/components/ui/card";
+import { supabase } from "@/lib/supabase/supabase";
 import Link from "next/link";
+import { useEffect, useState } from "react";
 
 interface roomprops {
   id: string;
@@ -15,8 +17,19 @@ interface roomprops {
   created_by: string;
 }
 export default function MessageCard(props: roomprops) {
+  const [user, setUser] = useState<any>(null);
+
+  useEffect(() => {
+    const getUser = async () => {
+      const { data, error } = await supabase.auth.getUser();
+      if (data?.user) setUser(data.user);
+    };
+    getUser();
+  });
   return (
-    <Link href={`/chat/${props.id}?roomId=${props.id}`}>
+    <Link
+      href={`/chat/${user?.id}?roomName=${user?.id}&username=${user?.email}`}
+    >
       <Card className="cursor-pointer hover:bg-accent transition">
         <CardContent className="p-4">
           <CardTitle>{props.name}</CardTitle>
