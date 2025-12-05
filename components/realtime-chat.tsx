@@ -224,9 +224,9 @@ export default function RealtimeChat({ roomName }: Props) {
               key={msg.id}
               message={{
                 id: msg.id,
-                user: { name: msg.user_email ?? "Unknown" },
+                user: { email: msg.user_email ?? "Unknown" },
                 content: msg.content,
-                createdAt: msg.created_at,
+                createdAt: msg.created_at, // rename here
               }}
               isOwnMessage={msg.user_id === currentUser}
               showHeader={true}

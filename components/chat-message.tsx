@@ -1,8 +1,14 @@
 import { cn } from "@/lib/utils";
-import type { ChatMessage } from "@/hooks/use-realtime-chat";
 
 interface ChatMessageItemProps {
-  message: ChatMessage;
+  message: {
+    id: string;
+    user: {
+      email: string;
+    };
+    content: string;
+    createdAt: string; // HERE
+  };
   isOwnMessage: boolean;
   showHeader: boolean;
 }
@@ -14,7 +20,7 @@ export const ChatMessageItem = ({
 }: ChatMessageItemProps) => {
   return (
     <div
-      className={cn("flex w-full ", {
+      className={cn("flex w-full", {
         "justify-end": isOwnMessage,
         "justify-start": !isOwnMessage,
       })}
@@ -27,11 +33,11 @@ export const ChatMessageItem = ({
         {showHeader && (
           <div
             className={cn("flex items-center gap-2 text-xs px-1 opacity-80", {
-              "justify-end flex-row-reverse": isOwnMessage,
+              "flex-row-reverse justify-end": isOwnMessage,
             })}
           >
             <span className="font-semibold text-xs text-foreground/80">
-              {message.user.name}
+              {message.user.email}
             </span>
 
             <span className="text-foreground/50 text-[10px]">
