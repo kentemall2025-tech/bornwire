@@ -7,12 +7,11 @@ export default function AdminRoomView({ params }: any) {
   const roomId = params.id;
 
   const [messages, setMessages] = useState<any>([]);
-
   const bottomRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
     const loadMessages = async () => {
-      const { data, error }: any = await supabase
+      const { data }: any = await supabase
         .from("messages")
         .select(
           `
@@ -26,7 +25,7 @@ export default function AdminRoomView({ params }: any) {
         .eq("room_id", roomId)
         .order("created_at", { ascending: true });
 
-      if (!error) setMessages(data);
+      setMessages(data);
     };
 
     loadMessages();
@@ -70,7 +69,6 @@ export default function AdminRoomView({ params }: any) {
             <div className="text-xs text-gray-400">{m.created_at}</div>
           </div>
         ))}
-
         <div ref={bottomRef} />
       </div>
     </div>
