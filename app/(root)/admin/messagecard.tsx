@@ -1,17 +1,12 @@
 "use client";
 
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardTitle,
-} from "@/components/ui/card";
+import { Card, CardDescription, CardTitle } from "@/components/ui/card";
 import Link from "next/link";
 
 interface roomprops {
   id: string;
   created_at: string;
-  name: string;
+  name: string; // this will be user email
   created_by: string;
 }
 
