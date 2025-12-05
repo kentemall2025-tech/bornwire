@@ -1,3 +1,4 @@
+// components/chat-message.tsx
 import { cn } from "@/lib/utils";
 
 interface ChatMessageItemProps {
@@ -7,7 +8,7 @@ interface ChatMessageItemProps {
       email: string;
     };
     content: string;
-    createdAt: string; // HERE
+    createdAt: string;
   };
   isOwnMessage: boolean;
   showHeader: boolean;
@@ -36,10 +37,12 @@ export const ChatMessageItem = ({
               "flex-row-reverse justify-end": isOwnMessage,
             })}
           >
+            {/* USER EMAIL */}
             <span className="font-semibold text-xs text-foreground/80">
               {message.user.email}
             </span>
 
+            {/* TIME */}
             <span className="text-foreground/50 text-[10px]">
               {new Date(message.createdAt).toLocaleTimeString("en-US", {
                 hour: "2-digit",
@@ -50,6 +53,7 @@ export const ChatMessageItem = ({
           </div>
         )}
 
+        {/* MESSAGE BUBBLE */}
         <div
           className={cn(
             "py-2 px-4 rounded-2xl text-sm shadow-sm transition-all",

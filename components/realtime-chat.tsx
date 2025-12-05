@@ -8,10 +8,6 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Send } from "lucide-react";
 
-// ──────────────────────────────────────────────
-// Types
-// ──────────────────────────────────────────────
-
 interface ChatMessage {
   id: string;
   room_id: string;
@@ -25,13 +21,8 @@ interface Props {
   roomName: string;
 }
 
-// ──────────────────────────────────────────────
-// Component
-// ──────────────────────────────────────────────
-
 export default function RealtimeChat({ roomName }: Props) {
   const { containerRef, scrollToBottom } = useChatScroll();
-
   const [roomId, setRoomId] = useState<string | null>(null);
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [currentUser, setCurrentUser] = useState<string | null>(null);
@@ -41,9 +32,7 @@ export default function RealtimeChat({ roomName }: Props) {
   const [connected, setConnected] = useState(false);
   const [historyLoaded, setHistoryLoaded] = useState(false);
 
-  // ──────────────────────────────────────────────
-  // 1. Load authenticated user
-  // ──────────────────────────────────────────────
+  // ---------------- 1. Load user ----------------
   useEffect(() => {
     supabase.auth.getUser().then(({ data }) => {
       const user = data?.user;
@@ -54,9 +43,7 @@ export default function RealtimeChat({ roomName }: Props) {
     });
   }, []);
 
-  // ──────────────────────────────────────────────
-  // 2. Ensure room exists or create
-  // ──────────────────────────────────────────────
+  // ---------------- 2. Create room if missing ----------------
   const ensureRoom = useCallback(async () => {
     if (!currentUser) return;
 
@@ -82,21 +69,15 @@ export default function RealtimeChat({ roomName }: Props) {
       .select()
       .single();
 
-    if (error) {
-      console.error("Room creation error:", error);
-      return;
-    }
-
-    setRoomId(newRoom.id);
+    if (!error) setRoomId(newRoom.id);
+    else console.error(error);
   }, [roomName, currentUser]);
 
   useEffect(() => {
     if (currentUser) ensureRoom();
   }, [ensureRoom, currentUser]);
 
-  // ──────────────────────────────────────────────
-  // 3. Load history (JOIN profiles for email)
-  // ──────────────────────────────────────────────
+  // ---------------- 3. Load history ----------------
   const loadHistory = useCallback(async (rid: string) => {
     const { data, error } = await supabase
       .from("messages")
@@ -113,10 +94,7 @@ export default function RealtimeChat({ roomName }: Props) {
       .eq("room_id", rid)
       .order("created_at", { ascending: true });
 
-    if (error) {
-      console.error("History load error:", error);
-      return;
-    }
+    if (error) return console.error(error);
 
     const enriched = (data ?? []).map((msg: any) => ({
       ...msg,
@@ -127,9 +105,7 @@ export default function RealtimeChat({ roomName }: Props) {
     setHistoryLoaded(true);
   }, []);
 
-  // ──────────────────────────────────────────────
-  // 4. Realtime subscription
-  // ──────────────────────────────────────────────
+  // ---------------- 4. Subscribe realtime ----------------
   const subscribeRealtime = useCallback((rid: string) => {
     const channel = supabase
       .channel(`room-${rid}`)
@@ -144,7 +120,6 @@ export default function RealtimeChat({ roomName }: Props) {
         async (payload) => {
           const msg = payload.new as ChatMessage;
 
-          // Fetch email via profiles table
           const { data: profile } = await supabase
             .from("profiles")
             .select("email")
@@ -168,7 +143,6 @@ export default function RealtimeChat({ roomName }: Props) {
     if (!roomId) return;
 
     loadHistory(roomId);
-
     const channel = subscribeRealtime(roomId);
 
     return () => {
@@ -176,9 +150,7 @@ export default function RealtimeChat({ roomName }: Props) {
     };
   }, [roomId, loadHistory, subscribeRealtime]);
 
-  // ──────────────────────────────────────────────
-  // 5. Send message
-  // ──────────────────────────────────────────────
+  // ---------------- 5. Send message ----------------
   const sendMessage = async () => {
     if (!roomId || !currentUser || !newMessage.trim()) return;
 
@@ -191,9 +163,7 @@ export default function RealtimeChat({ roomName }: Props) {
     setNewMessage("");
   };
 
-  // ──────────────────────────────────────────────
-  // 6. Sort messages
-  // ──────────────────────────────────────────────
+  // ---------------- 6. Sort messages ----------------
   const sortedMessages = useMemo(
     () =>
       [...messages].sort(
@@ -207,9 +177,7 @@ export default function RealtimeChat({ roomName }: Props) {
     if (historyLoaded) scrollToBottom();
   }, [sortedMessages, historyLoaded]);
 
-  // ──────────────────────────────────────────────
-  // 7. UI
-  // ──────────────────────────────────────────────
+  // ---------------- UI ----------------
   return (
     <div className="flex flex-col h-[85vh] w-full mx-auto rounded-2xl bg-yellow-500 border shadow">
       <div
@@ -226,7 +194,7 @@ export default function RealtimeChat({ roomName }: Props) {
                 id: msg.id,
                 user: { email: msg.user_email ?? "Unknown" },
                 content: msg.content,
-                createdAt: msg.created_at, // rename here
+                createdAt: msg.created_at,
               }}
               isOwnMessage={msg.user_id === currentUser}
               showHeader={true}
