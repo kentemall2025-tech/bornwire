@@ -24,7 +24,7 @@ export default function AdminRoomsPage() {
         {rooms.map((room: any) => (
           <Link
             key={room.id}
-            href={`/admin/rooms/${room.id}`}
+            href={`/admin/room/${room.id}`}
             className="block p-3 border rounded hover:bg-gray-100"
           >
             {room.name}
