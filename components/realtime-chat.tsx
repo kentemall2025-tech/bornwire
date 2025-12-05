@@ -1,259 +1,96 @@
-// components/realtime-chat.tsx
 "use client";
 
-import { useState, useEffect, useCallback, useMemo } from "react";
+import { useEffect, useState } from "react";
 import { supabase } from "@/lib/supabase/supabase";
-import { ChatMessageItem } from "./chat-message";
-import { useChatScroll } from "@/hooks/use-chat-scroll";
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
-import { Send } from "lucide-react";
 
-interface ChatMessage {
+interface Message {
   id: string;
-  room_id: string;
-  user_id: string;
   content: string;
   created_at: string;
-  user_email?: string | null;
+  user_id: string;
+  profiles: { email: string } | null;
 }
 
-interface Props {
-  roomName?: string; // optional, we will use private-{user_id} by default
-}
+export default function RealtimeChat({ roomId }: { roomId: string }) {
+  const [messages, setMessages] = useState<Message[]>([]);
+  const [newMsg, setNewMsg] = useState("");
 
-export default function RealtimeChat({ roomName }: Props) {
-  const { containerRef, scrollToBottom } = useChatScroll();
-
-  const [roomId, setRoomId] = useState<string | null>(null);
-  const [messages, setMessages] = useState<ChatMessage[]>([]);
-  const [currentUser, setCurrentUser] = useState<string | null>(null);
-  const [connected, setConnected] = useState(false);
-  const [historyLoaded, setHistoryLoaded] = useState(false);
-  const [newMessage, setNewMessage] = useState("");
-
-  // Ensure user & profile exist client-side (trigger already creates but this is safe)
-  useEffect(() => {
-    supabase.auth.getUser().then(async ({ data }) => {
-      const user = data?.user;
-      if (!user) return;
-
-      setCurrentUser(user.id);
-
-      // Ensure profile exists (safe upsert)
-      await supabase
-        .from("profiles")
-        .upsert(
-          { id: user.id, email: user.email ?? "unknown@example.com" },
-          { onConflict: "id", ignoreDuplicates: false }
-        );
-    });
-  }, []);
-
-  // Determine private room name (private-{user_id}) or provided roomName
-  const ensureRoom = useCallback(
-    async (uid: string) => {
-      const targetName = roomName?.trim() || `private-${uid}`;
-
-      // 1) try to find existing room
-      const { data: existing } = await supabase
-        .from("rooms")
-        .select("id, created_by, name")
-        .eq("name", targetName)
-        .maybeSingle();
-
-      if (existing?.id) {
-        setRoomId(existing.id);
-        return;
-      }
-
-      // 2) attempt to create room (trigger also creates one at signup; this is fallback)
-      const { data: newRoom, error } = await supabase
-        .from("rooms")
-        .insert({ name: targetName, created_by: uid })
-        .select()
-        .single();
-
-      if (error) {
-        // If insert failed due to unique index we can try again to fetch it
-        console.warn("Room insert error (non-fatal):", error);
-        const { data: again } = await supabase
-          .from("rooms")
-          .select("id")
-          .eq("name", targetName)
-          .maybeSingle();
-        if (again?.id) setRoomId(again.id);
-        return;
-      }
-
-      if (newRoom?.id) setRoomId(newRoom.id);
-    },
-    [roomName]
-  );
-
-  useEffect(() => {
-    if (!currentUser) return;
-    ensureRoom(currentUser);
-  }, [currentUser, ensureRoom]);
-
-  // Load history with profiles join to get email
-  const loadHistory = useCallback(async (rid: string) => {
-    setHistoryLoaded(false);
+  const loadMessages = async () => {
     const { data, error } = await supabase
       .from("messages")
-      .select(
-        `
-          id,
-          room_id,
-          user_id,
-          content,
-          created_at,
-          profiles:user_id ( email )
-        `
-      )
-      .eq("room_id", rid)
+      .select("*, profiles(email)")
+      .eq("room_id", roomId)
       .order("created_at", { ascending: true });
 
-    if (error) {
-      console.error("History load error:", error);
-      setHistoryLoaded(true); // avoid infinite loading — still show empty
-      return;
-    }
+    if (!error) setMessages(data || []);
+  };
 
-    const enriched = (data ?? []).map((msg: any) => ({
-      ...msg,
-      user_email: msg.profiles?.email ?? "Unknown",
-    }));
+  const sendMessage = async () => {
+    if (!newMsg.trim()) return;
 
-    setMessages(enriched);
-    setHistoryLoaded(true);
-  }, []);
+    const { data: user } = await supabase.auth.getUser();
+    if (!user?.user) return;
 
-  // Realtime subscription for inserts (fetch sender email from profiles)
-  const subscribeRealtime = useCallback((rid: string) => {
+    await supabase.from("messages").insert({
+      content: newMsg,
+      user_id: user.user.id,
+      room_id: roomId,
+    });
+
+    setNewMsg("");
+  };
+
+  useEffect(() => {
+    loadMessages();
+
     const channel = supabase
-      .channel(`room-${rid}`)
+      .channel(`messages-room-${roomId}`)
       .on(
         "postgres_changes",
         {
-          event: "INSERT",
+          event: "*",
           schema: "public",
           table: "messages",
-          filter: `room_id=eq.${rid}`,
+          filter: `room_id=eq.${roomId}`,
         },
-        async (payload) => {
-          const msg = payload.new as ChatMessage;
-
-          const { data: profile } = await supabase
-            .from("profiles")
-            .select("email")
-            .eq("id", msg.user_id)
-            .single();
-
-          setMessages((prev) => [
-            ...prev,
-            { ...msg, user_email: profile?.email ?? "Unknown" },
-          ]);
-        }
+        loadMessages
       )
-      .subscribe((status) => {
-        if (status === "SUBSCRIBED") setConnected(true);
-      });
-
-    return channel;
-  }, []);
-
-  useEffect(() => {
-    if (!roomId) return;
-
-    loadHistory(roomId);
-    const channel = subscribeRealtime(roomId);
+      .subscribe();
 
     return () => {
       supabase.removeChannel(channel);
     };
-  }, [roomId, loadHistory, subscribeRealtime]);
-
-  // Send message (users can only send to their own room; admin can send to any)
-  const sendMessage = async () => {
-    if (!roomId || !currentUser || !newMessage.trim()) return;
-
-    const { error } = await supabase.from("messages").insert({
-      room_id: roomId,
-      user_id: currentUser,
-      content: newMessage.trim(),
-    });
-
-    if (error) {
-      console.error("Send message error:", error);
-      return;
-    }
-
-    setNewMessage("");
-  };
-
-  // Sorted messages (by created_at)
-  const sortedMessages = useMemo(
-    () =>
-      [...messages].sort(
-        (a, b) =>
-          new Date(a.created_at).getTime() - new Date(b.created_at).getTime()
-      ),
-    [messages]
-  );
-
-  useEffect(() => {
-    if (historyLoaded) scrollToBottom();
-  }, [sortedMessages, historyLoaded, scrollToBottom]);
+  }, [roomId]);
 
   return (
-    <div className="flex flex-col h-[85vh] w-full mx-auto rounded-2xl bg-yellow-500 border shadow">
-      <div
-        ref={containerRef}
-        className="flex-1 overflow-y-auto p-4 space-y-4 bg-white rounded-t-2xl"
-      >
-        {!historyLoaded ? (
-          <p className="text-center text-gray-500">Loading messages…</p>
-        ) : (
-          sortedMessages.map((msg) => (
-            <ChatMessageItem
-              key={msg.id}
-              message={{
-                id: msg.id,
-                user: { email: msg.user_email ?? "Unknown" },
-                content: msg.content,
-                createdAt: msg.created_at,
-              }}
-              isOwnMessage={msg.user_id === currentUser}
-              showHeader={true}
-            />
-          ))
-        )}
+    <div className="border rounded-xl p-4 h-[500px] flex flex-col">
+      {/* MESSAGES LIST */}
+      <div className="flex-1 overflow-y-auto space-y-2">
+        {messages.map((msg) => (
+          <div key={msg.id} className="p-2 rounded-lg bg-accent">
+            <div className="text-xs text-muted-foreground">
+              {msg.profiles?.email || "Unknown user"}
+            </div>
+            <div>{msg.content}</div>
+          </div>
+        ))}
       </div>
 
-      <form
-        onSubmit={(e) => {
-          e.preventDefault();
-          sendMessage();
-        }}
-        className="flex items-center gap-3 p-3 bg-gray-100 border-t rounded-b-2xl"
-      >
-        <Input
-          placeholder={connected ? "Type your message…" : "Connecting…"}
-          value={newMessage}
-          disabled={!connected}
-          onChange={(e) => setNewMessage(e.target.value)}
-          className="flex-1 rounded-full bg-white shadow-sm px-4 py-2"
+      {/* INPUT */}
+      <div className="flex gap-2 mt-3">
+        <input
+          value={newMsg}
+          onChange={(e) => setNewMsg(e.target.value)}
+          className="flex-1 border rounded-lg px-3 py-2"
+          placeholder="Type a message..."
         />
-
-        <Button
-          type="submit"
-          disabled={!connected || !newMessage.trim()}
-          className="rounded-full px-4 py-2"
+        <button
+          onClick={sendMessage}
+          className="px-4 py-2 bg-primary text-white rounded-lg"
         >
-          <Send size={18} />
-        </Button>
-      </form>
+          Send
+        </button>
+      </div>
     </div>
   );
 }

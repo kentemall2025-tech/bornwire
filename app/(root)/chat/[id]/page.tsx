@@ -2,21 +2,18 @@
 
 import RealtimeChat from "@/components/realtime-chat";
 
-export default function Page({
-  params,
-  searchParams,
-}: {
-  params: { id: string };
-  searchParams: Record<string, string | string[] | undefined>;
-}) {
-  const { id } = params;
+interface PageProps {
+  searchParams?: {
+    roomId?: string;
+  };
+}
 
-  const roomName = searchParams.roomName as string;
-  const username = searchParams.username as string;
+export default function Page({ searchParams }: PageProps) {
+  const roomId = searchParams?.roomId ?? "";
 
   return (
     <div className="max-w-[80%] mx-auto mt-10">
-      <RealtimeChat roomName={roomName} />
+      <RealtimeChat roomId={roomId} />
     </div>
   );
 }

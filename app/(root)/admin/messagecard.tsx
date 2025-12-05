@@ -1,6 +1,11 @@
 "use client";
 
-import { Card, CardDescription, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardTitle,
+} from "@/components/ui/card";
 import Link from "next/link";
 
 interface roomprops {
@@ -9,13 +14,14 @@ interface roomprops {
   name: string; // this will be user email
   created_by: string;
 }
-
 export default function MessageCard(props: roomprops) {
   return (
-    <Link href={`/chat/${props.id}?roomName=${props.id}`}>
-      <Card className="p-4 cursor-pointer hover:bg-accent transition">
-        <CardTitle>{props.name}</CardTitle>
-        <CardDescription>{props.created_by}</CardDescription>
+    <Link href={`/chat/${props.id}?roomId=${props.id}`}>
+      <Card className="cursor-pointer hover:bg-accent transition">
+        <CardContent className="p-4">
+          <CardTitle>{props.name}</CardTitle>
+          <CardDescription>{props.created_by}</CardDescription>
+        </CardContent>
       </Card>
     </Link>
   );

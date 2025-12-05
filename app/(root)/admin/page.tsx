@@ -7,7 +7,7 @@ import MessageCard from "./messagecard";
 interface Room {
   id: string;
   created_at: string;
-  name: string;
+  name: string; // email
   created_by: string;
 }
 
@@ -15,9 +15,11 @@ export default function RoomsPage() {
   const [rooms, setRooms] = useState<Room[]>([]);
   const [loading, setLoading] = useState(true);
 
-  // Fetch rooms the user is allowed to see
   const loadRooms = async () => {
-    const { data, error } = await supabase.from("rooms").select("*");
+    const { data, error } = await supabase
+      .from("rooms")
+      .select("*")
+      .order("created_at", { ascending: false });
 
     if (error) {
       console.log("Error loading rooms:", error);
@@ -31,13 +33,12 @@ export default function RoomsPage() {
   useEffect(() => {
     loadRooms();
 
-    // Realtime updates
     const channel = supabase
       .channel("rooms-changes")
       .on(
         "postgres_changes",
         { event: "*", schema: "public", table: "rooms" },
-        () => loadRooms()
+        loadRooms
       )
       .subscribe();
 
@@ -46,11 +47,8 @@ export default function RoomsPage() {
     };
   }, []);
 
-  if (loading)
-    return <p className="text-center text-gray-500">Loading rooms…</p>;
-
-  if (rooms.length === 0)
-    return <p className="text-center text-gray-500">No rooms yet.</p>;
+  if (loading) return <p className="text-center">Loading…</p>;
+  if (rooms.length === 0) return <p className="text-center">No rooms yet.</p>;
 
   return (
     <div className="space-y-3 p-4">
