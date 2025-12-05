@@ -16,7 +16,7 @@ interface roomprops {
 
 export default function MessageCard(props: roomprops) {
   return (
-    <div>
+    <div className="bg-yellow-500 text-lg  p-2">
       <Card>
         <CardContent>
           <CardTitle>{props.name}</CardTitle>
