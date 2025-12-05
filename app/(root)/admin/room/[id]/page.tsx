@@ -1,8 +1,8 @@
 "use client";
 
-import RealtimeChatAdmin from "../../../admin/realtimechatadmin";
+import RealtimeChatAdmin from "../../realtimechatadmin";
 
-export default function AdminRoomPage({ params }: any) {
+export default function AdminRoomPage({ params }:any) {
   const roomId = params.id;
 
   return (
