@@ -1,8 +1,9 @@
+// components/realtime-chat.tsx
 "use client";
 
 import { useState, useEffect, useCallback, useMemo } from "react";
 import { supabase } from "@/lib/supabase/supabase";
-import { ChatMessageItem } from "@/components/chat-message";
+import { ChatMessageItem } from "./chat-message";
 import { useChatScroll } from "@/hooks/use-chat-scroll";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
@@ -18,83 +19,106 @@ interface ChatMessage {
 }
 
 interface Props {
-  roomName: string;
+  roomName?: string; // optional, we will use private-{user_id} by default
 }
 
 export default function RealtimeChat({ roomName }: Props) {
   const { containerRef, scrollToBottom } = useChatScroll();
+
   const [roomId, setRoomId] = useState<string | null>(null);
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [currentUser, setCurrentUser] = useState<string | null>(null);
-  const [currentUserEmail, setCurrentUserEmail] = useState<string | null>(null);
-
-  const [newMessage, setNewMessage] = useState("");
   const [connected, setConnected] = useState(false);
   const [historyLoaded, setHistoryLoaded] = useState(false);
+  const [newMessage, setNewMessage] = useState("");
 
-  // ---------------- 1. Load user ----------------
+  // Ensure user & profile exist client-side (trigger already creates but this is safe)
   useEffect(() => {
-    supabase.auth.getUser().then(({ data }) => {
+    supabase.auth.getUser().then(async ({ data }) => {
       const user = data?.user;
-      if (user) {
-        setCurrentUser(user.id);
-        setCurrentUserEmail(user.email ?? null);
-      }
+      if (!user) return;
+
+      setCurrentUser(user.id);
+
+      // Ensure profile exists (safe upsert)
+      await supabase
+        .from("profiles")
+        .upsert(
+          { id: user.id, email: user.email ?? "unknown@example.com" },
+          { onConflict: "id", ignoreDuplicates: false }
+        );
     });
   }, []);
 
-  // ---------------- 2. Create room if missing ----------------
-  const ensureRoom = useCallback(async () => {
-    if (!currentUser) return;
+  // Determine private room name (private-{user_id}) or provided roomName
+  const ensureRoom = useCallback(
+    async (uid: string) => {
+      const targetName = roomName?.trim() || `private-${uid}`;
 
-    const safeRoomName = roomName?.trim() || "default-room";
+      // 1) try to find existing room
+      const { data: existing } = await supabase
+        .from("rooms")
+        .select("id, created_by, name")
+        .eq("name", targetName)
+        .maybeSingle();
 
-    const { data: existing } = await supabase
-      .from("rooms")
-      .select("id")
-      .eq("name", safeRoomName)
-      .maybeSingle();
+      if (existing?.id) {
+        setRoomId(existing.id);
+        return;
+      }
 
-    if (existing) {
-      setRoomId(existing.id);
-      return;
-    }
+      // 2) attempt to create room (trigger also creates one at signup; this is fallback)
+      const { data: newRoom, error } = await supabase
+        .from("rooms")
+        .insert({ name: targetName, created_by: uid })
+        .select()
+        .single();
 
-    const { data: newRoom, error } = await supabase
-      .from("rooms")
-      .insert({
-        name: safeRoomName,
-        created_by: currentUser,
-      })
-      .select()
-      .single();
+      if (error) {
+        // If insert failed due to unique index we can try again to fetch it
+        console.warn("Room insert error (non-fatal):", error);
+        const { data: again } = await supabase
+          .from("rooms")
+          .select("id")
+          .eq("name", targetName)
+          .maybeSingle();
+        if (again?.id) setRoomId(again.id);
+        return;
+      }
 
-    if (!error) setRoomId(newRoom.id);
-    else console.error(error);
-  }, [roomName, currentUser]);
+      if (newRoom?.id) setRoomId(newRoom.id);
+    },
+    [roomName]
+  );
 
   useEffect(() => {
-    if (currentUser) ensureRoom();
-  }, [ensureRoom, currentUser]);
+    if (!currentUser) return;
+    ensureRoom(currentUser);
+  }, [currentUser, ensureRoom]);
 
-  // ---------------- 3. Load history ----------------
+  // Load history with profiles join to get email
   const loadHistory = useCallback(async (rid: string) => {
+    setHistoryLoaded(false);
     const { data, error } = await supabase
       .from("messages")
       .select(
         `
-        id,
-        room_id,
-        user_id,
-        content,
-        created_at,
-        profiles:user_id ( email )
-      `
+          id,
+          room_id,
+          user_id,
+          content,
+          created_at,
+          profiles:user_id ( email )
+        `
       )
       .eq("room_id", rid)
       .order("created_at", { ascending: true });
 
-    if (error) return console.error(error);
+    if (error) {
+      console.error("History load error:", error);
+      setHistoryLoaded(true); // avoid infinite loading — still show empty
+      return;
+    }
 
     const enriched = (data ?? []).map((msg: any) => ({
       ...msg,
@@ -105,7 +129,7 @@ export default function RealtimeChat({ roomName }: Props) {
     setHistoryLoaded(true);
   }, []);
 
-  // ---------------- 4. Subscribe realtime ----------------
+  // Realtime subscription for inserts (fetch sender email from profiles)
   const subscribeRealtime = useCallback((rid: string) => {
     const channel = supabase
       .channel(`room-${rid}`)
@@ -150,20 +174,25 @@ export default function RealtimeChat({ roomName }: Props) {
     };
   }, [roomId, loadHistory, subscribeRealtime]);
 
-  // ---------------- 5. Send message ----------------
+  // Send message (users can only send to their own room; admin can send to any)
   const sendMessage = async () => {
     if (!roomId || !currentUser || !newMessage.trim()) return;
 
-    await supabase.from("messages").insert({
+    const { error } = await supabase.from("messages").insert({
       room_id: roomId,
       user_id: currentUser,
-      content: newMessage,
+      content: newMessage.trim(),
     });
+
+    if (error) {
+      console.error("Send message error:", error);
+      return;
+    }
 
     setNewMessage("");
   };
 
-  // ---------------- 6. Sort messages ----------------
+  // Sorted messages (by created_at)
   const sortedMessages = useMemo(
     () =>
       [...messages].sort(
@@ -175,9 +204,8 @@ export default function RealtimeChat({ roomName }: Props) {
 
   useEffect(() => {
     if (historyLoaded) scrollToBottom();
-  }, [sortedMessages, historyLoaded]);
+  }, [sortedMessages, historyLoaded, scrollToBottom]);
 
-  // ---------------- UI ----------------
   return (
     <div className="flex flex-col h-[85vh] w-full mx-auto rounded-2xl bg-yellow-500 border shadow">
       <div
