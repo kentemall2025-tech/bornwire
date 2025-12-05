@@ -8,20 +8,17 @@ export default function AdminRoomsPage() {
   const [rooms, setRooms] = useState<any>([]);
 
   useEffect(() => {
-    const loadRooms = async () => {
-      const { data, error } = await supabase
-        .from("rooms")
-        .select("id, name, created_at");
-
-      if (!error) setRooms(data);
-    };
-
-    loadRooms();
+    supabase
+      .from("rooms")
+      .select("*")
+      .then(({ data }) => {
+        setRooms(data || []);
+      });
   }, []);
 
   return (
     <div className="p-4">
-      <h1 className="text-xl font-bold mb-4">All User Rooms</h1>
+      <h1 className="text-xl font-bold mb-4">User Rooms</h1>
 
       <div className="space-y-3">
         {rooms.map((room: any) => (

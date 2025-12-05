@@ -1,34 +1,12 @@
 "use client";
-import { useEffect, useState, useRef } from "react";
+
+import { useEffect, useState } from "react";
 import { supabase } from "@/lib/supabase/supabase";
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
 
+export default function RealtimeChat({ roomId }: { roomId: string }) {
+  const [messages, setMessages] = useState<any[]>([]);
+  const [input, setInput] = useState("");
 
-
-export default function RealtimeChatAdmin({ roomId }: any) {
-  const [messages, setMessages] = useState<any>([]);
-  const [content, setContent] = useState<any>("");
-  // Load old messages
-  const loadMessages = async () => {
-    const { data }: any = await supabase
-      .from("messages")
-      .select(
-        `
-        id,
-        content,
-        created_at,
-        user_id,
-        profiles: user_id(email)
-      `
-      )
-      .eq("room_id", roomId)
-      .order("created_at", { ascending: true });
-
-    setMessages(data || []);
-  };
-
-  
   useEffect(() => {
     loadMessages();
 
@@ -43,7 +21,7 @@ export default function RealtimeChatAdmin({ roomId }: any) {
           filter: `room_id=eq.${roomId}`,
         },
         (payload) => {
-          setMessages((prev: any) => [...prev, payload.new]);
+          setMessages((prev) => [...prev, payload.new]);
         }
       )
       .subscribe();
@@ -53,39 +31,44 @@ export default function RealtimeChatAdmin({ roomId }: any) {
     };
   }, [roomId]);
 
-  // Send message
+  const loadMessages = async () => {
+    const { data } = await supabase
+      .from("messages")
+      .select("*")
+      .eq("room_id", roomId)
+      .order("created_at", { ascending: true });
+
+    setMessages(data || []);
+  };
+
   const sendMessage = async () => {
-    if (!content.trim()) return;
+    if (!input) return;
 
     await supabase.from("messages").insert({
-      content,
       room_id: roomId,
-      // admin's user id is automatically applied via RLS
+      content: input,
     });
 
-    setContent("");
+    setInput("");
   };
 
   return (
-    <div className="border rounded-lg p-4 h-[80vh] flex flex-col">
-      {/* Messages */}
-      <div className="flex-1 overflow-y-auto space-y-3 mb-4">
-        {messages.map((m: any) => (
-          <div key={m.id} className="p-2 border rounded">
-            <p className="text-sm text-gray-500">{m.profiles?.email}</p>
-            <p>{m.content}</p>
-          </div>
+    <div className="space-y-4">
+      <div className="border p-3 rounded h-80 overflow-y-auto">
+        {messages.map((msg) => (
+          <div key={msg.id}>{msg.content}</div>
         ))}
       </div>
 
-      {/* Input */}
       <div className="flex gap-2">
-        <Input
-          placeholder="Reply..."
-          value={content}
-          onChange={(e) => setContent(e.target.value)}
+        <input
+          className="border p-2 rounded flex-1"
+          value={input}
+          onChange={(e) => setInput(e.target.value)}
         />
-        <Button onClick={sendMessage}>Send</Button>
+        <button onClick={sendMessage} className="p-2 border rounded">
+          Send
+        </button>
       </div>
     </div>
   );
