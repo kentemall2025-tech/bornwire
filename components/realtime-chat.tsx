@@ -89,8 +89,8 @@ export default function RealTimeChat({ roomId }: any) {
     );
 
   return (
-    <div className="flex flex-col h-screen">
-      <div className="flex-1 overflow-y-auto p-4 space-y-3 bg-orange-50 h-[60vh]">
+    <div className="flex flex-col h-screen h-[70vh]">
+      <div className="flex-1 overflow-y-auto p-4 space-y-3 bg-orange-50 ">
         {messages.map((msg: any) => (
           <div
             key={msg.id}
