@@ -8,6 +8,7 @@ import LoginBtn from "./login";
 import { useEffect, useState } from "react";
 import { supabase } from "@/lib/supabase/supabase";
 import { Avatar, AvatarImage } from "./avatar";
+import { redirect } from "next/navigation";
 
 interface NavbarProps {
   className?: string;
@@ -15,13 +16,9 @@ interface NavbarProps {
 
 function NavBar({ className }: NavbarProps) {
   const [user, setUser] = useState<any>(null);
-
-  const check = async () => {
-    const { data } = await supabase.auth.getUser();
-    if (!data.user) {
-      window.location.href = "/signin";
-    }
-  };
+  if (!user) {
+    redirect("/siginin");
+  }
 
   useEffect(() => {
     const getUser = async () => {
@@ -34,9 +31,6 @@ function NavBar({ className }: NavbarProps) {
       user?.user_metadata.picture || user?.user_metadata.avatar_url;
   }, []);
 
-  useEffect(() => {
-    check();
-  }, [user]);
   return (
     <div
       className={cn(
