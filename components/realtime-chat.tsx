@@ -97,7 +97,7 @@ export default function RealTimeChat({ roomId }: any) {
             key={msg.id}
             className={`p-3 rounded-lg max-w-xs ${
               msg.user_id === adminId
-                ? "bg-orange-500 text-white  ml-auto"
+                ? "bg-black text-white  ml-auto"
                 : "bg-white  border border-orange-200"
             }`}
           >
