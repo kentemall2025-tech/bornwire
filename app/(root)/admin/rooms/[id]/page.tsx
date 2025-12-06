@@ -1,17 +1,9 @@
-"use client";
+import AdminRoomChat from "@/components/adminviewcard";
 
-import { useParams } from "next/navigation";
-import RealtimeChat from "@/components/realtime-chat";
-
-export default function AdminRoomPage() {
-  const params = useParams();
-  const roomId = params?.id as string;
-
+export default function Page({ params }: { params: { id: string } }) {
   return (
-    <div className="p-4">
-      <h1 className="text-xl font-bold mb-4">Chat Room</h1>
-
-      <RealtimeChat roomId={roomId} />
+    <div className="h-screen">
+      <AdminRoomChat roomId={params.id} />
     </div>
   );
 }
