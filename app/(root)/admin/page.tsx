@@ -37,7 +37,7 @@ export default function AdminRoomsPage() {
     return <div className="p-6 text-orange-500">Loading rooms...</div>;
 
   return (
-    <div className="p-6">
+    <div className="p-6 max-w-[80%] mx-auto">
       <h1 className="text-xl font-bold text-orange-600 mb-4">
         Admin — User Rooms
       </h1>
