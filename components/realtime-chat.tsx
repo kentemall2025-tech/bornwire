@@ -46,7 +46,6 @@ export default function RealTimeChat({ roomName }: any) {
           event: "INSERT",
           schema: "public",
           table: "messages",
-          filter: `room_id=eq.${roomId}`,
         },
         (payload) => {
           setMessages((prev: any) => [...prev, payload.new]);
