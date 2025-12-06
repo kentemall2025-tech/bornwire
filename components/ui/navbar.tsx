@@ -20,7 +20,7 @@ function NavBar({ className }: NavbarProps) {
     const check = async () => {
       const { data } = await supabase.auth.getUser();
       if (!data.user) {
-        window.location.href = "/login";
+        window.location.href = "/signin";
       }
     };
     check();
