@@ -127,7 +127,7 @@ export default function AdminRoomChat({ roomId }: { roomId: string }) {
   };
 
   return (
-    <div className="flex flex-col h-[70%] p-4">
+    <div className="flex flex-col h-[50%] p-4">
       {/* CHAT */}
       <div className="flex-1 overflow-y-auto space-y-3 pr-2">
         {messages.map((msg) => (
