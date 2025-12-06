@@ -50,7 +50,7 @@ export default function page() {
               {user?.email === "kente.mall2025@gmail.com" && (
                 <Link
                   href={"/admin"}
-                  className="uppercase bg-white text-yellow-500 font-bold ring-1 ring-yellow-500 rounded-lg"
+                  className="uppercase p-2 bg-white text-yellow-500 font-bold ring-1 ring-yellow-500 rounded-lg"
                 >
                   admin
                 </Link>

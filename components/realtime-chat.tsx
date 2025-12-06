@@ -8,8 +8,6 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Send } from "lucide-react";
 
-const ADMIN_ID = "c3e8b126-a00d-4365-9466-420aae97eae4";
-
 interface ChatMessage {
   id: string;
   room_id: string;
@@ -20,63 +18,87 @@ interface ChatMessage {
 }
 
 interface Props {
-  roomId?: string | null; // for admin
+  roomId?: string | null; // admin uses this
 }
 
 export default function RealtimeChat({ roomId: forcedRoomId }: Props) {
+  const ADMIN_EMAIL = "kente.mall2025@gmail.com";
+
   const { containerRef, scrollToBottom } = useChatScroll();
 
   const [roomId, setRoomId] = useState<string | null>(forcedRoomId ?? null);
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [currentUser, setCurrentUser] = useState<string | null>(null);
   const [currentEmail, setCurrentEmail] = useState<string>("");
+
   const [connected, setConnected] = useState(false);
   const [historyLoaded, setHistoryLoaded] = useState(false);
   const [newMessage, setNewMessage] = useState("");
 
-  // Load user
+  /**
+   * 1️⃣ Set up realtime JWT
+   */
   useEffect(() => {
-    supabase.auth.getUser().then(async ({ data }) => {
+    (async () => {
+      const { data } = await supabase.auth.getSession();
+      const token = data?.session?.access_token;
+      if (token) supabase.realtime.setAuth(token);
+    })();
+  }, []);
+
+  /**
+   * 2️⃣ Load current user
+   */
+  useEffect(() => {
+    (async () => {
+      const { data } = await supabase.auth.getUser();
       const user = data?.user;
       if (!user) return;
 
       setCurrentUser(user.id);
       setCurrentEmail(user.email || "");
 
-      // ensure profile exists
+      // Ensure profile exists
       await supabase
         .from("profiles")
         .upsert({ id: user.id, email: user.email }, { onConflict: "id" });
-    });
+    })();
   }, []);
 
-  // If NOT admin, load their own private-{email} room
+  /**
+   * 3️⃣ For normal users: create or load their room
+   */
   const ensurePrivateRoom = useCallback(async () => {
-    const targetName = `private-${currentEmail}`;
+    if (!currentEmail || !currentUser) return;
+    if (currentEmail === ADMIN_EMAIL) return; // admin does NOT auto–create room
 
+    const privateName = `private-${currentEmail}`;
+
+    //  Check if room exists
     const { data: existing } = await supabase
       .from("rooms")
       .select("id")
-      .eq("name", targetName)
+      .eq("name", privateName)
       .maybeSingle();
 
+    // Already exists
     if (existing?.id) {
       setRoomId(existing.id);
       return;
     }
 
-    // create room
-    const { data: newRoom } = await supabase
+    // Create new room for this user
+    const { data: created } = await supabase
       .from("rooms")
       .insert({
-        name: targetName,
+        name: privateName,
         created_by: currentUser,
         owner_email: currentEmail,
       })
       .select()
       .single();
 
-    if (newRoom?.id) setRoomId(newRoom.id);
+    if (created?.id) setRoomId(created.id);
   }, [currentEmail, currentUser, forcedRoomId]);
 
   useEffect(() => {
@@ -84,11 +106,13 @@ export default function RealtimeChat({ roomId: forcedRoomId }: Props) {
     ensurePrivateRoom();
   }, [currentUser, currentEmail, ensurePrivateRoom]);
 
-  // Load messages for room
+  /**
+   * 4️⃣ Load message history
+   */
   const loadHistory = useCallback(async (rid: string) => {
     setHistoryLoaded(false);
 
-    const { data } = await supabase
+    const { data, error } = await supabase
       .from("messages")
       .select(
         `
@@ -103,14 +127,24 @@ export default function RealtimeChat({ roomId: forcedRoomId }: Props) {
       .eq("room_id", rid)
       .order("created_at");
 
-    const enriched =
-      data?.map((m: any) => ({ ...m, user_email: m.profiles.email })) || [];
+    if (error) {
+      console.log("History error:", error);
+      setHistoryLoaded(true);
+      return;
+    }
 
-    setMessages(enriched);
+    const enriched = data?.map((m: any) => ({
+      ...m,
+      user_email: m.profiles?.email ?? null,
+    }));
+
+    setMessages(enriched || []);
     setHistoryLoaded(true);
   }, []);
 
-  // Realtime subscription
+  /**
+   * 5️⃣ Realtime
+   */
   const subscribeRealtime = useCallback((rid: string) => {
     const channel = supabase
       .channel(`room-${rid}`)
@@ -124,13 +158,17 @@ export default function RealtimeChat({ roomId: forcedRoomId }: Props) {
         },
         async (payload) => {
           const msg = payload.new as ChatMessage;
+
           const { data: profile } = await supabase
             .from("profiles")
             .select("email")
             .eq("id", msg.user_id)
-            .single();
+            .maybeSingle();
 
-          setMessages((p) => [...p, { ...msg, user_email: profile?.email }]);
+          setMessages((prev) => [
+            ...prev,
+            { ...msg, user_email: profile?.email || null },
+          ]);
         }
       )
       .subscribe((status) => {
@@ -140,6 +178,9 @@ export default function RealtimeChat({ roomId: forcedRoomId }: Props) {
     return channel;
   }, []);
 
+  /**
+   * 6️⃣ When room changes → load + subscribe
+   */
   useEffect(() => {
     if (!roomId) return;
 
@@ -151,17 +192,24 @@ export default function RealtimeChat({ roomId: forcedRoomId }: Props) {
     };
   }, [roomId, loadHistory, subscribeRealtime]);
 
-  // Send message
+  /**
+   * 7️⃣ Send message
+   */
   const sendMessage = async () => {
-    if (!newMessage.trim() || !roomId) return;
+    if (!newMessage.trim() || !roomId || !currentUser) return;
+
     await supabase.from("messages").insert({
       room_id: roomId,
       user_id: currentUser,
-      content: newMessage,
+      content: newMessage.trim(),
     });
+
     setNewMessage("");
   };
 
+  /**
+   * 8️⃣ Sorted messages
+   */
   const sortedMessages = useMemo(
     () =>
       [...messages].sort(
@@ -175,6 +223,9 @@ export default function RealtimeChat({ roomId: forcedRoomId }: Props) {
     if (historyLoaded) scrollToBottom();
   }, [sortedMessages, historyLoaded, scrollToBottom]);
 
+  /**
+   * 9️⃣ UI
+   */
   return (
     <div className="flex flex-col h-[85vh] w-full mx-auto rounded-2xl bg-yellow-500 border shadow">
       <div
@@ -184,7 +235,7 @@ export default function RealtimeChat({ roomId: forcedRoomId }: Props) {
         {!historyLoaded ? (
           <p className="text-center text-gray-500">Loading messages…</p>
         ) : (
-          sortedMessages.map((msg: any) => (
+          sortedMessages.map((msg) => (
             <ChatMessageItem
               key={msg.id}
               message={{
@@ -200,6 +251,7 @@ export default function RealtimeChat({ roomId: forcedRoomId }: Props) {
         )}
       </div>
 
+      {/* Input */}
       <form
         onSubmit={(e) => {
           e.preventDefault();
