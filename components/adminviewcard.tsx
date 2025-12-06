@@ -127,18 +127,11 @@ export default function AdminRoomChat({ roomId }: { roomId: string }) {
   };
 
   return (
-    <div className="flex flex-col h-[50%] p-4 bg-gray-500">
+    <div className="flex flex-col h-[60vh] p-4 shadow-xl rounded-lg">
       {/* CHAT */}
       <div className="flex-1 overflow-y-auto space-y-3 pr-2 h-[40vh]">
         {messages.map((msg) => (
-          <div
-            key={msg.id}
-            className={`p-3 rounded-xl max-w-[80%] ${
-              msg.user_id === adminId
-                ? "bg-blue-600 text-white ml-auto"
-                : "bg-gray-200 text-black"
-            }`}
-          >
+          <div key={msg.id} className={`p-3 rounded-xl max-w-[80%]`}>
             <p className="text-xs opacity-60 mb-1">{msg.email}</p>
             <p>{msg.content}</p>
           </div>
