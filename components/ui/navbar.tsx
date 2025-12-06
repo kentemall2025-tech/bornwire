@@ -24,9 +24,6 @@ function NavBar({ className }: NavbarProps) {
     };
     getUser();
 
-    if (!user) {
-      redirect("/siginin");
-    }
     const avatar =
       user?.user_metadata.picture || user?.user_metadata.avatar_url;
   }, []);
