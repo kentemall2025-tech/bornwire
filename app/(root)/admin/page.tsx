@@ -53,7 +53,7 @@ export default function AdminRoomsPage() {
             <div className="flex gap-4 text-2xl">
               <Avatar className="bg-yellow-500">
                 <AvatarFallback className="bg-yellow-500 p-4 capitalize">
-                  {room?.name.slice(8, 9)}
+                  {room?.name.slice("-", "@")}
                 </AvatarFallback>
               </Avatar>
               <span className="font-medium">{room.name}</span>
