@@ -52,8 +52,6 @@ export default function RealtimeChat({ roomId: forcedRoomId }: Props) {
 
   // If NOT admin, load their own private-{email} room
   const ensurePrivateRoom = useCallback(async () => {
-    if (forcedRoomId) return; // admin flow
-
     const targetName = `private-${currentEmail}`;
 
     const { data: existing } = await supabase
