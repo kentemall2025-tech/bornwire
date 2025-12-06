@@ -22,7 +22,6 @@ function NavBar({ className }: NavbarProps) {
       window.location.href = "/signin";
     }
   };
-  check();
 
   useEffect(() => {
     const getUser = async () => {
@@ -35,6 +34,9 @@ function NavBar({ className }: NavbarProps) {
       user?.user_metadata.picture || user?.user_metadata.avatar_url;
   }, []);
 
+  useEffect(() => {
+    check();
+  }, [user]);
   return (
     <div
       className={cn(
