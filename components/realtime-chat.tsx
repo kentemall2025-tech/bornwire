@@ -11,18 +11,40 @@ export default function RealTimeChat({ roomName }: any) {
   const scrollRef = useRef<any>(null);
   const adminId = "c3e8b126-a00d-4365-9466-420aae97eae4";
 
-  // 1️⃣ Load correct room UUID from room name
+  // ------------------------------------------------------
+  // 1️⃣ Load roomId from room name — Auto-creates room
+  // ------------------------------------------------------
   useEffect(() => {
     const fetchRoom = async () => {
-      const { data: room } = await supabase
-        .from("rooms")
-        .select("id")
-        .eq("name", roomName)
-        .single();
+      if (!roomName) return;
 
+      console.log("Requested room name:", roomName);
+
+      let { data: room, error } = await supabase
+        .from("rooms")
+        .select("*")
+        .eq("name", roomName)
+        .maybeSingle(); // prevents crashes
+
+      // If room doesn't exist → Auto-create it
       if (!room) {
-        console.error("Room not found");
-        return;
+        console.log("Room not found, creating it…");
+
+        const { data: newRoom, error: createError } = await supabase
+          .from("rooms")
+          .insert({
+            name: roomName,
+            owner_email: "auto-created",
+          })
+          .select()
+          .single();
+
+        if (createError) {
+          console.error("Failed to create room:", createError);
+          return;
+        }
+
+        room = newRoom;
       }
 
       setRoomId(room.id);
@@ -31,7 +53,9 @@ export default function RealTimeChat({ roomName }: any) {
     fetchRoom();
   }, [roomName]);
 
-  // 2️⃣ Load messages after roomId is known
+  // ------------------------------------------------------
+  // 2️⃣ Load messages when roomId is ready
+  // ------------------------------------------------------
   useEffect(() => {
     if (!roomId) return;
 
@@ -46,6 +70,7 @@ export default function RealTimeChat({ roomName }: any) {
           event: "INSERT",
           schema: "public",
           table: "messages",
+          filter: `room_id=eq.${roomId}`,
         },
         (payload) => {
           setMessages((prev: any) => [...prev, payload.new]);
@@ -59,14 +84,19 @@ export default function RealTimeChat({ roomName }: any) {
     };
   }, [roomId]);
 
+  // ------------------------------------------------------
+  // Load existing messages
+  // ------------------------------------------------------
   const loadMessages = async () => {
     setLoading(true);
 
-    const { data } = await supabase
+    const { data, error } = await supabase
       .from("messages")
       .select("*")
       .eq("room_id", roomId)
       .order("created_at", { ascending: true });
+
+    if (error) console.error("Message load error:", error);
 
     setMessages(data || []);
     setLoading(false);
@@ -76,11 +106,14 @@ export default function RealTimeChat({ roomName }: any) {
   const scrollBottom = () => {
     setTimeout(() => {
       scrollRef.current?.scrollIntoView({ behavior: "smooth" });
-    }, 150);
+    }, 50);
   };
 
+  // ------------------------------------------------------
+  // Sending messages
+  // ------------------------------------------------------
   const sendMessage = async () => {
-    if (!input.trim()) return;
+    if (!input.trim() || !roomId) return;
 
     const {
       data: { user },
@@ -95,6 +128,9 @@ export default function RealTimeChat({ roomName }: any) {
     setInput("");
   };
 
+  // ------------------------------------------------------
+  // Mark room as read for unread tracking
+  // ------------------------------------------------------
   const markRoomAsRead = async () => {
     const {
       data: { user },
@@ -107,6 +143,9 @@ export default function RealTimeChat({ roomName }: any) {
     });
   };
 
+  // ------------------------------------------------------
+  // Render UI
+  // ------------------------------------------------------
   if (!roomId)
     return (
       <div className="p-4 text-orange-500 font-semibold">Loading room…</div>
@@ -132,6 +171,7 @@ export default function RealTimeChat({ roomName }: any) {
             {msg.content}
           </div>
         ))}
+
         <div ref={scrollRef} />
       </div>
 
