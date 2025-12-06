@@ -5,7 +5,7 @@ import RealtimeChat from "@/components/realtime-chat";
 export default function AdminChatPage({ params }: any) {
   return (
     <div className="max-w-[80%] mx-auto mt-10">
-      <RealtimeChat roomName={params.id} />
+      <RealtimeChat roomId={id} />
     </div>
   );
 }
