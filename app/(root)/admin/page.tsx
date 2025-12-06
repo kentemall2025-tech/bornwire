@@ -6,29 +6,56 @@ import Link from "next/link";
 
 export default function AdminRoomsPage() {
   const [rooms, setRooms] = useState<any>([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const load = async () => {
-      const { data } = await supabase
-        .from("rooms")
-        .select("id, owner_email, created_at");
-      setRooms(data || []);
-    };
-    load();
+    loadRooms();
   }, []);
 
+  const loadRooms = async () => {
+    setLoading(true);
+
+    const { data: roomsData } = await supabase
+      .from("rooms")
+      .select("id, name, created_by, created_at");
+
+    const results = [];
+
+    for (const room of roomsData || []) {
+      const { data: unread } = await supabase.rpc("unread_count", {
+        roomid: room.id,
+      });
+
+      results.push({ ...room, unread });
+    }
+
+    setRooms(results);
+    setLoading(false);
+  };
+
+  if (loading)
+    return <div className="p-6 text-orange-500">Loading rooms...</div>;
+
   return (
-    <div className="p-4">
-      <h1 className="text-xl font-bold mb-4">User Rooms</h1>
+    <div className="p-6">
+      <h1 className="text-xl font-bold text-orange-600 mb-4">
+        Admin — User Rooms
+      </h1>
 
       <div className="space-y-3">
         {rooms.map((room: any) => (
           <Link
             key={room.id}
             href={`/admin/rooms/${room.id}`}
-            className="block p-3 bg-gray-100 rounded shadow-sm"
+            className="flex items-center justify-between p-4 border rounded-lg bg-white shadow hover:bg-orange-50"
           >
-            {room.owner_email}
+            <span className="font-medium">{room.name}</span>
+
+            {room.unread > 0 && (
+              <span className="bg-orange-500 text-white px-3 py-1 text-sm rounded-full">
+                {room.unread}
+              </span>
+            )}
           </Link>
         ))}
       </div>
