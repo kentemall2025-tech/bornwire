@@ -9,6 +9,7 @@ import { Send } from "lucide-react";
 export default function AdminRoomChat({ roomId }: { roomId: string }) {
   const [messages, setMessages] = useState<any[]>([]);
   const [newMessage, setNewMessage] = useState("");
+  const [adminId, setAdminId] = useState<string | null>(null);
   const scrollRef = useRef<HTMLDivElement | null>(null);
 
   // Auto scroll
@@ -18,16 +19,38 @@ export default function AdminRoomChat({ roomId }: { roomId: string }) {
     }, 50);
   };
 
+  // Load ADMIN user
+  useEffect(() => {
+    supabase.auth.getUser().then(({ data }) => {
+      setAdminId(data?.user?.id ?? null);
+    });
+  }, []);
+
   // Load history
   const loadHistory = useCallback(async () => {
     const { data, error } = await supabase
       .from("messages")
-      .select("*")
+      .select(
+        `
+        id,
+        content,
+        user_id,
+        room_id,
+        created_at,
+        profiles:user_id ( email )
+      `
+      )
       .eq("room_id", roomId)
       .order("created_at", { ascending: true });
 
     if (!error) {
-      setMessages(data || []);
+      setMessages(
+        data?.map((m: any) => ({
+          ...m,
+          email: m.profiles?.email || "Unknown",
+        })) || []
+      );
+
       scrollToBottom();
     }
   }, [roomId]);
@@ -44,8 +67,21 @@ export default function AdminRoomChat({ roomId }: { roomId: string }) {
           table: "messages",
           filter: `room_id=eq.${roomId}`,
         },
-        (payload) => {
-          setMessages((prev) => [...prev, payload.new]);
+        async (payload) => {
+          const msg = payload.new;
+
+          // get email of sender
+          const { data: profile } = await supabase
+            .from("profiles")
+            .select("email")
+            .eq("id", msg.user_id)
+            .single();
+
+          setMessages((prev) => [
+            ...prev,
+            { ...msg, email: profile?.email || "Unknown" },
+          ]);
+
           scrollToBottom();
         }
       )
@@ -61,6 +97,7 @@ export default function AdminRoomChat({ roomId }: { roomId: string }) {
     const setup = async () => {
       const session = await supabase.auth.getSession();
 
+      // auth realtime
       if (session?.data?.session?.access_token) {
         supabase.realtime.setAuth(session.data.session.access_token);
       }
@@ -78,12 +115,12 @@ export default function AdminRoomChat({ roomId }: { roomId: string }) {
 
   // Send message as ADMIN
   const sendMessage = async () => {
-    if (!newMessage.trim()) return;
+    if (!newMessage.trim() || !adminId) return;
 
     await supabase.from("messages").insert({
       room_id: roomId,
-      message: newMessage,
-      sender_email: "ADMIN",
+      user_id: adminId,
+      content: newMessage,
     });
 
     setNewMessage("");
@@ -91,33 +128,30 @@ export default function AdminRoomChat({ roomId }: { roomId: string }) {
 
   return (
     <div className="flex flex-col h-screen p-4">
-      {/* MESSAGES */}
+      {/* CHAT */}
       <div className="flex-1 overflow-y-auto space-y-3 pr-2">
         {messages.map((msg) => (
           <div
             key={msg.id}
             className={`p-3 rounded-xl max-w-[80%] ${
-              msg.sender_email === "ADMIN"
+              msg.user_id === adminId
                 ? "bg-blue-600 text-white ml-auto"
                 : "bg-gray-200 text-black"
             }`}
           >
-            <p className="text-sm opacity-70 mb-1">
-              {msg.sender_email === "ADMIN" ? "Admin" : msg.sender_email}
-            </p>
-            <p>{msg.message}</p>
+            <p className="text-xs opacity-60 mb-1">{msg.email}</p>
+            <p>{msg.content}</p>
           </div>
         ))}
-
         <div ref={scrollRef} />
       </div>
 
-      {/* INPUT BAR */}
+      {/* INPUT */}
       <div className="flex items-center gap-2 mt-3">
         <Input
           value={newMessage}
           onChange={(e) => setNewMessage(e.target.value)}
-          placeholder="Reply to this user..."
+          placeholder="Reply to user…"
         />
         <Button onClick={sendMessage}>
           <Send className="w-4 h-4" />
