@@ -16,9 +16,6 @@ interface NavbarProps {
 
 function NavBar({ className }: NavbarProps) {
   const [user, setUser] = useState<any>(null);
-  if (!user) {
-    redirect("/siginin");
-  }
 
   useEffect(() => {
     const getUser = async () => {
@@ -27,6 +24,9 @@ function NavBar({ className }: NavbarProps) {
     };
     getUser();
 
+    if (!user) {
+      redirect("/siginin");
+    }
     const avatar =
       user?.user_metadata.picture || user?.user_metadata.avatar_url;
   }, []);
