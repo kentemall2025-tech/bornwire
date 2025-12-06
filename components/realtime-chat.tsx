@@ -8,6 +8,7 @@ export default function RealTimeChat({ roomId }: any) {
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(true);
   const scrollRef = useRef<any>(null);
+  const adminId = "c3e8b126-a00d-4365-9466-420aae97eae4";
 
   useEffect(() => {
     loadMessages();
@@ -95,9 +96,9 @@ export default function RealTimeChat({ roomId }: any) {
           <div
             key={msg.id}
             className={`p-3 rounded-lg max-w-xs ${
-              msg.is_admin
-                ? "bg-orange-500 text-white ml-auto"
-                : "bg-white border border-orange-200"
+              msg.user_id === adminId
+                ? "bg-orange-500 text-white  ml-auto"
+                : "bg-white  border border-orange-200"
             }`}
           >
             {msg.content}
