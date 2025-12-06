@@ -58,7 +58,7 @@ export default function AdminRoomChat({ roomId }: { roomId: string }) {
   // Realtime subscribe
   const subscribeRealtime = useCallback(() => {
     const channel = supabase
-      .channel(`room_${roomId}`)
+      .channel(`room-${roomId}`)
       .on(
         "postgres_changes",
         {
