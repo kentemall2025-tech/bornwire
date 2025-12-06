@@ -65,7 +65,7 @@ export default function HorizontalProductCard({
               {label}
             </CardTitle>
           </CardHeader>
-          <div className=" text-gray-600 ml-18 text-center text-sm ">
+          <div className=" text-gray-600 ml-18 text-pretty text-sm ">
             GHS {price}
           </div>
         </div>
