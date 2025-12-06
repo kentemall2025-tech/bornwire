@@ -17,6 +17,16 @@ function NavBar({ className }: NavbarProps) {
   const [user, setUser] = useState<any>(null);
 
   useEffect(() => {
+    const check = async () => {
+      const { data } = await supabase.auth.getUser();
+      if (!data.user) {
+        window.location.href = "/login";
+      }
+    };
+    check();
+  }, []);
+
+  useEffect(() => {
     const getUser = async () => {
       const { data, error } = await supabase.auth.getUser();
       if (data?.user) setUser(data.user);
