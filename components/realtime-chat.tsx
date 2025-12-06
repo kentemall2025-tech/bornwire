@@ -3,14 +3,38 @@
 import { useEffect, useState, useRef } from "react";
 import { supabase } from "@/lib/supabase/supabase";
 
-export default function RealTimeChat({ roomId }: any) {
+export default function RealTimeChat({ roomName }: any) {
   const [messages, setMessages] = useState<any>([]);
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(true);
+  const [roomId, setRoomId] = useState<string | null>(null);
   const scrollRef = useRef<any>(null);
   const adminId = "c3e8b126-a00d-4365-9466-420aae97eae4";
 
+  // 1️⃣ Load correct room UUID from room name
   useEffect(() => {
+    const fetchRoom = async () => {
+      const { data: room } = await supabase
+        .from("rooms")
+        .select("id")
+        .eq("name", roomName)
+        .single();
+
+      if (!room) {
+        console.error("Room not found");
+        return;
+      }
+
+      setRoomId(room.id);
+    };
+
+    fetchRoom();
+  }, [roomName]);
+
+  // 2️⃣ Load messages after roomId is known
+  useEffect(() => {
+    if (!roomId) return;
+
     loadMessages();
     markRoomAsRead();
 
@@ -41,7 +65,7 @@ export default function RealTimeChat({ roomId }: any) {
 
     const { data } = await supabase
       .from("messages")
-      .select("id, content, user_id, created_at")
+      .select("*")
       .eq("room_id", roomId)
       .order("created_at", { ascending: true });
 
@@ -84,21 +108,26 @@ export default function RealTimeChat({ roomId }: any) {
     });
   };
 
+  if (!roomId)
+    return (
+      <div className="p-4 text-orange-500 font-semibold">Loading room…</div>
+    );
+
   if (loading)
     return (
-      <div className="p-4 text-orange-500 font-semibold">Loading chat...</div>
+      <div className="p-4 text-orange-500 font-semibold">Loading chat…</div>
     );
 
   return (
     <div className="flex flex-col h-screen h-[60vh]">
-      <div className="flex-1 overflow-y-auto p-4 space-y-3 bg-orange-50 ">
+      <div className="flex-1 overflow-y-auto p-4 space-y-3 bg-orange-50">
         {messages.map((msg: any) => (
           <div
             key={msg.id}
             className={`p-3 rounded-lg max-w-xs ${
               msg.user_id === adminId
-                ? "bg-black text-white  ml-auto"
-                : "bg-white  border border-orange-200"
+                ? "bg-black text-white ml-auto"
+                : "bg-white border border-orange-200"
             }`}
           >
             {msg.content}
