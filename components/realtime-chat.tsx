@@ -9,40 +9,25 @@ export default function RealTimeChat({ roomName }: any) {
   const [loading, setLoading] = useState(true);
   const [roomId, setRoomId] = useState<string | null>(null);
   const scrollRef = useRef<any>(null);
+
   const adminId = "c3e8b126-a00d-4365-9466-420aae97eae4";
 
-  // ------------------------------------------------------
-  // 1️⃣ Load roomId from room name — Auto-creates room
-  // ------------------------------------------------------
   useEffect(() => {
     const fetchRoom = async () => {
       if (!roomName) return;
 
-      console.log("Requested room name:", roomName);
-
-      let { data: room, error } = await supabase
+      let { data: room } = await supabase
         .from("rooms")
         .select("*")
         .eq("name", roomName)
-        .maybeSingle(); // prevents crashes
+        .maybeSingle();
 
-      // If room doesn't exist → Auto-create it
       if (!room) {
-        console.log("Room not found, creating it…");
-
-        const { data: newRoom, error: createError } = await supabase
+        const { data: newRoom } = await supabase
           .from("rooms")
-          .insert({
-            name: roomName,
-            owner_email: "auto-created",
-          })
+          .insert({ name: roomName })
           .select()
           .single();
-
-        if (createError) {
-          console.error("Failed to create room:", createError);
-          return;
-        }
 
         room = newRoom;
       }
@@ -54,13 +39,39 @@ export default function RealTimeChat({ roomName }: any) {
   }, [roomName]);
 
   // ------------------------------------------------------
-  // 2️⃣ Load messages when roomId is ready
+  // Load messages + join profiles
+  // ------------------------------------------------------
+  const loadMessages = async () => {
+    setLoading(true);
+
+    const { data, error } = await supabase
+      .from("messages")
+      .select(
+        `
+        id,
+        content,
+        created_at,
+        user_id,
+        profiles ( email )
+      `
+      )
+      .eq("room_id", roomId)
+      .order("created_at", { ascending: true });
+
+    if (error) console.error("LOAD ERROR:", error);
+
+    setMessages(data || []);
+    setLoading(false);
+    scrollBottom();
+  };
+
+  // ------------------------------------------------------
+  // Realtime listener
   // ------------------------------------------------------
   useEffect(() => {
     if (!roomId) return;
 
     loadMessages();
-    markRoomAsRead();
 
     const channel = supabase
       .channel(`room-${roomId}`)
@@ -72,8 +83,23 @@ export default function RealTimeChat({ roomName }: any) {
           table: "messages",
           filter: `room_id=eq.${roomId}`,
         },
-        (payload) => {
-          setMessages((prev: any) => [...prev, payload.new]);
+        async (payload) => {
+          // fetch complete message WITH profiles.email
+          const { data } = await supabase
+            .from("messages")
+            .select(
+              `
+              id,
+              content,
+              created_at,
+              user_id,
+              profiles ( email )
+            `
+            )
+            .eq("id", payload.new.id)
+            .single();
+
+          setMessages((prev: any) => [...prev, data]);
           scrollBottom();
         }
       )
@@ -84,34 +110,6 @@ export default function RealTimeChat({ roomName }: any) {
     };
   }, [roomId]);
 
-  // ------------------------------------------------------
-  // Load existing messages
-  // ------------------------------------------------------
-  const loadMessages = async () => {
-    setLoading(true);
-
-    const { data, error } = await supabase
-      .from("messages")
-      .select("*")
-      .eq("room_id", roomId)
-      .order("created_at", { ascending: true });
-
-    if (error) console.error("Message load error:", error);
-
-    setMessages(data || []);
-    setLoading(false);
-    scrollBottom();
-  };
-
-  const scrollBottom = () => {
-    setTimeout(() => {
-      scrollRef.current?.scrollIntoView({ behavior: "smooth" });
-    }, 50);
-  };
-
-  // ------------------------------------------------------
-  // Sending messages
-  // ------------------------------------------------------
   const sendMessage = async () => {
     if (!input.trim() || !roomId) return;
 
@@ -128,23 +126,14 @@ export default function RealTimeChat({ roomName }: any) {
     setInput("");
   };
 
-  // ------------------------------------------------------
-  // Mark room as read for unread tracking
-  // ------------------------------------------------------
-  const markRoomAsRead = async () => {
-    const {
-      data: { user },
-    } = await supabase.auth.getUser();
-
-    await supabase.from("room_reads").upsert({
-      room_id: roomId,
-      user_id: user?.id,
-      last_read_at: new Date().toISOString(),
-    });
+  const scrollBottom = () => {
+    setTimeout(() => {
+      scrollRef.current?.scrollIntoView({ behavior: "smooth" });
+    }, 100);
   };
 
   // ------------------------------------------------------
-  // Render UI
+  // UI
   // ------------------------------------------------------
   if (!roomId)
     return (
@@ -168,6 +157,7 @@ export default function RealTimeChat({ roomName }: any) {
                 : "bg-white border border-orange-200"
             }`}
           >
+            <div className="text-xs text-gray-400">{msg.profiles?.email}</div>
             {msg.content}
           </div>
         ))}

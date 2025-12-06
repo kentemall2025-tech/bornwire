@@ -4,11 +4,12 @@ import { cn } from "@/lib/utils";
 interface ChatMessageItemProps {
   message: {
     id: string;
-    user: {
+    content: string;
+    created_at: string;
+    user_id: string;
+    profiles: {
       email: string;
     };
-    content: string;
-    createdAt: string;
   };
   isOwnMessage: boolean;
   showHeader: boolean;
@@ -19,6 +20,8 @@ export const ChatMessageItem = ({
   isOwnMessage,
   showHeader,
 }: ChatMessageItemProps) => {
+  const email = message.profiles?.email || "Unknown";
+
   return (
     <div
       className={cn("flex w-full", {
@@ -38,11 +41,11 @@ export const ChatMessageItem = ({
             })}
           >
             <span className="font-semibold text-xs text-foreground/80">
-              {message.user.email}
+              {email}
             </span>
 
             <span className="text-foreground/50 text-[10px]">
-              {new Date(message.createdAt).toLocaleTimeString("en-US", {
+              {new Date(message.created_at).toLocaleTimeString("en-US", {
                 hour: "2-digit",
                 minute: "2-digit",
                 hour12: true,
