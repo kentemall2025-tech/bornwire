@@ -1,5 +1,4 @@
 "use client";
-
 import { useRouter } from "next/navigation";
 import { Search } from "lucide-react";
 import { Input } from "./input";
@@ -12,7 +11,6 @@ interface SearchBarProps {
 export default function SearchBar({ products }: SearchBarProps) {
   const [query, setQuery] = useState("");
   const router = useRouter();
-
   const debounceTimer = useRef<NodeJS.Timeout | null>(null);
 
   useEffect(() => {

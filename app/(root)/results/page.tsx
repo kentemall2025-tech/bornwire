@@ -1,8 +1,7 @@
 "use client";
-
 import { useSearchParams } from "next/navigation";
 import VerticalProductCard from "@/components/ui/veticalproductcard";
-import { useEffect, useState } from "react";
+import { Suspense, useEffect, useState } from "react";
 import { supabase } from "@/lib/supabase/supabase";
 
 export default function ResultsPage() {
@@ -44,27 +43,29 @@ export default function ResultsPage() {
   });
 
   return (
-    <div className="p-4">
-      <h2 className="text-2xl font-semibold mb-4">
-        Results for: <span className="text-yellow-500">{query}</span>
-      </h2>
-      {loading ? (
-        <p className="text-gray-500">Loading products...</p>
-      ) : filtered.length === 0 ? (
-        <p className="text-gray-500">No products found.</p>
-      ) : (
-        <div className="grid grid-cols-1 md:grid-col-2 lg:grid-cols-4 lg:max-w-[90%] lg:mx-auto gap-4">
-          {filtered.map((product: any) => (
-            <VerticalProductCard
-              key={product.id}
-              label={product.label}
-              description={product.description}
-              price={product.price}
-              imageurl={product.imageurl}
-            />
-          ))}
-        </div>
-      )}
-    </div>
+    <Suspense fallback={<p>loading...</p>}>
+      <div className="p-4">
+        <h2 className="text-2xl font-semibold mb-4">
+          Results for: <span className="text-yellow-500">{query}</span>
+        </h2>
+        {loading ? (
+          <p className="text-gray-500">Loading products...</p>
+        ) : filtered.length === 0 ? (
+          <p className="text-gray-500">No products found.</p>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-col-2 lg:grid-cols-4 lg:max-w-[90%] lg:mx-auto gap-4">
+            {filtered.map((product: any) => (
+              <VerticalProductCard
+                key={product.id}
+                label={product.label}
+                description={product.description}
+                price={product.price}
+                imageurl={product.imageurl}
+              />
+            ))}
+          </div>
+        )}
+      </div>
+    </Suspense>
   );
 }
