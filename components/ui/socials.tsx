@@ -15,8 +15,8 @@ export default function Socials() {
         >
           <Image
             alt="facebook"
-            width={20}
-            height={20}
+            width={40}
+            height={40}
             src="/images/facebook.png"
           />
         </Link>
@@ -26,8 +26,8 @@ export default function Socials() {
         >
           <Image
             alt="isntagram"
-            width={20}
-            height={20}
+            width={40}
+            height={40}
             src="/images/instagram.png"
           />
         </Link>
@@ -37,8 +37,8 @@ export default function Socials() {
         >
           <Image
             alt="Tiktok"
-            width={20}
-            height={20}
+            width={40}
+            height={40}
             src="/images/social-media.png"
           />
         </Link>
