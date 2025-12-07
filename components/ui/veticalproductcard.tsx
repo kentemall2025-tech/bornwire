@@ -10,6 +10,7 @@ import {
 } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "./button";
+import { useRouter } from "next/navigation";
 
 interface ProductCardProps {
   label: string;
@@ -24,6 +25,7 @@ export default function VerticalProductCard({
   price,
   imageurl,
 }: ProductCardProps) {
+  const router = useRouter();
   const initializePayment = async () => {
     const res = await fetch("/api/paystack/initialize", {
       method: "POST",
@@ -64,7 +66,12 @@ export default function VerticalProductCard({
           </CardHeader>
 
           <div>
-            <Button className="">more info</Button>
+            <Button
+              onClick={() => router.push(`\products\${label}`)}
+              className=""
+            >
+              more info
+            </Button>
           </div>
 
           <div className="text-lg mt-2">
