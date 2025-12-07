@@ -8,15 +8,15 @@ import Image from "next/image";
 export default function Socials() {
   return (
     <div className={cn("my-5")}>
-      <div className="flex items-center justify-center gap-8 ">
+      <div className="flex items-center justify-center gap-8 p-4 ">
         <Link
           className="text-yellow-500"
           href="https://www.facebook.com/bonewire.shop/"
         >
           <Image
             alt="facebook"
-            width={100}
-            height={100}
+            width={20}
+            height={20}
             src="/images/facebook.png"
           />
         </Link>
@@ -26,8 +26,8 @@ export default function Socials() {
         >
           <Image
             alt="isntagram"
-            width={100}
-            height={100}
+            width={20}
+            height={20}
             src="/images/instagram.png"
           />
         </Link>
@@ -37,9 +37,9 @@ export default function Socials() {
         >
           <Image
             alt="Tiktok"
-            width={100}
-            height={100}
-            src="/images/tiktok.png"
+            width={20}
+            height={20}
+            src="/images/social-media.png"
           />
         </Link>
       </div>
