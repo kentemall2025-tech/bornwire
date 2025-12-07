@@ -47,7 +47,7 @@ function NavBar({ className }: NavbarProps) {
             className="h-10 w-10 rounded-xl object-contain"
             height={400}
           />
-          <div className="capitalize  font-bold text-xl text-red-500 flex ">
+          <div className="uppercase  font-bold text-xl text-red-500 flex ">
             born
             <p className="text-yellow-500 font-bold capitalize">wire</p>
           </div>
