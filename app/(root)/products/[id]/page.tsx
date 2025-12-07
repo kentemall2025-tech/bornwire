@@ -89,7 +89,7 @@ export default function page({ params }: any) {
                 `/chat/${user?.id}?roomName=${user?.id}&username=${user?.email}`
               )
             }
-            className="w-full"
+            className="w-full bg-slate-900 text-yellow-500 uppercase text-white uppercase p-4"
           >
             chat us
           </button>
