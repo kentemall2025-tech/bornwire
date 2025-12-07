@@ -37,7 +37,7 @@ function NavBar({ className }: NavbarProps) {
     >
       <Link
         href="/"
-        className="font-poppins text-lg text-yellow-500 flex items-end rounded-lg object-contain md:text-2xl lowercase font-bold"
+        className="font-poppins text-lg text-yellow-500 flex items-center rounded-lg object-contain md:text-2xl lowercase font-bold"
       >
         <div className="flex ">
           <Image
