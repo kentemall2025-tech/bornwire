@@ -49,7 +49,7 @@ function NavBar({ className }: NavbarProps) {
           />
           <div className="uppercase  font-bold text-2xl text-red-500 flex ">
             born
-            <p className="text-yellow-500 font-bold ">wire</p>
+            <p className="text-yellow-500 font-extrabold ">wire</p>
           </div>
         </div>
       </Link>
