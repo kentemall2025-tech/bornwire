@@ -76,24 +76,24 @@ export default function page({ params }: any) {
         <div className="max-w-[90%] py-5 text-center md: mx-auto">
           {product?.description}
         </div>
-        <div className="flex w-full">
+        <div className="flex w-full items-center">
           <button
             className="bg-yellow-500 w-full text-white uppercase p-4 "
             onClick={initializePayment}
           >
             Buy
           </button>
+          <button
+            onClick={() =>
+              router.push(
+                `/chat/${user?.id}?roomName=${user?.id}&username=${user?.email}`
+              )
+            }
+            className="w-full"
+          >
+            chat us
+          </button>
         </div>
-        <button
-          onClick={() =>
-            router.push(
-              `/chat/${user?.id}?roomName=${user?.id}&username=${user?.email}`
-            )
-          }
-          className="w-full"
-        >
-          chat us
-        </button>
       </section>
     </div>
   );
