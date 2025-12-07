@@ -25,12 +25,6 @@ export default function page() {
         <CardContent className="w-full flex flex-col gap-8 items-center ">
           <div className="w-full flex items-center gap-4 ">
             <div className="text-2xl tracking-wider capitalize tracking-wide">
-              name
-            </div>
-            <div className="text-black">{user?.full_name}</div>
-          </div>
-          <div className="w-full flex items-center gap-4 ">
-            <div className="text-2xl tracking-wider capitalize tracking-wide">
               email
             </div>
 
