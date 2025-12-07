@@ -14,7 +14,7 @@ export default function ResultsPage() {
 
   useEffect(() => {
     const fetchProducts = async () => {
-      const { data, error } = await supabase.from("product").select("*"); // fetch ALL products
+      const { data, error } = await supabase.from("product").select("*");
 
       if (error) {
         console.error(error);
