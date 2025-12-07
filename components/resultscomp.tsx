@@ -1,4 +1,3 @@
-// components/resultsPage.tsx
 "use client";
 
 import { Suspense, useState, useEffect } from "react";
@@ -34,14 +33,12 @@ export default function ResultsPageClient() {
 
   const q = normalize(query);
 
+  // Only return products that start with the query string
   const filtered = products.filter((p: any) => {
     const label = normalize(p.label);
 
-    return (
-      label.includes(q) || // basic contains
-      label.startsWith(q) || // starts with
-      label.split(" ").some((w) => w.startsWith(q)) // matches any word
-    );
+    // Matches if the label starts with the query string
+    return label.startsWith(q);
   });
 
   return (
