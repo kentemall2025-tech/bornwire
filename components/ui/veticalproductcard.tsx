@@ -63,7 +63,7 @@ export default function VerticalProductCard({
           </CardHeader>
 
           {description && (
-            <CardDescription className="text-sm mt-1 text-black">
+            <CardDescription className="text-sm mt-1 text-black line-clamp-3 ">
               {description}
             </CardDescription>
           )}
