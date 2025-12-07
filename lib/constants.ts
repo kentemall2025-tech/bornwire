@@ -87,7 +87,7 @@ export const footerlinkContent = [
   {
     id: 1,
     label: "home",
-    href: "/home",
+    href: "/",
   },
   {
     id: 2,
