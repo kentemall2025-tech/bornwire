@@ -9,6 +9,7 @@ export async function VerticalProductList() {
       <div className="grid  w-full grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 items-center mx-auto ">
         {products?.map((item: any, index: number) => (
           <VerticalProductCard
+            id={item.id}
             key={index}
             imageurl={item.imageurl}
             label={item.label}

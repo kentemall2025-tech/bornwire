@@ -13,6 +13,7 @@ import { Button } from "./button";
 import { useRouter } from "next/navigation";
 
 interface ProductCardProps {
+  id: string;
   label: string;
   description?: string;
   price: number;
@@ -20,6 +21,7 @@ interface ProductCardProps {
 }
 
 export default function VerticalProductCard({
+  id,
   label,
   description,
   price,
@@ -67,7 +69,7 @@ export default function VerticalProductCard({
 
           <div>
             <Button
-              onClick={() => router.push(`/products/${label}`)}
+              onClick={() => router.push(`/products/${id}`)}
               className="text-sm "
             >
               more info

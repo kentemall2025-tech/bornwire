@@ -1,30 +1,96 @@
 "use client";
 import { supabase } from "@/lib/supabase/supabase";
+import { Badge } from "@/components/ui/badge";
 import Image from "next/image";
-import React from "react";
+import React, { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 
-export default async function page({
-  params,
-}: {
-  params: {
-    id: string;
+export default function page({ params }: any) {
+  const [product, setProduct] = useState<any>(null);
+  const [id, setId] = useState<any>(null);
+  const [user, setUser] = useState<any>(null);
+
+  const router = useRouter();
+  const initializePayment = async () => {
+    const res = await fetch("/api/paystack/initialize", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        email: "marcus@email.com",
+        amount: product.price * 100,
+      }),
+    });
+
+    const data = await res.json();
+
+    if (data?.data?.authorization_url) {
+      window.location.href = data.data.authorization_url;
+    }
   };
-}) {
-  const { id } = await params;
-  const { data: product, error } = await supabase
-    .from("products")
-    .select("*")
-    .eq("label", id)
-    .maybeSingle();
-  console.log(product);
+
+  useEffect(() => {
+    const getUser = async () => {
+      const { data, error } = await supabase.auth.getUser();
+      if (data?.user) setUser(data.user);
+    };
+    getUser();
+    const fetchproduct = async () => {
+      const { id } = await params;
+
+      setId(id);
+      const { data: product, error } = await supabase
+        .from("product")
+        .select("*")
+        .eq("id", id)
+        .single();
+
+      setProduct(product);
+    };
+    fetchproduct();
+  }, []);
 
   return (
-    <div>
-      <div>
-        <div>
-          <Image src={""} alt={""} width={500} height={500} />
+    <div className="">
+      <section className="md:p-8 md:max-w-[80%] md:mx-auto">
+        <div className="max-w-full h-[60vh] object-contain">
+          <Image
+            className="w-full h-[60vh] object-cover"
+            src={
+              product
+                ? product?.imageurl
+                : "https://csmvkgdme8w3hyot.public.blob.vercel-storage.com/WhatsApp Image 2025-11-23 at 12.21.54 AM.jpeg"
+            }
+            alt={product?.label}
+            width={500}
+            height={500}
+          />
         </div>
-      </div>
+        <div className="flex items-center justify-between p-4">
+          <h2>{product?.label}</h2>
+          <Badge variant="outline" className="text-sm">
+            GHS {product?.price.toFixed(2)}
+          </Badge>
+        </div>
+        <div className="max-w-[95%] mx-auto">{product?.description}</div>
+        <div className="flex w-full">
+          <button
+            className="bg-yellow-500 w-full text-white uppercase p-4 "
+            onClick={initializePayment}
+          >
+            Buy
+          </button>
+        </div>
+        <button
+          onClick={() =>
+            router.push(
+              `/chat/${user?.id}?roomName=${user?.id}&username=${user?.email}`
+            )
+          }
+          className="w-full"
+        >
+          chat us
+        </button>
+      </section>
     </div>
   );
 }

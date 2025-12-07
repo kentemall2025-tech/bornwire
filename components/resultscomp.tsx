@@ -57,6 +57,7 @@ export default function ResultsPageClient() {
         <div className="grid grid-cols-1 md:grid-col-2 lg:grid-cols-4 lg:max-w-[90%] lg:mx-auto gap-4">
           {filtered.map((product: any) => (
             <VerticalProductCard
+              id={product.id}
               key={product.id}
               label={product.label}
               description={product.description}
