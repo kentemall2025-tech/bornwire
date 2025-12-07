@@ -66,7 +66,7 @@ export default function page({ params }: any) {
           />
         </div>
         <div className="flex items-center justify-between p-4">
-          <h2 className="text-2xl font-extrabold  captialize">
+          <h2 className="text-2xl font-extrabold  uppercase">
             {product?.label}
           </h2>
           <Badge variant="outline" className="text-sm">
