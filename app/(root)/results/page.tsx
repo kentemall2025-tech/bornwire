@@ -1,70 +1,12 @@
-"use client";
-import { useSearchParams } from "next/navigation";
-import VerticalProductCard from "@/components/ui/veticalproductcard";
-import { Suspense, useEffect, useState } from "react";
-import { supabase } from "@/lib/supabase/supabase";
+// results/page.tsx
+
+import dynamic from "next/dynamic";
+
+// Dynamically import the component, disabling SSR
+const ResultsPageClient = dynamic(() => import("@/components/resultscomp"), {
+  ssr: false,
+});
 
 export default function ResultsPage() {
-  const searchParams = useSearchParams();
-  const [products, setProducts] = useState<any[]>([]);
-  const [loading, setLoading] = useState(true);
-  const query = searchParams.get("query")?.toLowerCase() || "";
-
-  useEffect(() => {
-    const fetchProducts = async () => {
-      const { data, error } = await supabase.from("product").select("*");
-
-      if (error) {
-        console.error(error);
-      } else {
-        setProducts(data || []);
-      }
-
-      setLoading(false);
-    };
-
-    fetchProducts();
-  }, []);
-
-  const normalize = (str: string) =>
-    str.toLowerCase().replace(/[-_]/g, " ").trim();
-
-  const q = normalize(query);
-
-  const filtered = products.filter((p: any) => {
-    const label = normalize(p.label);
-
-    return (
-      label.includes(q) || // basic contains
-      label.startsWith(q) || // starts with
-      label.split(" ").some((w) => w.startsWith(q)) // matches any word
-    );
-  });
-
-  return (
-    <div className="p-4">
-      <h2 className="text-2xl font-semibold mb-4">
-        Results for: <span className="text-yellow-500">{query}</span>
-      </h2>
-      {loading ? (
-        <p className="text-gray-500">Loading products...</p>
-      ) : filtered.length === 0 ? (
-        <p className="text-gray-500">No products found.</p>
-      ) : (
-        <div className="grid grid-cols-1 md:grid-col-2 lg:grid-cols-4 lg:max-w-[90%] lg:mx-auto gap-4">
-          <Suspense fallback={<p>loading...</p>}>
-            {filtered.map((product: any) => (
-              <VerticalProductCard
-                key={product.id}
-                label={product.label}
-                description={product.description}
-                price={product.price}
-                imageurl={product.imageurl}
-              />
-            ))}
-          </Suspense>
-        </div>
-      )}
-    </div>
-  );
+  return <ResultsPageClient />;
 }
