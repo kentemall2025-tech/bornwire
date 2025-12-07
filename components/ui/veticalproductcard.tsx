@@ -63,11 +63,9 @@ export default function VerticalProductCard({
             </CardTitle>
           </CardHeader>
 
-          {description && (
-            <div>
-              <Button className="">more info</Button>
-            </div>
-          )}
+          <div>
+            <Button className="">more info</Button>
+          </div>
 
           <div className="text-lg mt-2">
             <Badge variant="outline" className="text-sm">
