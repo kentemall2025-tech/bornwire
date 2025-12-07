@@ -37,14 +37,14 @@ function NavBar({ className }: NavbarProps) {
     >
       <Link
         href="/"
-        className="font-poppins text-lg text-yellow-500 rounded-lg object-contain md:text-2xl lowercase font-bold"
+        className="font-poppins text-lg text-yellow-500 flex items-center rounded-lg object-contain md:text-2xl lowercase font-bold"
       >
         <div className="flex ">
           <Image
             src="https://csmvkgdme8w3hyot.public.blob.vercel-storage.com/WhatsApp Image 2025-11-23 at 12.21.54 AM.jpeg"
             width={500}
             alt="logo"
-            className="h-10 w-10 rounded-lg object-contain"
+            className="h-10 w-10 rounded-xl object-contain"
             height={400}
           />
           <div className="capitalize font-bold text-lg text-red-500 flex ">
