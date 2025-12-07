@@ -9,7 +9,6 @@ import {
   CardDescription,
 } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { useState } from "react";
 
 interface ProductCardProps {
   label: string;
@@ -35,7 +34,6 @@ export default function VerticalProductCard({
     });
 
     const data = await res.json();
-    console.log(data);
 
     if (data?.data?.authorization_url) {
       window.location.href = data.data.authorization_url;
@@ -43,46 +41,46 @@ export default function VerticalProductCard({
   };
 
   return (
-    <Card
-      key={label}
-      className="flex w-full  rounded-lg border w-full hover:shadow-lg transition-shadow duration-300 rounded-lg bg-gray p-0 my-2 "
-    >
-      <CardContent className=" flex flex-col h-full w-full p-0 m-0  ">
-        <div className="relative w-full h-50 p-0 m-0 overflow-hidden rounded-md bg-muted object-contain">
+    <Card className="w-full rounded-lg border hover:shadow-lg transition-shadow duration-300 my-2">
+      <CardContent className="flex flex-col h-full p-0">
+        {/* IMAGE */}
+        <div className="relative w-full h-52 overflow-hidden rounded-md bg-muted">
           <Image
-            className={"rounded-lg w-full h-auto"}
             src={imageurl}
             alt={label}
-            objectFit="cover"
-            layout="fill"
+            fill
+            className="object-cover"
+            sizes="100vw"
           />
         </div>
 
-        <div className="flex flex-col justify-center text-center shadow-xl p-4">
-          <CardHeader className=" p-0 ">
+        {/* TEXT CONTENT */}
+        <div className="flex flex-col text-center p-4">
+          <CardHeader className="p-0">
             <CardTitle className="text-lg font-semibold uppercase">
               {label}
             </CardTitle>
           </CardHeader>
 
-          {/* Description */}
-          <CardDescription className="text-sm text-black  ">
-            {description}
-          </CardDescription>
+          {description && (
+            <CardDescription className="text-sm mt-1 text-black">
+              {description}
+            </CardDescription>
+          )}
 
-          {/* Price */}
-          <div className="text-muted-background text-lg">
-            <Badge variant="outline" className="text-sm ">
-              GHS {price.toFixed(2)} {/* Format price as GHS */}
+          <div className="text-lg mt-2">
+            <Badge variant="outline" className="text-sm">
+              GHS {price.toFixed(2)}
             </Badge>
           </div>
         </div>
 
+        {/* BUY BUTTON */}
         <button
-          className="bg-yellow-500  text-white uppercase p-4 cursor-pointer"
-          onClick={() => initializePayment()}
+          className="bg-yellow-500 text-white uppercase p-4 mt-auto"
+          onClick={initializePayment}
         >
-          buy
+          Buy
         </button>
       </CardContent>
     </Card>

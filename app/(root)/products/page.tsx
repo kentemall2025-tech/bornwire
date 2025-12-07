@@ -12,9 +12,10 @@ export default async function page() {
     .single();
 
   let { data } = await supabase.from("user").select("email");
+
   return (
     <section className="">
-      <SearchBar />
+      <SearchBar products={product} />
       <div className=" p-4 flex flex-col gap-4  md:p-16">
         <TitleTag
           className="text-xl font-extrabold tracking-wider uppercase p-2"
