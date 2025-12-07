@@ -71,7 +71,9 @@ export default function page({ params }: any) {
             GHS {product?.price.toFixed(2)}
           </Badge>
         </div>
-        <div className="max-w-[95%] mx-auto">{product?.description}</div>
+        <div className="max-w-[90%] py-5 text-center md: mx-auto">
+          {product?.description}
+        </div>
         <div className="flex w-full">
           <button
             className="bg-yellow-500 w-full text-white uppercase p-4 "
