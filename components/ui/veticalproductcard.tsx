@@ -9,6 +9,7 @@ import {
   CardDescription,
 } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "./button";
 
 interface ProductCardProps {
   label: string;
@@ -63,9 +64,9 @@ export default function VerticalProductCard({
           </CardHeader>
 
           {description && (
-            <CardDescription className="text-sm mt-1 text-black line-clamp-1 ">
-              {description}
-            </CardDescription>
+            <div>
+              <Button className="">more info</Button>
+            </div>
           )}
 
           <div className="text-lg mt-2">
