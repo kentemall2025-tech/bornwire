@@ -44,7 +44,7 @@ export default function VerticalProductCard({
   };
 
   return (
-    <Card className="w-full rounded-lg border hover:shadow-lg transition-shadow duration-300 my-2">
+    <Card className="w-full rounded-lg border hover:shadow-lg transition-shadow duration-300 ">
       <CardContent className="flex flex-col h-full p-0">
         {/* IMAGE */}
         <div className="relative w-full h-52 overflow-hidden rounded-md bg-muted">
@@ -68,7 +68,7 @@ export default function VerticalProductCard({
           <div>
             <Button
               onClick={() => router.push(`\products\${label}`)}
-              className=""
+              className="text-sm "
             >
               more info
             </Button>
