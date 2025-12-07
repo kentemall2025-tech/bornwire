@@ -10,7 +10,7 @@ export default function Socials() {
     <div className={cn("my-5")}>
       <div className="flex items-center justify-center gap-8 p-4 ">
         <Link
-          className="text-yellow-500"
+          className="text-yellow-500 cursor-pointer"
           href="https://www.facebook.com/bonewire.shop/"
         >
           <Image
@@ -21,7 +21,7 @@ export default function Socials() {
           />
         </Link>
         <Link
-          className="text-yellow-500"
+          className="text-yellow-500 cursor-pointer"
           href="https://www.instagram.com/bornwire.shop/"
         >
           <Image
@@ -32,7 +32,7 @@ export default function Socials() {
           />
         </Link>
         <Link
-          className="text-yellow-500"
+          className="text-yellow-500 cursor-pointer"
           href="https://www.tiktok.com/bornwire.shop/"
         >
           <Image
