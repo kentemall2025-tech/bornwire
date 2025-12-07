@@ -70,7 +70,7 @@ export default function VerticalProductCard({
           <div>
             <Button
               onClick={() => router.push(`/products/${id}`)}
-              className="text-sm "
+              className="text-sm bg-slate-900 text-yellow-500 "
             >
               more info
             </Button>
