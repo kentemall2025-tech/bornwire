@@ -3,12 +3,12 @@
 import { useRouter } from "next/navigation";
 import { Search } from "lucide-react";
 import { Input } from "./input";
+
 import React, { useState, useEffect, useRef } from "react";
 
 interface SearchBarProps {
   products: any[];
 }
-
 export default function SearchBar({ products }: SearchBarProps) {
   const [query, setQuery] = useState("");
   const router = useRouter();
@@ -40,7 +40,6 @@ export default function SearchBar({ products }: SearchBarProps) {
     <div className="bg-black p-4 w-full">
       <div className="relative p-4 flex items-center w-full">
         <Search className="absolute left-8 text-gray-500" size={28} />
-
         <Input
           value={query}
           onChange={(e) => setQuery(e.target.value)}
