@@ -33,7 +33,7 @@ export default function Socials() {
         </Link>
         <Link
           className="text-yellow-500 cursor-pointer"
-          href="https://www.tiktok.com/bornwire.shop/"
+          href="https://www.tiktok.com/@bornwire.shop/"
         >
           <Image
             alt="Tiktok"
