@@ -83,7 +83,7 @@ export default function VerticalProductCard({
 
         {/* BUY BUTTON */}
         <button
-          className="bg-yellow-500 text-white uppercase p-4 mt-auto"
+          className="bg-yellow-500 text-white uppercase p-4 "
           onClick={initializePayment}
         >
           Buy
