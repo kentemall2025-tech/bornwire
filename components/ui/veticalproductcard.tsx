@@ -67,7 +67,7 @@ export default function VerticalProductCard({
 
           <div>
             <Button
-              onClick={() => router.push(`\products\${label}`)}
+              onClick={() => router.push(`/products/${label}`)}
               className="text-sm "
             >
               more info
