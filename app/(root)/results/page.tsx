@@ -6,10 +6,9 @@ import { supabase } from "@/lib/supabase/supabase";
 
 export default function ResultsPage() {
   const searchParams = useSearchParams();
-  const query = searchParams.get("query")?.toLowerCase() || "";
-
   const [products, setProducts] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+  const query = searchParams.get("query")?.toLowerCase() || "";
 
   useEffect(() => {
     const fetchProducts = async () => {
